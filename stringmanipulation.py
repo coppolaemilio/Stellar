@@ -1,3 +1,5 @@
+# Copyright (C) 2012 Emilio Coppola
+#
 # This file is part of Stellar.
 #
 # Stellar is free software: you can redistribute it and/or modify
