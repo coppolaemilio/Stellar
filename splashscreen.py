@@ -148,7 +148,7 @@ class Start(QtGui.QWidget):
 
         self.tmp = self.main.fname
         self.main.fname =  os.path.join(self.nameEdit.text(),
-                                        "{0}.py".format(self.nameEdit.text()))
+                                        "{0}.py".format(str(self.nameEdit.text())))
         
         if self.main.fname == "":
             self.main.fname = self.main.tmp
