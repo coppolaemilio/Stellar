@@ -147,8 +147,8 @@ class Start(QtGui.QWidget):
     def CreateProject(self):
 
         self.tmp = self.main.fname
-        self.main.fname =  os.path.join(self.nameEdit.text(),
-                                        "{0}.py".format(str(self.nameEdit.text())))
+        self.main.fname =  os.path.join(str(self.nameEdit.text()),
+                                        "{0}.py".format(self.nameEdit.text()))
         
         if self.main.fname == "":
             self.main.fname = self.main.tmp
@@ -158,20 +158,20 @@ class Start(QtGui.QWidget):
                 os.mkdir(self.nameEdit.text())
 
                 #Project Sub-Folders for Windows
-                if not os.path.exists(os.path.join(self.nameEdit.text(), 'Sprites')):
-                    os.mkdir(os.path.join(self.nameEdit.text(), 'Sprites'))
-                if not os.path.exists(os.path.join(self.nameEdit.text(), 'Sound')):
-                    os.mkdir(os.path.join(self.nameEdit.text(), 'Sound'))
-                if not os.path.exists(os.path.join(self.nameEdit.text(), 'Fonts')):
-                    os.mkdir(os.path.join(self.nameEdit.text(), 'Fonts'))
-                if not os.path.exists(os.path.join(self.nameEdit.text(), 'Scripts')):
-                    os.mkdir(os.path.join(self.nameEdit.text(), 'Scripts'))
-                if not os.path.exists(os.path.join(self.nameEdit.text(), 'Objects')):
-                    os.mkdir(os.path.join(self.nameEdit.text(), 'Objects'))
-                if not os.path.exists(os.path.join(self.nameEdit.text(), 'Rooms')):
-                    os.mkdir(os.path.join(self.nameEdit.text(), 'Rooms'))
-                if not os.path.exists(os.path.join(self.nameEdit.text(), 'Build')):
-                    os.mkdir(os.path.join(self.nameEdit.text(), 'Build'))
+                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sprites')):
+                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sprites'))
+                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sound')):
+                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sound'))
+                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Fonts')):
+                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Fonts'))
+                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Scripts')):
+                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Scripts'))
+                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Objects')):
+                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Objects'))
+                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Rooms')):
+                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Rooms'))
+                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
+                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
 
                 f = open(self.main.fname, 'w')
                 f.close()            
