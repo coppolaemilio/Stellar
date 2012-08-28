@@ -97,7 +97,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.Sprites[len(self.main.Sprites)-1][0].scrollArea.setGeometry(350, 0, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.width()-350, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.height())
                     
                     self.main.tab_widget_sprites.setCurrentIndex(len(self.main.Sprites)-1)
-                    self.main.tab_widget_sprites.setTabIcon(len(self.main.Sprites)-1,(QtGui.QIcon(os.path.join('Sprites', item.text(0)))))
+                    self.main.tab_widget_sprites.setTabIcon(len(self.main.Sprites)-1,(QtGui.QIcon(os.path.join('Sprites', str(item.text(0))))))
                     self.main.tab_widget.setCurrentIndex(0)
                     
                     
@@ -534,7 +534,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.tab_widget_scripts.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
         self.connect(self.tab_widget_scripts, QtCore.SIGNAL("currentChanged(int)"), self.ScriptTabChanged)
 
-
         #WINDOW----------------------------------------
         self.setGeometry(200, 200, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
@@ -627,7 +626,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             self.tab_widget_font.hide()
             for font in self.Fonts:
                 font[0].HideMe()
-                
 
     def SpriteTabChanged(self, index):
         for Zet, Sprite in enumerate(self.Sprites):
@@ -675,43 +673,15 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             sound[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
         for font in self.Fonts:
             font[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
-        
 
     def preferencesopen(self):
         
         print self.pref
         execfile(self.pref, {})
 
-##        major, minor, patchlevel = platform.python_version_tuple()
-##        if platform.system() == "Windows":
-##            subprocess.Popen(
-##                ["C:\\Python{0}{1}\\pythonw.exe".format(major, minor),
-##                 self.pref])
-##        elif platform.system == "Darwin": # Not sure about this
-##            subprocess.Popen(
-##                ["System/Library/Frameworks/Python.framework/Versions/{0}.{1}/Library/Python/python.app".format(major, minor),
-##                 self.pref]) # Not Sure how Mac works
-##        elif platform.system() == "Linux":
-##            subprocess.Popen(["python{0}.{1}".format(major, minor), self.pref])
-
-
     def newproject(self):
 
         execfile(self.stellarnew, {})
-
-##        major, minor, patchlevel = platform.python_version_tuple()
-##        if platform.system() == "Windows":
-##            subprocess.Popen(
-##                [r"C:\Python{0}{1}\pythonw.exe".format(major, minor),
-##                 self.stellarnew])
-##        elif platform.system() == "Darwin": # Not sure about this
-##            subprocess.Popen(
-##                ["System/Library/Frameworks/Python.framework/Versions/{0}.{1}/Library/Python/python.app".format(major, minor),
-##                 self.stellarnew]) # Not Sure how Mac works
-##        elif platform.system() == "Linux":
-##            subprocess.Popen(["python{0}.{1}".format(major, minor),
-##                              self.stellarnew])
-        
 
     def Build(self):
         if self.fname != "<New game>":
@@ -863,7 +833,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
                         shutil.copy(sprite, os.path.join('Sprites', d))
                         self.tree.AddSprChild(d)
                     else:
-                        shutil.copy(sprite, os.path.join('Sprites', 'spr_%s'% (d)))
+                        shutil.copy(sprite, os.path.join('Sprites', 'spr_{0}'.format(d)))
                         self.tree.AddSprChild('spr_' + d)
             
 
@@ -880,7 +850,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
                         shutil.copy(sprite,os.path.join('Sprites', d))
                         self.tree.AddSprChild(d)
                     else:
-                        shutil.copy(sprite,os.path.join('Sprites', 'spr_%s'% (d)))
+                        shutil.copy(sprite,os.path.join('Sprites', 'spr_{0}'.format(d)))
                         self.tree.AddSprChild('spr_' + d)
 
 
@@ -897,7 +867,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
                         shutil.copy(sound,os.path.join('Sound', d))
                         self.tree.AddSndChild(d)
                     else:
-                        shutil.copy(sound,os.path.join('Sound', 'snd_%s'% (d)))
+                        shutil.copy(sound,os.path.join('Sound', 'snd_{0}'.format(d)))
                         self.tree.AddSndChild('snd_'+d)
 
     def addfont(self):
@@ -914,17 +884,17 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
                         shutil.copy(font,os.path.join('Fonts', d))
                         self.tree.AddFontChild(d)
                     else:
-                        shutil.copy(font,os.path.join('Fonts', 'font_%s'% (d)))
+                        shutil.copy(font,os.path.join('Fonts', 'font_{0}'.format(d)))
                         self.tree.AddFontChild('font_'+d)         
 
     def addScript(self):
         script = "script_"
         scriptnumber = 0
         TmpScript = script + str(scriptnumber)
-        while os.path.exists(os.path.join('Scripts', "%s.py"% (TmpScript))):
+        while os.path.exists(os.path.join('Scripts', "{0}.py".format(TmpScript))):
             scriptnumber += 1 
             TmpScript = script + str(scriptnumber)
-        f = open(os.path.join('Scripts', "%s.py"% (TmpScript)),'w')
+        f = open(os.path.join('Scripts', "{0}.py".format(TmpScript)),'w')
         f.close()
         self.tree.AddScriptChild(TmpScript)
 
@@ -938,11 +908,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
 
       
 def main():
-
     app = QtGui.QApplication(sys.argv)
     st = Stellar()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-
     main()    
