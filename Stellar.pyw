@@ -114,7 +114,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_sound.addTab(self.main.tab, item.text(0))
 
-                    self.main.Sound.append([SoundGUI(self.main.Frame),item.text(0)])
+                    self.main.Sound.append([SoundGUI(self.main.Frame,item.text(0)),item.text(0)])
                     self.main.Sound[len(self.main.Sound)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
 
                     
