@@ -16,7 +16,8 @@
 
 from PyQt4 import QtCore, QtGui
 import os, webbrowser
-from data import __version__
+import cfg
+import ConfigParser
 
 class Start(QtGui.QWidget):
   
@@ -57,11 +58,7 @@ class Start(QtGui.QWidget):
 
         self.welcomwidget = QtGui.QWidget(self)
         #RECENT FILE for disable/enable open recent button --
-        self.recentf = os.path.join("Projects", "recentproject.txt")
-        f = open(self.recentf, 'r')
-        with f:
-            data = f.read()
-            f.close()
+        self.recentp = cfg.recentproject
         #-------------
 
         buttonnew = QtGui.QPushButton("New Project", self.welcomwidget)
@@ -73,7 +70,7 @@ class Start(QtGui.QWidget):
         buttonrec.setIcon(QtGui.QIcon(os.path.join('Data', 'folder.png')))
         buttonrec.move(170,46)
 
-        if data =="":
+        if self.recentp == "":
             buttonrec.setDisabled(True)
         buttonrec.clicked.connect(self.openlastproject)
 
@@ -131,7 +128,7 @@ class Start(QtGui.QWidget):
 
         #Window-----------------
  
-        self.setWindowTitle('Stellar - %s' % __version__)
+        self.setWindowTitle('Stellar - %s' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
         self.resize(500,350) 
         self.setMinimumSize(500,350)
@@ -155,45 +152,48 @@ class Start(QtGui.QWidget):
             self.main.fname = self.main.tmp
         else:
             #Main Folder for Windows
-            if not os.path.exists(self.nameEdit.text()):
-                os.mkdir(self.nameEdit.text())
+            if self.nameEdit.text() != "":
+                if not os.path.exists(self.nameEdit.text()):
+                    os.mkdir(self.nameEdit.text())
 
-                #Project Sub-Folders for Windows
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sprites')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sprites'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sound')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sound'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Fonts')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Fonts'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Scripts')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Scripts'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Objects')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Objects'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Rooms')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Rooms'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
+                    #Project Sub-Folders for Windows
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sprites')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sprites'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sound')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sound'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Fonts')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Fonts'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Scripts')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Scripts'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Objects')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Objects'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Rooms')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Rooms'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
 
-                f = open(self.main.fname, 'w')
-                f.close()            
-                p = self.main.fname
-                d = os.path.basename(str(p))
-                self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
+                    #f = open(self.main.fname, 'w')
+                    #f.close()      
+                    cfg.config.set('stellar', 'recentproject', self.main.fname)
+                    p = self.main.fname
+                    d = os.path.basename(str(p))
+                    self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
-                dirname, filename = os.path.split(os.path.abspath(self.main.fname))
-                os.chdir(dirname)
-                self.close()
-                self.main.tree.InitParent()
-                self.main.tree.InitChild()
-                self.main.show()
-            else:
-                reply = QtGui.QMessageBox.question(self, "Already Exists",
-                                                        "That Project already exists, Do you want to open it?",
-                                                        QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-                if reply == QtGui.QMessageBox.Yes:
-                    print("#Program Anchor#")
+                    dirname, filename = os.path.split(os.path.abspath(self.main.fname))
+                    os.chdir(dirname)
+                    self.close()
+                    self.main.tree.InitParent()
+                    self.main.tree.InitChild()
+                    self.main.show()
+                else:
+                    reply = QtGui.QMessageBox.question(self, "Already Exists",
+                                                            "That Project already exists, Do you want to open it?",
+                                                            QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                    if reply == QtGui.QMessageBox.Yes:
+                        print("#Program Anchor#")
+
     def openwebsite(self):
-        webbrowser.open("stellarpygame.blogspot.com")
+        webbrowser.open("http://stellarpygame.blogspot.com")
         
     def newbutton(self):
         self.tab_widget.setCurrentIndex(1)
@@ -201,13 +201,9 @@ class Start(QtGui.QWidget):
     def openlastproject(self):
         self.main.tmp = self.main.fname
         #RECENT FILE--
-        self.recentf = "recentproject.txt"
-        f = open(self.recentf, 'r')
-        with f:
-            data = f.read()
-            f.close()
+        self.recentp = cfg.recentproject
         #-------------
-            self.main.fname = data
+        self.main.fname = self.recentp
 
         if self.main.fname == "":
             self.main.fname = self.main.tmp
@@ -215,7 +211,7 @@ class Start(QtGui.QWidget):
             #f = open(self.main.fname, 'r')
             p = self.main.fname
             d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
+            self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
             
             '''with f:        
                 data = f.read()
@@ -233,12 +229,10 @@ class Start(QtGui.QWidget):
         self.main.fname = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                 '', self.tr("Python files (*.py *.pyw)"))
         #RECENT FILE--
-        self.recentf = "recentproject.txt"
-        f = open(self.recentf, 'w')
         data = self.main.fname
-        with f:
-            f.write(data)
-            f.close()
+        self.recentp = data
+
+        cfg.config.set('stellar', 'recentproject', data)
         #-------------
 
         if self.main.fname == "":
@@ -247,7 +241,7 @@ class Start(QtGui.QWidget):
             #f = open(self.main.fname, 'r')
             p = self.main.fname
             d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
+            self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
             
             '''with f:        
                 data = f.read()
