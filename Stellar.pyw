@@ -330,6 +330,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         newAction.setShortcut('Ctrl+N')
         newAction.setStatusTip('New Project.')
         newAction.triggered.connect(self.newproject)
+        newAction.setDisabled (True)
         
         exitAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'exit.png')), 'Exit', self)
         exitAction.setShortcut('Ctrl+Q')
@@ -347,16 +348,19 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         buildAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'build.png')),'Build', self)
         buildAction.setStatusTip('Build game.')
         buildAction.triggered.connect(self.Build)
+        buildAction.setDisabled (True)
 
         playAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'play.png')),'Run', self)
         playAction.setStatusTip('Test your game.')
         playAction.setShortcut('F5')
         playAction.triggered.connect(self.playgame)
+        playAction.setDisabled (True)
 
         playDebugAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'playdebug.png')),'Run in debug mode', self)
         playDebugAction.setStatusTip('Test your game on debug mode.')
         playDebugAction.setShortcut('F6')
         playDebugAction.triggered.connect(self.playgame)
+        playDebugAction.setDisabled (True)
 
         spriteAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'sprite.png')),'Add Sprite', self)
         spriteAction.setStatusTip('Add a sprite to the game.')
@@ -394,20 +398,24 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         loadAction.setShortcut('Ctrl+O')
         loadAction.setStatusTip('Open Game.')
         loadAction.triggered.connect(self.openfile)
+        loadAction.setDisabled (True)
 
         saveAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'save.png')),'Save Game As...', self)
         saveAction.setShortcut('Ctrl+Shift+S')
         saveAction.setStatusTip('Save Game As...')
         saveAction.triggered.connect(self.savefile)
+        saveAction.setDisabled (True)
 
         fsaveAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'save.png')),'Save', self)
         fsaveAction.setShortcut('Ctrl+S')
         fsaveAction.setStatusTip('Save Game.')
         fsaveAction.triggered.connect(self.fsavefile)
+        fsaveAction.setDisabled (True)
 
         preferencesAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'preferences.png')),'Preferences...', self)
         preferencesAction.setStatusTip('Change Stellar preferences.')
         preferencesAction.triggered.connect(self.preferencesopen)
+        preferencesAction.setDisabled (True)
 
         self.statusBar()
 
@@ -683,20 +691,17 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         execfile(self.pref, {})
 
     def newproject(self):
+        print "To do"
 
-        execfile(self.stellarnew, {})
-
+        
     def Build(self):
-        if self.fname != "<New game>":
-            print("win")
-        else:
-            self.savefile()
+        print "To do"
         
     def aboutStellar(self):
         about = QtGui.QMessageBox(self)
         about.setTextFormat(QtCore.Qt.RichText)
         about.setWindowTitle(self.tr("About Stellar"))
-        about.setText(self.tr("<b>Stellar 0.3.0</b><br/>Programmed by <a href=\"https://twitter.com/#!/Coppola_Emilio\">Emilio Coppola</a>.<br/>Program main icon by <a href=\"http://dakirby309.deviantart.com\">dAKirby309</a><br/>Co-Programmer <a href='#'>Hans Gillis</a><br/>Animated Gif by <a href='http://pyedpypers.org/index.php'>Roebros</a><br/><br/>License  <a href=\"http://creativecommons.org/licenses/by-nc-sa/3.0\">(CC BY-NC-SA 3.0)</a>.<br/><br/>For more information visit the website:<br/><a href=\"http://www.pygame.org/project-Stellar+-+Pygame+GUI-2293-.html\">www.pygame.org/project-Stellar...</a>"))
+        about.setText(self.tr("Please visit https://github.com/Coppolaemilio/stellar"))
         about.exec_()
             
     def closeEvent(self, event):
@@ -721,62 +726,17 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             event.ignore()
             
     def openfile(self):
-        self.tmp = self.fname
-        self.fname = QtGui.QFileDialog.getOpenFileName(self, 'Open Game', 
-                '', self.tr("Python files (*.py *.pyw)"))
-
-        if self.fname == "":
-            self.fname = self.tmp
-        else:
-            f = open(self.fname, 'r')
-            p = self.fname
-            d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
-            
-            with f:        
-                data = f.read()
-                self.textEdit.setText(data)
-                
-            dirname, filename = os.path.split(os.path.abspath(self.fname))
-            os.chdir(dirname)
+        print "To do"
 
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
             
     def savefile(self):
-        self.tmp = self.fname
-        self.fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Game', 
-                '', self.tr("Python files (*.py)"))
-
-        if self.fname == "":
-            self.fname = self.tmp
-        else:
-            f = open(self.fname, 'w')
-            p = self.fname
-            d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
-
-            with f:
-                data = self.textEdit.toPlainText()
-                f.write(data)
-                f.close()
-            dirname, filename = os.path.split(os.path.abspath(self.fname))
-            os.chdir(dirname)
+        print "To do"
         
             
     def fsavefile(self):
-        if self.fname=="<New game>":
-            self.savefile()
-        else:
-            f = open(self.fname, 'w')
-            p = self.fname
-            d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
-
-            with f:
-                data = self.textEdit.toPlainText()
-                f.write(data)
-                f.close()
+        print "To do"
 
     def onZoomInClicked(self):
         self.textEdit.zoomIn(+1)
@@ -785,37 +745,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.textEdit.zoomOut(+1)       
         
     def playgame(self):
-        if self.fname=="<New game>":
-            self.savefile()
-        else:
-            f = open(self.fname, 'w')
-            p = self.fname
-            d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
-
-            with f:
-                data = self.textEdit.toPlainText()
-                f.write(data)
-                f.close()
-        dirname, filename = os.path.split(os.path.abspath(self.fname))
-        os.chdir(dirname)
-
-        execfile(filename, {})
-
-        # This possibility is also worth looking at:
-        # http://stackoverflow.com/questions/4230725/how-to-execute-a-python-script-file-with-an-argument-from-inside-another-python
-
-##        major, minor, patchlevel = platform.python_version_tuple()
-##        if platform.system() == "Windows":
-##            subprocess.Popen(["C:\Python{0}{1}\python.exe".format(major, minor),
-##                              filename]).communicate() # Going to add settings menu for the path
-##        elif platform.system() == "Darwin":
-##            subprocess.Popen([
-##                "System/Library/Frameworks/Python.framework/Versions/{0}.{1}/Library/Python/python.app".format(major, minor),
-##                filename]).communicate() # Going to add settings menu for the path
-##        elif platform.system() == "Linux":
-##            subprocess.Popen(["python{0}.{1}".format(major, minor),
-##                              filename]).communicate() # Not sure though
+        print "To do"
 
     def fontdialog(self):
 
