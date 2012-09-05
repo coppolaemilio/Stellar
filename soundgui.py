@@ -17,17 +17,23 @@
 #
 # You should have received a copy of the GNU General Public License
 
-import sys
+import sys, pygame.mixer, shutil
 from PyQt4 import QtGui, QtCore
 
 
 class SoundGUI(QtGui.QWidget):
   
-    def __init__(self, main):
+    def __init__(self, main, FileName):
         super(SoundGUI, self).__init__(main)
         
         self.main = main
+        self.FileName = FileName
         self.initUI()
+        pygame.mixer.init()
+        self.sound = pygame.mixer.music.load("Sound/%s.ogg"%(self.FileName))
+        
+        
+        
 
     def initUI(self):
 
@@ -42,7 +48,7 @@ class SoundGUI(QtGui.QWidget):
         self.LblName.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
         self.LblName.setGeometry(15, 15, 100, 25)
 
-        self.qleSound = QtGui.QLineEdit('', self.ContainerBox)
+        self.qleSound = QtGui.QLineEdit(self.FileName, self.ContainerBox)
         self.qleSound.setGeometry(50, 15, 290, 25)
 
         self.BtnLoad = QtGui.QPushButton('Load Sound', self.ContainerBox)
@@ -52,14 +58,17 @@ class SoundGUI(QtGui.QWidget):
         self.BtnPlay = QtGui.QPushButton(self.ContainerBox)
         self.BtnPlay.setIcon(QtGui.QIcon('../../Data/playsound.png'))
         self.BtnPlay.setGeometry(160, 55, 35, 25)
+        self.BtnPlay.clicked.connect(self.PlaySound)
 
         self.BtnStop = QtGui.QPushButton(self.ContainerBox)
         self.BtnStop.setIcon(QtGui.QIcon('../../Data/stopsound.png'))
         self.BtnStop.setGeometry(195, 55, 35, 25)
+        self.BtnStop.clicked.connect(self.StopSound)
 
         self.BtnSave = QtGui.QPushButton('Save Sound', self.ContainerBox)
         self.BtnSave.setIcon(QtGui.QIcon('../../Data/save.png'))
         self.BtnSave.setGeometry(230, 55, 110, 25)
+        self.BtnSave.clicked.connect(self.SaveSound)
 
         self.BtnEdit = QtGui.QPushButton('Edit Sound', self.ContainerBox)
         self.BtnEdit.setIcon(QtGui.QIcon('../../Data/editbutton.png'))        
@@ -143,8 +152,20 @@ class SoundGUI(QtGui.QWidget):
     def changeValueMusic(self, value):
 
         self.LblMusic.setText("%s %d %s " %("Volume is ",abs(value), " percent muted"))
-        
 
+    def PlaySound(self):
+        pygame.mixer.music.play()
+
+    def StopSound(self):
+        pygame.mixer.music.stop()
+
+    def SaveSound(self):
+        self.fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Sound', 
+                '', self.tr("Sound (*.ogg)"))
+
+        if self.fname !='':
+            shutil.copy("Sound/%s.ogg"%(self.FileName), self.fname)
+            
     def ShowMe(self):
         self.ContainerBox.show()
         

@@ -112,10 +112,10 @@ class SpriteGUI(QtGui.QWidget):
         self.LblHeight.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
         self.LblHeight.setGeometry(15, 55, 125, 25) 
 
-        self.LblHeight = QtGui.QLabel(self.InformationBox) 
-        self.LblHeight.setText('File Format:  %s'%(Format)) 
-        self.LblHeight.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
-        self.LblHeight.setGeometry(15, 85, 125, 25) 
+        self.LblFormat = QtGui.QLabel(self.InformationBox) 
+        self.LblFormat.setText('File Format:  %s'%(Format)) 
+        self.LblFormat.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
+        self.LblFormat.setGeometry(15, 85, 125, 25) 
 
         #Groupbox Collision Checking---------------------------
         self.CollisionBox = QtGui.QGroupBox(self.ContainerBox)
@@ -138,6 +138,16 @@ class SpriteGUI(QtGui.QWidget):
         if self.asprite !='':
             for sprite in self.asprite:
                 shutil.copy(sprite, self.image_file)
+                self.sprite = QtGui.QPixmap(sprite)
+                self.spriteLbl.setPixmap(self.sprite)
+                self.image_file = "Sprites/%s.png"%(self.icon)
+                img = Image.open(self.image_file)
+                width, height = img.size
+                extension = os.path.splitext(self.image_file)[1][1:]
+                Format  = str(extension)
+                self.LblWidth.setText('Width:   %d Pixels'%(width))
+                self.LblHeight.setText('Height:  %d Pixels'%(height))
+                self.LblFormat.setText('File Format:  %s'%(Format))
                 
 
     def SaveSprite(self):
@@ -157,3 +167,4 @@ class SpriteGUI(QtGui.QWidget):
     def HideMe(self):
         self.ContainerBox.hide()
         
+
