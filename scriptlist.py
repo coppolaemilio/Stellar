@@ -16,7 +16,7 @@
 
 import os
 from PyQt4 import QtCore, QtGui
-from data import __version__
+import cfg
 
 class ScriptList(QtGui.QWidget):
     
@@ -50,7 +50,7 @@ class ScriptList(QtGui.QWidget):
         self.setLayout(grid) 
         self.setGeometry(200, 200, 300, 80)
         self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
-        self.setWindowTitle('List of Scripts - Stellar %s' % __version__)
+        self.setWindowTitle('List of Scripts - Stellar %s' % cfg.__version__)
         self.center()
         self.show()
 

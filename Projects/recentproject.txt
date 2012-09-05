@@ -1,1 +1,0 @@
-/home/loremi/Dropbox/Stellar Development/Stellar0.2.1 - Stellar 0.3.0/Stellar030-e/Projects/Test_Chamber/Test_Chamber.py

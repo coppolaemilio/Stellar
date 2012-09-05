@@ -16,7 +16,8 @@
 
 from PyQt4 import QtCore, QtGui
 import os, webbrowser
-from data import __version__
+import cfg
+import ConfigParser
 
 class Start(QtGui.QWidget):
   
@@ -57,11 +58,7 @@ class Start(QtGui.QWidget):
 
         self.welcomwidget = QtGui.QWidget(self)
         #RECENT FILE for disable/enable open recent button --
-        self.recentf = os.path.join("Projects", "recentproject.txt")
-        f = open(self.recentf, 'r')
-        with f:
-            data = f.read()
-            f.close()
+        self.recentp = cfg.recentproject
         #-------------
 
         buttonnew = QtGui.QPushButton("New Project", self.welcomwidget)
@@ -73,7 +70,7 @@ class Start(QtGui.QWidget):
         buttonrec.setIcon(QtGui.QIcon(os.path.join('Data', 'folder.png')))
         buttonrec.move(170,46)
 
-        if data =="":
+        if self.recentp == "":
             buttonrec.setDisabled(True)
         buttonrec.clicked.connect(self.openlastproject)
 
@@ -131,7 +128,7 @@ class Start(QtGui.QWidget):
 
         #Window-----------------
  
-        self.setWindowTitle('Stellar - %s' % __version__)
+        self.setWindowTitle('Stellar - %s' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
         self.resize(500,350) 
         self.setMinimumSize(500,350)
@@ -179,7 +176,7 @@ class Start(QtGui.QWidget):
                     f.close()            
                     p = self.main.fname
                     d = os.path.basename(str(p))
-                    self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
+                    self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
                     dirname, filename = os.path.split(os.path.abspath(self.main.fname))
                     os.chdir(dirname)
@@ -203,13 +200,9 @@ class Start(QtGui.QWidget):
     def openlastproject(self):
         self.main.tmp = self.main.fname
         #RECENT FILE--
-        self.recentf = "recentproject.txt"
-        f = open(self.recentf, 'r')
-        with f:
-            data = f.read()
-            f.close()
+        self.recentp = cfg.recentproject
         #-------------
-            self.main.fname = data
+        self.main.fname = self.recentp
 
         if self.main.fname == "":
             self.main.fname = self.main.tmp
@@ -217,7 +210,7 @@ class Start(QtGui.QWidget):
             #f = open(self.main.fname, 'r')
             p = self.main.fname
             d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
+            self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
             
             '''with f:        
                 data = f.read()
@@ -235,12 +228,11 @@ class Start(QtGui.QWidget):
         self.main.fname = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                 '', self.tr("Python files (*.py *.pyw)"))
         #RECENT FILE--
-        self.recentf = "recentproject.txt"
-        f = open(self.recentf, 'w')
         data = self.main.fname
-        with f:
-            f.write(data)
-            f.close()
+        self.recentp = data
+
+        config = ConfigParser.ConfigParser('config.ini')
+        config.set('stellar', 'recentproject', data)
         #-------------
 
         if self.main.fname == "":
@@ -249,7 +241,7 @@ class Start(QtGui.QWidget):
             #f = open(self.main.fname, 'r')
             p = self.main.fname
             d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
+            self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
             
             '''with f:        
                 data = f.read()

@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-from data import __version__
+import cfg
 
 """
 Stellar %s
-""" % __version__
+""" % cfg.__version__
 
 import sys
 import os
@@ -713,7 +713,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
+            self.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
             with f:
                 data = self.textEdit.toPlainText()
