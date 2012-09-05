@@ -16,6 +16,7 @@
 
 from PyQt4 import QtCore, QtGui
 import os, webbrowser
+from data import __version__
 
 class Start(QtGui.QWidget):
   
@@ -130,7 +131,7 @@ class Start(QtGui.QWidget):
 
         #Window-----------------
  
-        self.setWindowTitle('Stellar - 0.3.0')
+        self.setWindowTitle('Stellar - %s' % __version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
         self.resize(500,350) 
         self.setMinimumSize(500,350)
@@ -177,7 +178,7 @@ class Start(QtGui.QWidget):
                 f.close()            
                 p = self.main.fname
                 d = os.path.basename(str(p))
-                self.main.setWindowTitle('%s - Stellar 0.2.1'% d)
+                self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
                 dirname, filename = os.path.split(os.path.abspath(self.main.fname))
                 os.chdir(dirname)
@@ -214,7 +215,7 @@ class Start(QtGui.QWidget):
             #f = open(self.main.fname, 'r')
             p = self.main.fname
             d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar 0.3.0'% d)
+            self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
             
             '''with f:        
                 data = f.read()
@@ -246,7 +247,7 @@ class Start(QtGui.QWidget):
             #f = open(self.main.fname, 'r')
             p = self.main.fname
             d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar 0.3.0'% d)
+            self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
             
             '''with f:        
                 data = f.read()
