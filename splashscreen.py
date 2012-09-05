@@ -155,45 +155,47 @@ class Start(QtGui.QWidget):
             self.main.fname = self.main.tmp
         else:
             #Main Folder for Windows
-            if not os.path.exists(self.nameEdit.text()):
-                os.mkdir(self.nameEdit.text())
+            if self.nameEdit.text() != "":
+                if not os.path.exists(self.nameEdit.text()):
+                    os.mkdir(self.nameEdit.text())
 
-                #Project Sub-Folders for Windows
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sprites')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sprites'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sound')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sound'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Fonts')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Fonts'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Scripts')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Scripts'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Objects')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Objects'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Rooms')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Rooms'))
-                if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
-                    os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
+                    #Project Sub-Folders for Windows
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sprites')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sprites'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sound')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sound'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Fonts')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Fonts'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Scripts')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Scripts'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Objects')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Objects'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Rooms')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Rooms'))
+                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
+                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
 
-                f = open(self.main.fname, 'w')
-                f.close()            
-                p = self.main.fname
-                d = os.path.basename(str(p))
-                self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
+                    f = open(self.main.fname, 'w')
+                    f.close()            
+                    p = self.main.fname
+                    d = os.path.basename(str(p))
+                    self.main.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
-                dirname, filename = os.path.split(os.path.abspath(self.main.fname))
-                os.chdir(dirname)
-                self.close()
-                self.main.tree.InitParent()
-                self.main.tree.InitChild()
-                self.main.show()
-            else:
-                reply = QtGui.QMessageBox.question(self, "Already Exists",
-                                                        "That Project already exists, Do you want to open it?",
-                                                        QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                    dirname, filename = os.path.split(os.path.abspath(self.main.fname))
+                    os.chdir(dirname)
+                    self.close()
+                    self.main.tree.InitParent()
+                    self.main.tree.InitChild()
+                    self.main.show()
+                else:
+                    reply = QtGui.QMessageBox.question(self, "Already Exists",
+                                                            "That Project already exists, Do you want to open it?",
+                                                            QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
                 if reply == QtGui.QMessageBox.Yes:
                     print("#Program Anchor#")
+
     def openwebsite(self):
-        webbrowser.open("stellarpygame.blogspot.com")
+        webbrowser.open("http://stellarpygame.blogspot.com")
         
     def newbutton(self):
         self.tab_widget.setCurrentIndex(1)
