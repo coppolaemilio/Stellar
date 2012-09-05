@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-__version__ = "0.3.0"
+from data import __version__
 
 """
 Stellar %s
