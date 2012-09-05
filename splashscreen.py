@@ -32,7 +32,7 @@ class Start(QtGui.QWidget):
 
         #TABS ----------------
          
-        tab_widget = QtGui.QTabWidget() 
+        self.tab_widget = QtGui.QTabWidget() 
         tab1 = QtGui.QWidget() 
         tab2 = QtGui.QWidget()
         tab3 = QtGui.QWidget()
@@ -43,14 +43,14 @@ class Start(QtGui.QWidget):
         p3_vertical = QtGui.QVBoxLayout(tab3)
         p4_vertical = QtGui.QVBoxLayout(tab4)
 
-        tab_widget.addTab(tab4, "Welcome")
-        tab_widget.addTab(tab1, "New Project") 
-        tab_widget.addTab(tab2, "Open Project")
-        tab_widget.addTab(tab3, "Release Notes") 
+        self.tab_widget.addTab(tab4, "Welcome")
+        self.tab_widget.addTab(tab1, "New Project") 
+        self.tab_widget.addTab(tab2, "Open Project")
+        self.tab_widget.addTab(tab3, "Release Notes") 
 
         vbox = QtGui.QVBoxLayout()
         vbox.addStretch(1)
-        vbox.addWidget(tab_widget)
+        vbox.addWidget(self.tab_widget)
          
         self.setLayout(vbox)
 
@@ -195,7 +195,7 @@ class Start(QtGui.QWidget):
         webbrowser.open("stellarpygame.blogspot.com")
         
     def newbutton(self):
-        tab_widget.setCurrentIndex(1)
+        self.tab_widget.setCurrentIndex(1)
                     
     def openlastproject(self):
         self.main.tmp = self.main.fname
