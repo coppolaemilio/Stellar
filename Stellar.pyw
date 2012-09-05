@@ -21,7 +21,7 @@
 __version__ = "0.3.0"
 
 """
-Stellar %d
+Stellar %s
 """ % __version__
 
 import sys
@@ -708,7 +708,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %d'% (d, __version__))
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
@@ -731,7 +731,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'r')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %d'% (d, __version__))
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
             
             with f:        
                 data = f.read()
@@ -754,7 +754,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %d'% (d, __version__))
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
@@ -771,7 +771,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %d'% (d, __version__))
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
@@ -791,7 +791,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %d'% (d, __version__))
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
