@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
+__version__ = "0.3.0"
+
 """
-Stellar 0.3.0
-"""
+Stellar %s
+""" % __version__
 
 import sys
 import os
@@ -37,6 +39,7 @@ from spritegui import SpriteGUI
 from soundgui import SoundGUI
 from fontgui import FontGUI
 from PyQt4 import QtCore, QtGui
+
 
 
 
@@ -705,7 +708,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar 0.3.0'% d)
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
@@ -728,7 +731,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'r')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar 0.3.0'% d)
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
             
             with f:        
                 data = f.read()
@@ -751,7 +754,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar 0.3.0'% d)
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
@@ -768,7 +771,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar 0.3.0'% d)
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
@@ -788,7 +791,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             f = open(self.fname, 'w')
             p = self.fname
             d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar 0.3.0'% d)
+            self.setWindowTitle('%s - Stellar %s'% (d, __version__))
 
             with f:
                 data = self.textEdit.toPlainText()
