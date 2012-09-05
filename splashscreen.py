@@ -172,8 +172,9 @@ class Start(QtGui.QWidget):
                     if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
                         os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
 
-                    f = open(self.main.fname, 'w')
-                    f.close()            
+                    #f = open(self.main.fname, 'w')
+                    #f.close()      
+                    cfg.config.set('stellar', 'recentproject', self.main.fname)
                     p = self.main.fname
                     d = os.path.basename(str(p))
                     self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
@@ -188,8 +189,8 @@ class Start(QtGui.QWidget):
                     reply = QtGui.QMessageBox.question(self, "Already Exists",
                                                             "That Project already exists, Do you want to open it?",
                                                             QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-                if reply == QtGui.QMessageBox.Yes:
-                    print("#Program Anchor#")
+                    if reply == QtGui.QMessageBox.Yes:
+                        print("#Program Anchor#")
 
     def openwebsite(self):
         webbrowser.open("http://stellarpygame.blogspot.com")
