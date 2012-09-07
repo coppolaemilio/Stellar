@@ -175,6 +175,8 @@ class Start(QtGui.QWidget):
                     #f = open(self.main.fname, 'w')
                     #f.close()      
                     cfg.config.set('stellar', 'recentproject', self.main.fname)
+                    with open('../config.ini', 'wb') as configfile:
+                        cfg.config.write(configfile)
                     p = self.main.fname
                     d = os.path.basename(str(p))
                     self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
@@ -233,6 +235,8 @@ class Start(QtGui.QWidget):
         self.recentp = data
 
         cfg.config.set('stellar', 'recentproject', data)
+        with open('../config.ini', 'wb') as configfile:
+            cfg.config.write(configfile)
         #-------------
 
         if self.main.fname == "":

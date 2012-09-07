@@ -19,7 +19,7 @@
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
 import ConfigParser
-config = ConfigParser.ConfigParser()
+config = ConfigParser.RawConfigParser()
 config.read('config.ini')
 
 recentproject = config.get('stellar', 'recentproject')
