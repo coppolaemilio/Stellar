@@ -235,6 +235,8 @@ class Start(QtGui.QWidget):
         self.recentp = data
 
         cfg.config.set('stellar', 'recentproject', data)
+        with open('../config.ini', 'wb') as configfile:
+            cfg.config.write(configfile)
         #-------------
 
         if self.main.fname == "":
