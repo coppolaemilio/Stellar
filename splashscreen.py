@@ -175,7 +175,7 @@ class Start(QtGui.QWidget):
                     #f = open(self.main.fname, 'w')
                     #f.close()      
                     cfg.config.set('stellar', 'recentproject', self.main.fname)
-                    with open('config.ini', 'wb') as configfile:
+                    with open('../config.ini', 'wb') as configfile:
                         cfg.config.write(configfile)
                     p = self.main.fname
                     d = os.path.basename(str(p))
