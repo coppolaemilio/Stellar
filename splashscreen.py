@@ -87,8 +87,14 @@ class Start(QtGui.QWidget):
         self.name = QtGui.QLabel('Project Name: ')
         self.nameEdit = QtGui.QLineEdit()
 
+        self.pathname = QtGui.QLabel('Project Folder: ')
+        self.pathEdit = QtGui.QLineEdit()
+
+        self.browsebtn = QtGui.QPushButton("...")
+        QtCore.QObject.connect(self.browsebtn, QtCore.SIGNAL('clicked()'), self.ChooseFolder)
+
         #Projects Folder-------------------------
-        dirname = 'Projects'
+        self.dirname = 'Projects'
 
         self.btn_New = QtGui.QPushButton('Create \nNew File', self)
         self.btn_New.setGeometry(25, 75, 100, 50)
@@ -99,7 +105,10 @@ class Start(QtGui.QWidget):
         self.grid.setSpacing(15)
         self.grid.addWidget(self.name, 2, 0)
         self.grid.addWidget(self.nameEdit, 2, 1)
-        self.grid.addWidget(self.btn_New, 3, 1)
+        self.grid.addWidget(self.pathname, 3, 0)
+        self.grid.addWidget(self.pathEdit, 3, 1)
+        self.grid.addWidget(self.browsebtn, 3, 2)
+        self.grid.addWidget(self.btn_New, 4, 1)
         
         p1_vertical.addLayout(self.grid)
 
@@ -130,7 +139,7 @@ class Start(QtGui.QWidget):
  
         self.setWindowTitle('Stellar - %s' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
-        self.resize(500,350) 
+        self.resize(500,350)
         self.setMinimumSize(500,350)
         self.setMaximumSize(500,350) 
         self.center()
@@ -142,9 +151,16 @@ class Start(QtGui.QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    def ChooseFolder(self):
+        dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
+        self.dirname = dir
+        self.pathEdit.setText(dir)
+        self.pathEdit.setCursorPosition(0)
+
     def CreateProject(self):
 
         self.tmp = self.main.fname
+        self.path = self.pathEdit.text()
         self.main.fname =  os.path.join(str(self.nameEdit.text()),
                                         "{0}.py".format(self.nameEdit.text()))
         
@@ -157,20 +173,20 @@ class Start(QtGui.QWidget):
                     os.mkdir(self.nameEdit.text())
 
                     #Project Sub-Folders for Windows
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sprites')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sprites'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sound')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sound'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Fonts')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Fonts'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Scripts')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Scripts'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Objects')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Objects'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Rooms')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Rooms'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
+                    if not os.path.exists(self.dirname, 'Sprites'):
+                        os.mkdir(self.dirname, 'Sprites')
+                    if not os.path.exists(self.dirname, 'Sound'):
+                        os.mkdir(os.path.join(self.dirname, 'Sound')
+                    if not os.path.exists(self.dirname, 'Fonts'):
+                        os.mkdir(self.dirname, 'Fonts')
+                    if not os.path.exists(self.dirname, 'Scripts'):
+                        os.mkdir(self.dirname, 'Scripts')
+                    if not os.path.exists(self.dirname, 'Objects'):
+                        os.mkdir(self.dirname, 'Objects')
+                    if not os.path.exists(self.dirname, 'Rooms'):
+                        os.mkdir(self.dirname, 'Rooms')
+                    if not os.path.exists(self.dirname, 'Build'):
+                        os.mkdir(self.dirname, 'Build')
 
                     #f = open(self.main.fname, 'w')
                     #f.close()      
@@ -182,7 +198,7 @@ class Start(QtGui.QWidget):
                     self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
                     dirname, filename = os.path.split(os.path.abspath(self.main.fname))
-                    os.chdir(dirname)
+                    os.chdir(self.dirname)
                     self.close()
                     self.main.tree.InitParent()
                     self.main.tree.InitChild()
