@@ -154,7 +154,7 @@ class Start(QtGui.QWidget):
         dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
         dir = dir + '/'
         #os.chdir(dir)
-        self.dirname = dir
+        #self.dirname = dir
         self.pathEdit.setText(dir)
         self.pathEdit.setCursorPosition(0)
 
