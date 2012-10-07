@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-import ConfigParser
+import ConfigParser, os
 config = ConfigParser.RawConfigParser()
-config.read('config.ini')
+config.read(os.getcwd() + '/config.ini')
 
 recentproject = config.get('stellar', 'recentproject')
 __version__ = config.get('stellar', 'version')
