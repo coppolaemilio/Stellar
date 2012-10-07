@@ -87,6 +87,11 @@ class Start(QtGui.QWidget):
         self.name = QtGui.QLabel('Project Name: ')
         self.nameEdit = QtGui.QLineEdit()
 
+        self.pathname = QtGui.QLabel('Project Folder: ')
+        self.pathEdit = QtGui.QLineEdit()
+        self.browsebtn = QtGui.QPushButton("...")
+        QtCore.QObject.connect(self.browsebtn, QtCore.SIGNAL('clicked()'), self.ChooseFolder)
+
         #Projects Folder-------------------------
         dirname = 'Projects'
 
@@ -99,7 +104,10 @@ class Start(QtGui.QWidget):
         self.grid.setSpacing(15)
         self.grid.addWidget(self.name, 2, 0)
         self.grid.addWidget(self.nameEdit, 2, 1)
-        self.grid.addWidget(self.btn_New, 3, 1)
+        self.grid.addWidget(self.pathname, 3, 0)
+        self.grid.addWidget(self.pathEdit, 3, 1)
+        self.grid.addWidget(self.browsebtn, 3, 2)
+        self.grid.addWidget(self.btn_New, 4, 1)
         
         p1_vertical.addLayout(self.grid)
 
@@ -141,6 +149,14 @@ class Start(QtGui.QWidget):
         cp = QtGui.QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+    def ChooseFolder(self):
+        dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
+        dir = dir + '/'
+        #os.chdir(dir)
+        #self.dirname = dir
+        self.pathEdit.setText(dir)
+        self.pathEdit.setCursorPosition(0)
 
     def CreateProject(self):
 
@@ -257,3 +273,4 @@ class Start(QtGui.QWidget):
             self.main.tree.InitParent()
             self.main.tree.InitChild()
             self.main.show()
+
