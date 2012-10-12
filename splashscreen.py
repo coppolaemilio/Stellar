@@ -169,28 +169,30 @@ class Start(QtGui.QWidget):
         else:
             #Main Folder for Windows
             if self.nameEdit.text() != "":
-                if not os.path.exists(self.nameEdit.text()):
-                    os.mkdir(self.nameEdit.text())
-
+                if not os.path.exists(self.dirname+"/"+self.nameEdit.text()):
+                    os.mkdir(self.dirname+"/"+self.nameEdit.text())
                     #Project Sub-Folders for Windows
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sprites')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sprites'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Sound')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Sound'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Fonts')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Fonts'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Scripts')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Scripts'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Objects')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Objects'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Rooms')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Rooms'))
-                    if not os.path.exists(os.path.join(str(self.nameEdit.text()), 'Build')):
-                        os.mkdir(os.path.join(str(self.nameEdit.text()), 'Build'))
+                        
+                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Sprites'):
+                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/'+ 'Sprites')
+                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Sound'):
+                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Sound')
+                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Fonts'):
+                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Fonts')
+                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Scripts'):
+                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Scripts')
+                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Objects'):
+                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Objects')
+                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Rooms'):
+                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Rooms')
+                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Build'):
+                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Build')
 
-                    #f = open(self.main.fname, 'w')
-                    #f.close()      
-                    cfg.config.set('stellar', 'recentproject', self.main.fname)
+                    f = open(self.dirname + "/" + self.main.fname, 'w+')
+                    f.write('# This file was created with Stellar')
+                    f.close() 
+  
+                    cfg.config.set('stellar', 'recentproject', self.dirname + "/" + self.main.fname)
                     with open('../config.ini', 'wb') as configfile:
                         cfg.config.write(configfile)
                     p = self.main.fname
@@ -198,7 +200,7 @@ class Start(QtGui.QWidget):
                     self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
                     dirname, filename = os.path.split(os.path.abspath(self.main.fname))
-                    os.chdir(dirname)
+                    os.chdir(self.dirname)
                     self.close()
                     self.main.tree.InitParent()
                     self.main.tree.InitChild()
