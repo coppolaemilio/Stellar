@@ -89,11 +89,12 @@ class Start(QtGui.QWidget):
 
         self.pathname = QtGui.QLabel('Project Folder: ')
         self.pathEdit = QtGui.QLineEdit()
+
         self.browsebtn = QtGui.QPushButton("...")
         QtCore.QObject.connect(self.browsebtn, QtCore.SIGNAL('clicked()'), self.ChooseFolder)
 
         #Projects Folder-------------------------
-        dirname = 'Projects'
+        self.dirname = 'Projects'
 
         self.btn_New = QtGui.QPushButton('Create \nNew File', self)
         self.btn_New.setGeometry(25, 75, 100, 50)
@@ -130,7 +131,7 @@ class Start(QtGui.QWidget):
 
         #Project Path-----------
         
-        if not os.path.exists(dirname):
+        if not os.path.exists(self.dirname):
             os.mkdir('Projects')
         os.chdir('Projects')
 
@@ -138,7 +139,7 @@ class Start(QtGui.QWidget):
  
         self.setWindowTitle('Stellar - %s' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
-        self.resize(500,350) 
+        self.resize(500,350)
         self.setMinimumSize(500,350)
         self.setMaximumSize(500,350) 
         self.center()
@@ -152,15 +153,14 @@ class Start(QtGui.QWidget):
 
     def ChooseFolder(self):
         dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
-        dir = dir + '/'
-        #os.chdir(dir)
-        #self.dirname = dir
+        self.dirname = dir
         self.pathEdit.setText(dir)
         self.pathEdit.setCursorPosition(0)
 
     def CreateProject(self):
 
         self.tmp = self.main.fname
+        self.path = self.pathEdit.text()
         self.main.fname =  os.path.join(str(self.nameEdit.text()),
                                         "{0}.py".format(self.nameEdit.text()))
         
@@ -275,4 +275,3 @@ class Start(QtGui.QWidget):
             self.main.tree.InitParent()
             self.main.tree.InitChild()
             self.main.show()
-
