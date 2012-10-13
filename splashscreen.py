@@ -66,7 +66,7 @@ class Start(QtGui.QWidget):
         buttonnew.move(180,6)
         buttonnew.clicked.connect(self.newbutton)
         
-        buttonrec = QtGui.QPushButton("Open last project", self.welcomwidget)
+        buttonrec = QtGui.QPushButton("Open last project (%s)" % os.path.basename(cfg.recentproject), self.welcomwidget)
         buttonrec.setIcon(QtGui.QIcon(os.path.join('Data', 'folder.png')))
         buttonrec.move(170,46)
 
@@ -197,6 +197,7 @@ class Start(QtGui.QWidget):
 
                     #dirname, filename = os.path.split(os.path.abspath(self.main.fname))
                     self.close()
+                    self.main.dirname = self.dirname
                     self.main.tree.InitParent()
                     self.main.tree.InitChild(self.dirname)
                     self.main.show()
@@ -214,10 +215,18 @@ class Start(QtGui.QWidget):
         self.tab_widget.setCurrentIndex(1)
                     
     def openlastproject(self):
+        if not os.path.exists(os.path.dirname(cfg.recentproject)):
+            QtGui.QMessageBox.question(self, "Project doesn't exist",
+                                            "This project doesn't exist or has been removed",
+                                            QtGui.QMessageBox.Ok)
+            return
+            
         self.main.tmp = self.main.fname
         #RECENT FILE--
         self.recentp = cfg.recentproject
         self.dirname = os.path.dirname(self.recentp)
+        self.main.fname = os.path.basename(self.recentp)
+        self.main.dirname = self.dirname
         #-------------
 
         if self.main.fname == "":
@@ -247,6 +256,7 @@ class Start(QtGui.QWidget):
         self.recentp = data
 
         self.dirname = os.path.dirname(self.recentp)
+        self.main.dirname = self.dirname
 
         cfg.config.set('stellar', 'recentproject', data)
         with open('config.ini', 'wb') as configfile:

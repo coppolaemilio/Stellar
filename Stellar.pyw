@@ -48,6 +48,7 @@ class TreeWidget(QtGui.QTreeWidget):
         super(TreeWidget, self).__init__(main)
         self.header().setHidden(True)
         self.setWindowTitle('Resources')
+        self.dirname = ''
         self.main = main
         self.connect(self, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*, int)"),self.DoEvent)
 
@@ -224,13 +225,13 @@ class TreeWidget(QtGui.QTreeWidget):
         self.ParentExtensions.setIcon(0,icon)
 
     def InitChild(self, dirname):
-        self.dirname = dirname
-        PathSprite = self.dirname + "/Sprites"
-        PathSound = self.dirname + "/Sound"
-        PathFonts = self.dirname + "/Fonts"
-        PathScripts = self.dirname + "/Scripts"
-        PathObjects = self.dirname + "/Objects"
-        PathRooms = self.dirname + "/Rooms"
+        self.dirname = str(dirname)
+        PathSprite = os.path.join(self.dirname, "Sprites")
+        PathSound = os.path.join(self.dirname, "Sound")
+        PathFonts = os.path.join(self.dirname, "Fonts")
+        PathScripts = os.path.join(self.dirname, "Scripts")
+        PathObjects = os.path.join(self.dirname, "Objects")
+        PathRooms = os.path.join(self.dirname, "Rooms")
         
 
         #Sprites----------------------------------
@@ -271,7 +272,7 @@ class TreeWidget(QtGui.QTreeWidget):
 
 
     def AddSprChild(self,name):
-        PathSprite = self.dirname + "/Sprites"
+        PathSprite = os.path.join(self.dirname, "Sprites")
 
         #Sprites----------------------------------
         icon = QtGui.QIcon()
@@ -279,7 +280,7 @@ class TreeWidget(QtGui.QTreeWidget):
         QtGui.QTreeWidgetItem(self.ParentSprite, QtCore.QStringList(name[:-4])).setIcon(0,icon)    
 
     def AddSndChild(self,name):
-        PathSprite = "Sound"
+        PathSprite = os.path.join(self.dirname, "Sound")
 
         #Sound------------------------------------
         icon = QtGui.QIcon()
@@ -294,7 +295,7 @@ class TreeWidget(QtGui.QTreeWidget):
         QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(name)).setIcon(0,icon)
 
     def AddFontChild(self,name):
-        PathSprite = "Fonts"
+        PathSprite = os.path.join(self.dirname, "Fonts")
 
         #Font------------------------------------
         icon = QtGui.QIcon()
@@ -550,7 +551,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.setGeometry(200, 200, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         self.fname = "<New game>"
-        self.setWindowTitle('%s - Stellar 0.1.2'% self.fname)
+        self.dirname = ''
+        self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
         self.setMinimumSize(800,600)
         self.center()
         self.start = Start(self)
@@ -759,12 +761,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         if self.asprite !='':
             for sprite in self.asprite:
                 d = os.path.basename(str(sprite))
-                if not os.path.exists(os.path.join('Sprites', d)):
+                if not os.path.exists(os.path.join(self.dirname, 'Sprites', d)):
                     if d[:4]=='spr_':
                         shutil.copy(sprite, os.path.join('Sprites', d))
                         self.tree.AddSprChild(d)
                     else:
-                        shutil.copy(sprite, os.path.join('Sprites', 'spr_{0}'.format(d)))
+                        shutil.copy(sprite, os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
                         self.tree.AddSprChild('spr_' + d)
             
 
@@ -776,12 +778,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         if self.aGIFsprite !='':
             for sprite in self.aGIFsprite:
                 d = os.path.basename(str(sprite))
-                if not os.path.exists(os.path.join('Sprites', d)):
+                if not os.path.exists(os.path.join(self.dirname, 'Sprites', d)):
                     if d[:4]=='spr_':
-                        shutil.copy(sprite,os.path.join('Sprites', d))
+                        shutil.copy(sprite,os.path.join(self.dirname, 'Sprites', d))
                         self.tree.AddSprChild(d)
                     else:
-                        shutil.copy(sprite,os.path.join('Sprites', 'spr_{0}'.format(d)))
+                        shutil.copy(sprite,os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
                         self.tree.AddSprChild('spr_' + d)
 
 
@@ -793,12 +795,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         if self.asound !='':
             for sound in self.asound:
                 d = os.path.basename(str(sound))
-                if not os.path.exists(os.getcwd()+'Sound'+d):
+                if not os.path.exists(os.path.join(self.dirname, 'Sound', d)):
                     if d[:4]=='snd_':
-                        shutil.copy(sound,os.path.join('Sound', d))
+                        shutil.copy(sound,os.path.join(self.dirname, 'Sound', d))
                         self.tree.AddSndChild(d)
                     else:
-                        shutil.copy(sound,os.path.join('Sound', 'snd_{0}'.format(d)))
+                        shutil.copy(sound,os.path.join(self.dirname, 'Sound', 'snd_{0}'.format(d)))
                         self.tree.AddSndChild('snd_'+d)
 
     def addfont(self):
@@ -810,22 +812,22 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             for font in self.afont:
                 d = os.path.basename(str(font))
                 f = os.path.splitext(d)[0]
-                if not os.path.exists(os.path.join('Fonts', d)):
+                if not os.path.exists(os.path.join(self.dirname, 'Fonts', d)):
                     if d[:5]=='font_':
-                        shutil.copy(font,os.path.join('Fonts', d))
+                        shutil.copy(font,os.path.join(self.dirname, 'Fonts', d))
                         self.tree.AddFontChild(d)
                     else:
-                        shutil.copy(font,os.path.join('Fonts', 'font_{0}'.format(d)))
+                        shutil.copy(font,os.path.join(self.dirname, 'Fonts', 'font_{0}'.format(d)))
                         self.tree.AddFontChild('font_'+d)         
 
     def addScript(self):
         script = "script_"
         scriptnumber = 0
         TmpScript = script + str(scriptnumber)
-        while os.path.exists(os.path.join('Scripts', "{0}.py".format(TmpScript))):
+        while os.path.exists(os.path.join(self.dirname, 'Scripts', "{0}.py".format(TmpScript))):
             scriptnumber += 1 
             TmpScript = script + str(scriptnumber)
-        f = open(os.path.join('Scripts', "{0}.py".format(TmpScript)),'w')
+        f = open(os.path.join(self.dirname, 'Scripts', "{0}.py".format(TmpScript)),'w')
         f.close()
         self.tree.AddScriptChild(TmpScript)
 
