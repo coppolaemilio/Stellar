@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 
 from PyQt4 import QtCore, QtGui
-import os, webbrowser, re
+import os, webbrowser
 import cfg
 import ConfigParser
 
