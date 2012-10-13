@@ -177,104 +177,105 @@ class TreeWidget(QtGui.QTreeWidget):
 
         #Sprites------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentSprite = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Sprites'))
         self.ParentSprite.setIcon(0,icon)
 
         #sound--------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentSound = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Sound'))
         self.ParentSound.setIcon(0,icon)
         
         #Fonts--------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentFonts = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Fonts'))
         self.ParentFonts.setIcon(0,icon)
 
         #Scripts--------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentScripts = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Scripts'))
         self.ParentScripts.setIcon(0,icon)
 
         #Objects------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentObjects = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Objects'))
         self.ParentObjects.setIcon(0,icon)
 
         #Rooms--------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentRooms = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Rooms'))
         self.ParentRooms.setIcon(0,icon)
 
         #Included Files-----------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentIncluded = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Included Files'))
         self.ParentIncluded.setIcon(0,icon)
 
         #Extensions---------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ParentExtensions = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Extensions'))
         self.ParentExtensions.setIcon(0,icon)
 
-    def InitChild(self):
-        PathSprite = "Sprites"
-        PathSound = "Sound"
-        PathFonts = "Fonts"
-        PathScripts = "Scripts"
-        PathObjects = "Objects"
-        PathRooms = "Rooms"
+    def InitChild(self, dirname):
+        self.dirname = dirname
+        PathSprite = self.dirname + "/Sprites"
+        PathSound = self.dirname + "/Sound"
+        PathFonts = self.dirname + "/Fonts"
+        PathScripts = self.dirname + "/Scripts"
+        PathObjects = self.dirname + "/Objects"
+        PathRooms = self.dirname + "/Rooms"
         
 
         #Sprites----------------------------------
         for ChildSprite in os.listdir(PathSprite):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join("Sprites", ChildSprite)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join(self.dirname, ChildSprite)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentSprite, QtCore.QStringList(ChildSprite[:-4])).setIcon(0,icon)      
 
         #Sound------------------------------------
         for ChildSound in os.listdir(PathSound):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "sound.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "sound.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentSound, QtCore.QStringList(ChildSound[:-4])).setIcon(0,icon)
 
         #Fonts------------------------------------
         for ChildFont in os.listdir(PathFonts):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentFonts, QtCore.QStringList(ChildFont[:-4])).setIcon(0,icon)
 
         #Scripts------------------------------------
         for ChildScript in os.listdir(PathScripts):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(ChildScript[:-3])).setIcon(0,icon)
 
         #Objects----------------------------------
         for ChildObject in os.listdir(PathObjects):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentObjects, QtCore.QStringList(ChildObject[:-3])).setIcon(0,icon)
 
         #Rooms------------------------------------
         for ChildRoom in os.listdir(PathRooms):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "game.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "game.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentRooms, QtCore.QStringList(ChildRoom[:-4])).setIcon(0,icon)
 
 
     def AddSprChild(self,name):
-        PathSprite = "Sprites"
+        PathSprite = self.dirname + "/Sprites"
 
         #Sprites----------------------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("Sprites", name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(PathSprite, name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentSprite, QtCore.QStringList(name[:-4])).setIcon(0,icon)    
 
     def AddSndChild(self,name):
@@ -282,14 +283,14 @@ class TreeWidget(QtGui.QTreeWidget):
 
         #Sound------------------------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "sound.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "sound.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentSound, QtCore.QStringList(name[:-4])).setIcon(0,icon)
 
     def AddScriptChild(self,name):
 
         #Script------------------------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(name)).setIcon(0,icon)
 
     def AddFontChild(self,name):
@@ -297,7 +298,7 @@ class TreeWidget(QtGui.QTreeWidget):
 
         #Font------------------------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join("..", "..", "Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentFonts, QtCore.QStringList(name[:-4])).setIcon(0,icon)        
    
 class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):

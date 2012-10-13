@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 
 from PyQt4 import QtCore, QtGui
-import os, webbrowser
+import os, webbrowser, re
 import cfg
 import ConfigParser
 
@@ -94,7 +94,7 @@ class Start(QtGui.QWidget):
         QtCore.QObject.connect(self.browsebtn, QtCore.SIGNAL('clicked()'), self.ChooseFolder)
 
         #Projects Folder-------------------------
-        self.dirname = 'Projects'
+        self.dirname = ''
 
         self.btn_New = QtGui.QPushButton('Create \nNew File', self)
         self.btn_New.setGeometry(25, 75, 100, 50)
@@ -124,6 +124,7 @@ class Start(QtGui.QWidget):
         with f:        
             data = f.read()
             self.te.setText(data)
+            f.close()
         self.te.setReadOnly (True)
         self.te.setMaximumSize(475,120)
         p3_vertical.addWidget(self.te)
@@ -131,9 +132,9 @@ class Start(QtGui.QWidget):
 
         #Project Path-----------
         
-        if not os.path.exists(self.dirname):
-            os.mkdir('Projects')
-        os.chdir('Projects')
+        #if not os.path.exists(self.dirname):
+        #    os.mkdir('Projects')
+        #os.chdir('Projects')
 
         #Window-----------------
  
@@ -160,50 +161,44 @@ class Start(QtGui.QWidget):
     def CreateProject(self):
 
         self.tmp = self.main.fname
-        self.path = self.pathEdit.text()
+        self.name = str(self.nameEdit.text()).replace(".py", "") + '.py'
+        self.path = str(self.pathEdit.text())
         self.main.fname =  os.path.join(str(self.nameEdit.text()),
                                         "{0}.py".format(self.nameEdit.text()))
+
+        self.dirname = os.path.join(self.path, str(self.nameEdit.text()))
         
         if self.main.fname == "":
             self.main.fname = self.main.tmp
         else:
             #Main Folder for Windows
-            if self.nameEdit.text() != "":
-                if not os.path.exists(self.dirname+"/"+self.nameEdit.text()):
-                    os.mkdir(self.dirname+"/"+self.nameEdit.text())
+            if self.name != "":
+                if not os.path.exists(self.dirname):
+                    os.mkdir(self.dirname)
                     #Project Sub-Folders for Windows
-                        
-                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Sprites'):
-                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/'+ 'Sprites')
-                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Sound'):
-                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Sound')
-                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Fonts'):
-                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Fonts')
-                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Scripts'):
-                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Scripts')
-                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Objects'):
-                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Objects')
-                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Rooms'):
-                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Rooms')
-                    if not os.path.exists(self.dirname + "/" + self.nameEdit.text() + '/Build'):
-                        os.mkdir(self.dirname + "/" + self.nameEdit.text() + '/Build')
 
-                    f = open(self.dirname + "/" + self.main.fname, 'w+')
+                    subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
+                    
+                    for subfolder in subfolders:
+                        if not os.path.exists(os.path.join(self.dirname, subfolder)):
+                            os.mkdir(os.path.join(self.dirname, subfolder))
+
+
+                    f = open(os.path.join(self.dirname, self.name), 'w+')
                     f.write('# This file was created with Stellar')
                     f.close() 
   
-                    cfg.config.set('stellar', 'recentproject', self.dirname + "/" + self.main.fname)
-                    with open('../config.ini', 'wb') as configfile:
+                    cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name))
+                    with open('config.ini', 'wb') as configfile:
                         cfg.config.write(configfile)
                     p = self.main.fname
                     d = os.path.basename(str(p))
                     self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
-                    dirname, filename = os.path.split(os.path.abspath(self.main.fname))
-                    os.chdir(self.dirname)
+                    #dirname, filename = os.path.split(os.path.abspath(self.main.fname))
                     self.close()
                     self.main.tree.InitParent()
-                    self.main.tree.InitChild()
+                    self.main.tree.InitChild(self.dirname)
                     self.main.show()
                 else:
                     reply = QtGui.QMessageBox.question(self, "Already Exists",
@@ -222,8 +217,8 @@ class Start(QtGui.QWidget):
         self.main.tmp = self.main.fname
         #RECENT FILE--
         self.recentp = cfg.recentproject
+        self.dirname = os.path.dirname(self.recentp)
         #-------------
-        self.main.fname = self.recentp
 
         if self.main.fname == "":
             self.main.fname = self.main.tmp
@@ -237,23 +232,24 @@ class Start(QtGui.QWidget):
                 data = f.read()
                 self.main.textEdit.setText(data)'''
                 
-            dirname, filename = os.path.split(os.path.abspath(self.main.fname))
-            os.chdir(dirname)
+            #dirname, filename = os.path.split(os.path.abspath(self.main.fname))
             self.close()
             self.main.tree.InitParent()
-            self.main.tree.InitChild()
+            self.main.tree.InitChild(self.dirname)
             self.main.show()
         
     def OpenFile(self):
         self.main.tmp = self.main.fname
-        self.main.fname = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
-                '', self.tr("Python files (*.py *.pyw)"))
+        self.main.fname = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+                '', self.tr("Python files (*.py *.pyw)")))
         #RECENT FILE--
         data = self.main.fname
         self.recentp = data
 
+        self.dirname = os.path.dirname(self.recentp)
+
         cfg.config.set('stellar', 'recentproject', data)
-        with open('../config.ini', 'wb') as configfile:
+        with open('config.ini', 'wb') as configfile:
             cfg.config.write(configfile)
         #-------------
 
@@ -269,9 +265,8 @@ class Start(QtGui.QWidget):
                 data = f.read()
                 self.main.textEdit.setText(data)'''
                 
-            dirname, filename = os.path.split(os.path.abspath(str(self.main.fname)))
-            os.chdir(dirname)
+            #dirname, filename = os.path.split(os.path.abspath(str(self.main.fname)))
             self.close()
             self.main.tree.InitParent()
-            self.main.tree.InitChild()
+            self.main.tree.InitChild(self.dirname)
             self.main.show()
