@@ -32,12 +32,13 @@ class SpriteGUI(QtGui.QWidget):
         super(SpriteGUI, self).__init__()
 
         self.main = main
+        self.dirname = self.main.dirname
         self.icon = icon
         self.initUI()
 
     def initUI(self):
 
-        self.image_file = "Sprites/%s.png"%(self.icon)
+        self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
         img = Image.open(self.image_file)
         width, height = img.size
         extension = os.path.splitext(self.image_file)[1][1:]
@@ -52,12 +53,12 @@ class SpriteGUI(QtGui.QWidget):
         self.ContainerBox.setMinimumSize(480,330)
                 
         self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
-        self.BtnOK.setIcon(QtGui.QIcon('../../Data/accept.png'))
+        self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
         self.BtnOK.setGeometry(32, 240, 60, 25)
         self.BtnOK.clicked.connect(self.HideMe)
 
         #Scroll Area------------------------------------------
-        self.sprite = QtGui.QPixmap("Sprites/%s.png"%(self.icon))
+        self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites/%s.png"%(self.icon)))
                                     
         self.spriteLbl = QtGui.QLabel(self.main)
         self.spriteLbl.setPixmap(self.sprite)
@@ -73,17 +74,17 @@ class SpriteGUI(QtGui.QWidget):
         self.GeneralBox.setTitle("General")
  
         self.BtnLoad = QtGui.QPushButton('Load Sprite', self.GeneralBox)
-        self.BtnLoad.setIcon(QtGui.QIcon('../../Data/folder.png'))
+        self.BtnLoad.setIcon(QtGui.QIcon('Data/folder.png'))
         self.BtnLoad.setGeometry(50, 55, 115, 25)
         self.BtnLoad.clicked.connect(self.LoadSprite)
 
         self.BtnSave = QtGui.QPushButton('Save Sprite', self.GeneralBox)
-        self.BtnSave.setIcon(QtGui.QIcon('../../Data/save.png'))
+        self.BtnSave.setIcon(QtGui.QIcon('Data/save.png'))
         self.BtnSave.setGeometry(50, 85, 115, 25)
         self.BtnSave.clicked.connect(self.SaveSprite)
  
         self.BtnEdit = QtGui.QPushButton('Edit Sprite', self.GeneralBox)
-        self.BtnEdit.setIcon(QtGui.QIcon('../../Data/editbutton.png'))
+        self.BtnEdit.setIcon(QtGui.QIcon('Data/editbutton.png'))
         self.BtnEdit.setGeometry(50, 114, 115, 25)
         self.BtnEdit.clicked.connect(self.EditSprite)
 
@@ -140,7 +141,7 @@ class SpriteGUI(QtGui.QWidget):
                 shutil.copy(sprite, self.image_file)
                 self.sprite = QtGui.QPixmap(sprite)
                 self.spriteLbl.setPixmap(self.sprite)
-                self.image_file = "Sprites/%s.png"%(self.icon)
+                self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
                 img = Image.open(self.image_file)
                 width, height = img.size
                 extension = os.path.splitext(self.image_file)[1][1:]

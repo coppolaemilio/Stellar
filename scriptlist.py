@@ -24,6 +24,7 @@ class ScriptList(QtGui.QWidget):
         super(ScriptList, self).__init__(parent)
         self.names = []
         self.main = main
+        self.dirname = self.main.dirname
                            
         font = QtGui.QFont()
         font.setPointSize(12)

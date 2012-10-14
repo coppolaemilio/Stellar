@@ -27,10 +27,11 @@ class SoundGUI(QtGui.QWidget):
         super(SoundGUI, self).__init__(main)
         
         self.main = main
+        self.dirname = self.main.dirname
         self.FileName = FileName
         self.initUI()
         pygame.mixer.init()
-        self.sound = pygame.mixer.music.load("Sound/%s.ogg"%(self.FileName))
+        self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound/%s.ogg"%(self.FileName)))
         
         
         
@@ -52,30 +53,30 @@ class SoundGUI(QtGui.QWidget):
         self.qleSound.setGeometry(50, 15, 290, 25)
 
         self.BtnLoad = QtGui.QPushButton('Load Sound', self.ContainerBox)
-        self.BtnLoad.setIcon(QtGui.QIcon('../../Data/folder.png'))
+        self.BtnLoad.setIcon(QtGui.QIcon('Data/folder.png'))
         self.BtnLoad.setGeometry(25, 55, 125, 25)
         
         self.BtnPlay = QtGui.QPushButton(self.ContainerBox)
-        self.BtnPlay.setIcon(QtGui.QIcon('../../Data/playsound.png'))
+        self.BtnPlay.setIcon(QtGui.QIcon('Data/playsound.png'))
         self.BtnPlay.setGeometry(160, 55, 35, 25)
         self.BtnPlay.clicked.connect(self.PlaySound)
 
         self.BtnStop = QtGui.QPushButton(self.ContainerBox)
-        self.BtnStop.setIcon(QtGui.QIcon('../../Data/stopsound.png'))
+        self.BtnStop.setIcon(QtGui.QIcon('Data/stopsound.png'))
         self.BtnStop.setGeometry(195, 55, 35, 25)
         self.BtnStop.clicked.connect(self.StopSound)
 
         self.BtnSave = QtGui.QPushButton('Save Sound', self.ContainerBox)
-        self.BtnSave.setIcon(QtGui.QIcon('../../Data/save.png'))
+        self.BtnSave.setIcon(QtGui.QIcon('Data/save.png'))
         self.BtnSave.setGeometry(230, 55, 110, 25)
         self.BtnSave.clicked.connect(self.SaveSound)
 
         self.BtnEdit = QtGui.QPushButton('Edit Sound', self.ContainerBox)
-        self.BtnEdit.setIcon(QtGui.QIcon('../../Data/editbutton.png'))        
+        self.BtnEdit.setIcon(QtGui.QIcon('Data/editbutton.png'))        
         self.BtnEdit.setGeometry(25, 170, 125, 25)
         
         self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
-        self.BtnOK.setIcon(QtGui.QIcon('../../Data/accept.png'))
+        self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
         self.BtnOK.setGeometry(25, 200, 125, 25)
 
         #Groupbox Options---------------------------
@@ -164,7 +165,7 @@ class SoundGUI(QtGui.QWidget):
                 '', self.tr("Sound (*.ogg)"))
 
         if self.fname !='':
-            shutil.copy("Sound/%s.ogg"%(self.FileName), self.fname)
+            shutil.copy(os.path.join(self.dirname, "Sound/%s.ogg"%(self.FileName)), self.fname)
             
     def ShowMe(self):
         self.ContainerBox.show()
