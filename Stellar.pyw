@@ -710,7 +710,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            f = open(self.fname, 'w')
+            f = open(os.path.join(self.dirname, self.name), 'w')
             p = self.fname
             d = os.path.basename(str(p))
             self.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
