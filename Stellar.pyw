@@ -50,9 +50,16 @@ class TreeWidget(QtGui.QTreeWidget):
         super(TreeWidget, self).__init__(main)
         self.header().setHidden(True)
         self.setWindowTitle('Resources')
-        self.dirname = ''
         self.main = main
+        self.dirname = ''
         self.connect(self, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*, int)"),self.DoEvent)
+
+        self.PathSprite = ''
+        self.PathSound = ''
+        self.PathFonts = ''
+        self.PathScripts = ''
+        self.PathObjects = ''
+        self.PathRooms = ''
 
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
@@ -98,7 +105,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_sprites.addTab(self.main.tab, item.text(0))
 
-                    self.main.Sprites.append([SpriteGUI(self.main.Frame,item.text(0), self.dirname),item.text(0)])
+                    self.main.Sprites.append([SpriteGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
                     self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
                     self.main.Sprites[len(self.main.Sprites)-1][0].scrollArea.setGeometry(350, 0, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.width()-350, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.height())
                     
@@ -120,7 +127,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_sound.addTab(self.main.tab, item.text(0))
 
-                    self.main.Sound.append([SoundGUI(self.main.Frame,item.text(0), self.dirname),item.text(0)])
+                    self.main.Sound.append([SoundGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
                     self.main.Sound[len(self.main.Sound)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
 
                     
@@ -141,7 +148,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_font.addTab(self.main.tab, item.text(0))
 
-                    self.main.Fonts.append([FontGUI(self.main.Frame, self.dirname),item.text(0)])
+                    self.main.Fonts.append([FontGUI(self.main.Frame, self.main.dirname),item.text(0)])
                     self.main.Fonts[len(self.main.Fonts)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-4, self.main.tab_widget.height()-42)
 
                     
@@ -226,64 +233,59 @@ class TreeWidget(QtGui.QTreeWidget):
         self.ParentExtensions = QtGui.QTreeWidgetItem(self, QtCore.QStringList('Extensions'))
         self.ParentExtensions.setIcon(0,icon)
 
-    def InitChild(self, dirname):
-        self.dirname = str(dirname)
-        PathSprite = os.path.join(self.dirname, "Sprites")
-        PathSound = os.path.join(self.dirname, "Sound")
-        PathFonts = os.path.join(self.dirname, "Fonts")
-        PathScripts = os.path.join(self.dirname, "Scripts")
-        PathObjects = os.path.join(self.dirname, "Objects")
-        PathRooms = os.path.join(self.dirname, "Rooms")
-        
+    def InitChild(self):
+        self.dirname = self.main.dirname
+        self.PathSprite = os.path.join(self.dirname, "Sprites")
+        self.PathSound = os.path.join(self.dirname, "Sound")
+        self.PathFonts = os.path.join(self.dirname, "Fonts")
+        self.PathScripts = os.path.join(self.dirname, "Scripts")
+        self.PathObjects = os.path.join(self.dirname, "Objects")
+        self.PathRooms = os.path.join(self.dirname, "Rooms") 
 
         #Sprites----------------------------------
-        for ChildSprite in os.listdir(PathSprite):
+        for ChildSprite in os.listdir(self.PathSprite):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join(self.dirname, ChildSprite)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentSprite, QtCore.QStringList(ChildSprite[:-4])).setIcon(0,icon)      
 
         #Sound------------------------------------
-        for ChildSound in os.listdir(PathSound):
+        for ChildSound in os.listdir(self.PathSound):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "sound.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentSound, QtCore.QStringList(ChildSound[:-4])).setIcon(0,icon)
 
         #Fonts------------------------------------
-        for ChildFont in os.listdir(PathFonts):
+        for ChildFont in os.listdir(self.PathFonts):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentFonts, QtCore.QStringList(ChildFont[:-4])).setIcon(0,icon)
 
         #Scripts------------------------------------
-        for ChildScript in os.listdir(PathScripts):
+        for ChildScript in os.listdir(self.PathScripts):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(ChildScript[:-3])).setIcon(0,icon)
 
         #Objects----------------------------------
-        for ChildObject in os.listdir(PathObjects):
+        for ChildObject in os.listdir(self.PathObjects):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentObjects, QtCore.QStringList(ChildObject[:-3])).setIcon(0,icon)
 
         #Rooms------------------------------------
-        for ChildRoom in os.listdir(PathRooms):
+        for ChildRoom in os.listdir(self.PathRooms):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "game.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentRooms, QtCore.QStringList(ChildRoom[:-4])).setIcon(0,icon)
 
 
     def AddSprChild(self,name):
-        PathSprite = os.path.join(self.dirname, "Sprites")
-
         #Sprites----------------------------------
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(PathSprite, name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(self.PathSprite, name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentSprite, QtCore.QStringList(name[:-4])).setIcon(0,icon)    
 
     def AddSndChild(self,name):
-        PathSprite = os.path.join(self.dirname, "Sound")
-
         #Sound------------------------------------
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "sound.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -319,8 +321,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         #Saving where you opened the program for opening a new window in the future
         self.stellardir = inspect.getfile(inspect.currentframe())
         dirname, filename = os.path.split(os.path.abspath(self.stellardir))
-        self.pref = os.path.join(dirname, "preferences.pyw")
-        self.stellarnew = os.path.join(dirname, "Stellar.pyw")
+        self.pref = "preferences.pyw"
+        self.stellarnew = "Stellar.pyw"
               
         '''editor= self.textEdit = CompletionTextEdit()
         highlight = syntax.PythonHighlighter(editor.document())
