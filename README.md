@@ -1,6 +1,7 @@
 Stellar
 =======
 *Fast Python/Pygame Development*
+![stellar](Data/Logo.png)
 
 ## About
 An open-source program inspired in 'Game Maker' for <b>Pygame/Python</b> development.<br/> 
