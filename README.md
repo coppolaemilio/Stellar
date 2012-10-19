@@ -17,4 +17,4 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 
 Any feedback is welcome!
 
-![stellar](http://i.imgur.com/tD8ae.png
+![stellar](http://i.imgur.com/tD8ae.png)
