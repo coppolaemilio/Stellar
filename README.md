@@ -1,6 +1,6 @@
 Stellar
 =======
-*Fast Python/Pygame Development*
+*Fast Python/Pygame Development* <br>
 ![stellar](https://raw.github.com/Coppolaemilio/stellar/master/Data/Logo.png)
 
 ## About
