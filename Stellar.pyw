@@ -292,15 +292,12 @@ class TreeWidget(QtGui.QTreeWidget):
         QtGui.QTreeWidgetItem(self.ParentSound, QtCore.QStringList(name[:-4])).setIcon(0,icon)
 
     def AddScriptChild(self,name):
-
         #Script------------------------------------
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(name)).setIcon(0,icon)
 
     def AddFontChild(self,name):
-        PathSprite = os.path.join(self.dirname, "Fonts")
-
         #Font------------------------------------
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
