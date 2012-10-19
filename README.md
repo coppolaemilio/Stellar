@@ -1,7 +1,6 @@
 Stellar
 =======
-*Fast Python/Pygame Development* <br>
-![stellar](https://raw.github.com/Coppolaemilio/stellar/master/Data/Logo.png)
+![stellar](https://raw.github.com/Coppolaemilio/stellar/master/Data/stellarsplash.png)
 
 ## About
 An open-source program inspired in 'Game Maker' for <b>Pygame/Python</b> development.<br/> 
