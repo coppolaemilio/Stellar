@@ -19,7 +19,6 @@
 from PyQt4 import QtCore, QtGui
 import os, webbrowser
 import cfg
-import ConfigParser
 
 class Start(QtGui.QWidget):
   
