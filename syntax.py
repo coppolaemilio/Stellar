@@ -16,6 +16,8 @@
 
 # syntax.py
 
+# -*- coding: utf-8 -*-
+
 import sys
 
 from PyQt4.QtCore import QRegExp

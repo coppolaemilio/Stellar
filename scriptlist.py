@@ -14,6 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 
+# -*- coding: utf-8 -*-
+
 import os
 from PyQt4 import QtCore, QtGui
 import cfg
