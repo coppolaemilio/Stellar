@@ -52,7 +52,7 @@ class ScriptList(QtGui.QWidget):
 
         self.setLayout(grid) 
         self.setGeometry(200, 200, 300, 80)
-        self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
+        self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         self.setWindowTitle('List of Scripts - Stellar %s' % cfg.__version__)
         self.center()
         self.show()

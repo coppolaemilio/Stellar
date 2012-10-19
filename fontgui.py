@@ -25,10 +25,11 @@ from PyQt4 import QtGui, QtCore
 
 class FontGUI(QtGui.QWidget):
   
-    def __init__(self, main):
+    def __init__(self, main, dirname):
         super(FontGUI, self).__init__(main)
 
         self.main = main
+        self.dirname = dirname
         self.initUI()
 
     def initUI(self):
@@ -89,7 +90,7 @@ class FontGUI(QtGui.QWidget):
         self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), 10, True) )
 
         self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
-        self.BtnOK.setIcon(QtGui.QIcon('../../Data/accept.png'))
+        self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
         self.BtnOK.setGeometry(32, 240, 60, 25)
         
       

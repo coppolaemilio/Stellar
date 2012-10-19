@@ -30,11 +30,11 @@ from PIL import Image
 
 class SpriteGUI(QtGui.QWidget):
   
-    def __init__(self, main,icon):
+    def __init__(self, main,icon, dirname):
         super(SpriteGUI, self).__init__()
 
         self.main = main
-        self.dirname = self.main.dirname
+        self.dirname = dirname
         self.icon = icon
         self.initUI()
 

@@ -25,11 +25,11 @@ from PyQt4 import QtGui, QtCore
 
 class SoundGUI(QtGui.QWidget):
   
-    def __init__(self, main, FileName):
+    def __init__(self, main, FileName, dirname):
         super(SoundGUI, self).__init__(main)
         
         self.main = main
-        self.dirname = self.main.dirname
+        self.dirname = dirname
         self.FileName = FileName
         self.initUI()
         pygame.mixer.init()

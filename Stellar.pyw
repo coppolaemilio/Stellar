@@ -98,7 +98,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_sprites.addTab(self.main.tab, item.text(0))
 
-                    self.main.Sprites.append([SpriteGUI(self.main.Frame,item.text(0)),item.text(0)])
+                    self.main.Sprites.append([SpriteGUI(self.main.Frame,item.text(0), self.dirname),item.text(0)])
                     self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
                     self.main.Sprites[len(self.main.Sprites)-1][0].scrollArea.setGeometry(350, 0, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.width()-350, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.height())
                     
@@ -120,7 +120,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_sound.addTab(self.main.tab, item.text(0))
 
-                    self.main.Sound.append([SoundGUI(self.main.Frame,item.text(0)),item.text(0)])
+                    self.main.Sound.append([SoundGUI(self.main.Frame,item.text(0), self.dirname),item.text(0)])
                     self.main.Sound[len(self.main.Sound)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
 
                     
@@ -141,7 +141,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_font.addTab(self.main.tab, item.text(0))
 
-                    self.main.Fonts.append([FontGUI(self.main.Frame),item.text(0)])
+                    self.main.Fonts.append([FontGUI(self.main.Frame, self.dirname),item.text(0)])
                     self.main.Fonts[len(self.main.Fonts)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-4, self.main.tab_widget.height()-42)
 
                     
@@ -319,7 +319,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         #Saving where you opened the program for opening a new window in the future
         self.stellardir = inspect.getfile(inspect.currentframe())
         dirname, filename = os.path.split(os.path.abspath(self.stellardir))
-        os.chdir(dirname)
         self.pref = os.path.join(dirname, "preferences.pyw")
         self.stellarnew = os.path.join(dirname, "Stellar.pyw")
               
@@ -712,7 +711,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            f = open(os.path.join(self.dirname, self.name), 'w')
+            f = open(os.path.join(self.dirname, os.path.basename(self.fname)), 'w')
             p = self.fname
             d = os.path.basename(str(p))
             self.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
