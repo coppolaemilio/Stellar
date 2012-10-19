@@ -18,8 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-# -*- coding: utf-8 -*-
-
 import cfg
 
 """
@@ -110,7 +108,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.Sprites[len(self.main.Sprites)-1][0].scrollArea.setGeometry(350, 0, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.width()-350, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.height())
                     
                     self.main.tab_widget_sprites.setCurrentIndex(len(self.main.Sprites)-1)
-                    self.main.tab_widget_sprites.setTabIcon(len(self.main.Sprites)-1,(QtGui.QIcon(os.path.join('Sprites', str(item.text(0))))))
+                    self.main.tab_widget_sprites.setTabIcon(len(self.main.Sprites)-1,(QtGui.QIcon(os.path.join(self.main.dirname, 'Sprites', str(item.text(0))))))
                     self.main.tab_widget.setCurrentIndex(0)
                     
                     
@@ -245,7 +243,7 @@ class TreeWidget(QtGui.QTreeWidget):
         #Sprites----------------------------------
         for ChildSprite in os.listdir(self.PathSprite):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join(self.dirname, ChildSprite)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join(self.PathSprite, ChildSprite)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentSprite, QtCore.QStringList(ChildSprite[:-4])).setIcon(0,icon)      
 
         #Sound------------------------------------
