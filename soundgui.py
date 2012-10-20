@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 
 
-import sys, pygame.mixer, shutil
+import sys, pygame.mixer, shutil, os
 from PyQt4 import QtGui, QtCore
 
 
