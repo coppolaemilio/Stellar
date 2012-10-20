@@ -250,16 +250,15 @@ class Start(QtGui.QWidget):
         
     def OpenFile(self):
         self.main.tmp = self.main.fname
-        self.main.fname = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+        self.project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                 '', self.tr("Python files (*.py *.pyw)")))
-        #RECENT FILE--
-        data = self.main.fname
-        self.recentp = data
 
-        self.dirname = os.path.dirname(self.recentp)
+        #Recent project
+
+        self.dirname = os.path.dirname(self.project)
         self.main.dirname = self.dirname
 
-        cfg.config.set('stellar', 'recentproject', data)
+        cfg.config.set('stellar', 'recentproject', self.project)
         with open('config.ini', 'wb') as configfile:
             cfg.config.write(configfile)
         #-------------
@@ -268,15 +267,12 @@ class Start(QtGui.QWidget):
             self.main.fname = self.main.tmp
         else:
             #f = open(self.main.fname, 'r')
-            p = self.main.fname
-            d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
+            self.main.setWindowTitle('%s - Stellar %s'% (self.main.fname, cfg.__version__))
             
             '''with f:        
                 data = f.read()
                 self.main.textEdit.setText(data)'''
                 
-            #dirname, filename = os.path.split(os.path.abspath(str(self.main.fname)))
             self.close()
             self.main.tree.InitParent()
             self.main.tree.InitChild()
