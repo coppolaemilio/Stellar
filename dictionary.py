@@ -17,7 +17,6 @@
 #
 # You should have received a copy of the GNU General Public License
 
-# -*- coding: utf-8 -*-
 
 all_words=["Python",
            "Pygame",

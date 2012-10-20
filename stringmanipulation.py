@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 # Copyright (C) 2012 Emilio Coppola
 #
 # This file is part of Stellar.
@@ -14,7 +17,6 @@
 #
 # You should have received a copy of the GNU General Public License
 
-# -*- coding: utf-8 -*-
 
 from PyQt4 import QtGui
 

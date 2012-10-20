@@ -17,7 +17,6 @@
 #
 # You should have received a copy of the GNU General Public License
 
-# -*- coding: utf-8 -*-
 
 import sys, pygame.mixer, shutil
 from PyQt4 import QtGui, QtCore
