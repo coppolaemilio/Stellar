@@ -63,25 +63,33 @@ class Start(QtGui.QWidget):
         self.recentp = cfg.recentproject
         #-------------
 
-        buttonnew = QtGui.QPushButton("New Project", self.welcomwidget)
-        buttonnew.setIcon(QtGui.QIcon(os.path.join('Data', 'new.png')))
-        buttonnew.move(180,6)
-        buttonnew.clicked.connect(self.newbutton)
+        self.buttonnew = QtGui.QPushButton("New Project")
+        self.buttonnew.setIcon(QtGui.QIcon(os.path.join('Data', 'new.png')))
+        self.buttonnew.clicked.connect(self.newbutton)
         
-        buttonrec = QtGui.QPushButton("Open last project (%s)" % os.path.basename(cfg.recentproject), self.welcomwidget)
-        buttonrec.setIcon(QtGui.QIcon(os.path.join('Data', 'folder.png')))
-        buttonrec.move(170,46)
+        self.buttonrec = QtGui.QPushButton("Open last project (%s)" % os.path.basename(cfg.recentproject))
+        self.buttonrec.setIcon(QtGui.QIcon(os.path.join('Data', 'folder.png')))
 
         if self.recentp == "":
-            buttonrec.setDisabled(True)
-        buttonrec.clicked.connect(self.openlastproject)
+            self.buttonrec.setDisabled(True)
+        self.buttonrec.clicked.connect(self.openlastproject)
 
-        buttonwebsite = QtGui.QPushButton("Stellar Website", self.welcomwidget)
-        buttonwebsite.setIcon(QtGui.QIcon(os.path.join('Data', 'home.png')))
-        buttonwebsite.move(175,86)
-        buttonwebsite.clicked.connect(self.openwebsite)
-        
-        p4_vertical.addWidget(self.welcomwidget)
+        self.buttonwebsite = QtGui.QPushButton("Stellar Website")
+        self.buttonwebsite.setIcon(QtGui.QIcon(os.path.join('Data', 'home.png')))
+        self.buttonwebsite.clicked.connect(self.openwebsite)
+		
+        self.Spacer = QtGui.QLabel(' ')
+        self.Spacer1 = QtGui.QLabel(' ')
+		
+        self.grid1 = QtGui.QGridLayout()
+        self.grid1.setSpacing(15)
+        self.grid1.addWidget(self.Spacer, 1, 0)
+        self.grid1.addWidget(self.buttonnew, 1, 1)
+        self.grid1.addWidget(self.buttonwebsite, 2, 1)
+        self.grid1.addWidget(self.buttonrec, 3, 1)
+        self.grid1.addWidget(self.Spacer1, 3, 3)
+		
+        p4_vertical.addLayout(self.grid1)
 
         
 
