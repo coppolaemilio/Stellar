@@ -169,8 +169,8 @@ class TreeWidget(QtGui.QTreeWidget):
 
                     self.main.Scripts.append([ScriptGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
                     self.main.Scripts[len(self.main.Scripts)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
-                   
-
+                    self.main.Scripts[len(self.main.Scripts)-1][0].textEdit.setGeometry(0, 30, self.main.tab_widget.width()-3, self.main.tab_widget.height()-70)
+					
                     self.main.tab_widget_scripts.setCurrentIndex(len(self.main.Scripts)-1)
                     self.main.tab_widget.setCurrentIndex(3)
 
@@ -679,6 +679,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             sound[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
         for font in self.Fonts:
             font[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
+        for scripts in self.Scripts:
+            scripts[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
+            scripts[0].textEdit.setGeometry(0, 30, self.tab_widget.width()-3, self.tab_widget.height()-70)
 
     def preferencesopen(self):
         
