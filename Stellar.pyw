@@ -336,7 +336,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         aboutAction.setStatusTip('About Stellar.')
         aboutAction.triggered.connect(self.aboutStellar)
 
-        scriptAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'clock.png')),'Add Script', self)
+        scriptAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'addscript.png')),'Add Script', self)
         scriptAction.setStatusTip('Add A Script To The Game.')
         scriptAction.triggered.connect(self.addScript)
 
@@ -463,7 +463,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.toolbar.addAction(animatedspriteAction)
         self.toolbar.addAction(soundAction)
         self.toolbar.addAction(fontAction)
-        self.toolbar.addSeparator()
         self.toolbar.addAction(scriptAction)
         self.toolbar.addSeparator()
         self.toolbar.addAction(aboutAction)
