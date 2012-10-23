@@ -70,7 +70,7 @@ class Start(QtGui.QWidget):
         self.buttonrec = QtGui.QPushButton("Open last project (%s)" % os.path.basename(cfg.recentproject))
         self.buttonrec.setIcon(QtGui.QIcon(os.path.join('Data', 'folder.png')))
 
-        if self.recentp == "":
+        if self.recentp == "" or not os.path.isfile(self.recentp):
             self.buttonrec.setDisabled(True)
         self.buttonrec.clicked.connect(self.openlastproject)
 
