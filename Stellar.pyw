@@ -38,6 +38,7 @@ from scriptlist import ScriptList
 from spritegui import SpriteGUI
 from soundgui import SoundGUI
 from fontgui import FontGUI
+from scriptgui import ScriptGUI
 from PyQt4 import QtCore, QtGui
 
 
@@ -163,18 +164,12 @@ class TreeWidget(QtGui.QTreeWidget):
                         break
 
                 if bln==True:
-                    #editor = self.main.textEdit = CompletionTextEdit(self.main.Frame)
-                    editor = self.main.textEdit = CompletionTextEdit()
-                    highlight = syntax.PythonHighlighter(editor.document())
-                    self.main.textEdit.zoomIn(+4)
-                    self.main.textEdit.setWindowFlags(QtCore.Qt.WindowMaximizeButtonHint)
-
                     self.main.tab = QtGui.QWidget()
                     self.main.tab_widget_scripts.addTab(self.main.tab, item.text(0))
 
-                    self.main.Scripts.append([self.main.textEdit,item.text(0)])
-                    self.main.Scripts[len(self.main.Scripts)-1][0].setGeometry(0, 0, 800, 600)
-                    self.main.Scripts[len(self.main.Scripts)-1][0].center()
+                    self.main.Scripts.append([ScriptGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
+                    self.main.Scripts[len(self.main.Scripts)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
+                   
 
                     self.main.tab_widget_scripts.setCurrentIndex(len(self.main.Scripts)-1)
                     self.main.tab_widget.setCurrentIndex(3)
