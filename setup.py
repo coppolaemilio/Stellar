@@ -8,7 +8,7 @@ includes = []
 excludes = [] #['_gtkagg', '_tkagg', 'bsddb', 'curses', 'email', 'pywin.debugger',
            # 'pywin.debugger.dbgcon', 'pywin.dialogs', 'tcl',
            # 'Tkconstants', 'Tkinter']
-packages = ['pygame', 'pygame.font']
+packages = ['pygame']
 dll_excludes = ['libgdk-win32-2.0-0.dll', 'libgobject-2.0-0.dll', 'tcl84.dll','tk84.dll']
  
 setup(
