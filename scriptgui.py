@@ -51,10 +51,13 @@ class ScriptGUI(QtGui.QWidget):
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
 		
-        saveAction = QtGui.QAction(QtGui.QIcon('Data/save.png'), 'Save', self)
+        saveAction = QtGui.QAction(QtGui.QIcon('Data/tick.png'), 'Save', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.triggered.connect(self.saveScript)
-
+		
+        exportAction = QtGui.QAction(QtGui.QIcon('Data/save.png'), 'Export', self)
+        exportAction.triggered.connect(self.exportScript)
+		
         importAction = QtGui.QAction(QtGui.QIcon('Data/folder.png'), 'Open', self)
         importAction.triggered.connect(self.openScript)
 
@@ -64,6 +67,8 @@ class ScriptGUI(QtGui.QWidget):
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
         self.toolbar.addAction(saveAction)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(exportAction)		
         self.toolbar.addAction(importAction)
         self.toolbar.addSeparator()
         self.toolbar.addAction(undoAction)
@@ -71,6 +76,8 @@ class ScriptGUI(QtGui.QWidget):
         self.toolbar.addSeparator()
         self.toolbar.addWidget(self.LblName)
         self.toolbar.addWidget(self.nameEdit)
+		
+		
 		
         editor= self.textEdit = CompletionTextEdit()
         highlight = syntax.PythonHighlighter(editor.document())
@@ -80,14 +87,19 @@ class ScriptGUI(QtGui.QWidget):
         self.ContainerGrid.setSpacing(0)
         self.ContainerGrid.addWidget(editor, 1, 0,1,15)
         self.ContainerGrid.addWidget(self.toolbar, 0, 0)
-        #self.ContainerGrid.addWidget(self.LblName, 0, 0)
-        #self.ContainerGrid.addWidget(self.nameEdit, 0, 1)
-        #self.ContainerGrid.addWidget(self.BtnSave, 0, 2)
-        #self.ContainerGrid.addWidget(self.BtnOpen, 0, 3)
 		
         self.startopen()
 
 	
+    def exportScript(self):
+        print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
+        fname = self.dirname + "/Scripts/" + self.FileName + ".py"
+        f = open(fname, 'w')
+        with f:    
+            data = self.textEdit.toPlainText()
+            f.write(data)
+            f.close()
+
     def saveScript(self):
         print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
         fname = self.dirname + "/Scripts/" + self.FileName + ".py"

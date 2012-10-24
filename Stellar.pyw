@@ -533,7 +533,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.connect(self.tab_widget_font, QtCore.SIGNAL("currentChanged(int)"), self.FontsTabChanged)
 
         #QFrame QTab Scripts
-        self.tab_widget_scripts = QtGui.QTabWidget(self.tab_widget) 
+        self.tab_widget_scripts = QtGui.QTabWidget(self.tab_widget)
+        self.tab_widget_scripts.setMovable (True)
         self.tab_widget_scripts.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
         self.connect(self.tab_widget_scripts, QtCore.SIGNAL("currentChanged(int)"), self.ScriptTabChanged)
 
