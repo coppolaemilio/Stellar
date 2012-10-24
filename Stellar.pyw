@@ -330,6 +330,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.Fonts=[]
         self.Scripts=[]
         self.Objects=[]
+        self.Rooms=[]
         self.initUI()
         
     def initUI(self):
@@ -344,6 +345,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         newAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'new.png')), 'New Project', self)
         newAction.setShortcut('Ctrl+N')
         newAction.setStatusTip('New Project.')
+
         newAction.triggered.connect(self.newproject)
         newAction.setDisabled (True)
         
@@ -572,6 +574,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.tab_widget_objects.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
         self.connect(self.tab_widget_objects, QtCore.SIGNAL("currentChanged(int)"), self.ObjectsTabChanged)
 
+        #QFrame QTab Rooms
+        self.tab_widget_rooms = QtGui.QTabWidget(self.tab_widget) 
+        self.tab_widget_rooms.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-22)
+        self.connect(self.tab_widget_rooms, QtCore.SIGNAL("currentChanged(int)"), self.RoomsTabChanged)
+
+
         #WINDOW----------------------------------------
         self.setGeometry(200, 200, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
@@ -611,6 +619,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             for objects in self.Objects:
                 objects[0].HideMe()
 
+            #Hide Rooms
+            self.tab_widget_rooms.hide()
+            for room in self.Rooms:
+                room[0].HideMe()
+
         #Show Sound----------------------
         if index == 1:
             self.tab_widget_sound.show()
@@ -635,6 +648,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             self.tab_widget_objects.hide()
             for objects in self.Objects:
                 objects[0].HideMe()
+
+            #Hide Rooms
+            self.tab_widget_rooms.hide()
+            for room in self.Rooms:
+                room[0].HideMe()
 
         #Show Fonts----------------------
         if index == 2:
@@ -661,6 +679,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             for objects in self.Objects:
                 objects[0].HideMe()
 
+            #Hide Rooms
+            self.tab_widget_rooms.hide()
+            for room in self.Rooms:
+                room[0].HideMe()
+
         #Show Script----------------------
         if index == 3:
             self.tab_widget_scripts.show()
@@ -686,6 +709,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             for objects in self.Objects:
                 objects[0].HideMe()
 
+            #Hide Rooms
+            self.tab_widget_rooms.hide()
+            for room in self.Rooms:
+                room[0].HideMe()
+
         #Show Objects----------------------
         if index == 4:
             self.tab_widget_objects.show()
@@ -710,6 +738,41 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             self.tab_widget_scripts.hide()
             for Script in self.Scripts:
                 Script[0].HideMe()
+
+            #Hide Rooms
+            self.tab_widget_rooms.hide()
+            for room in self.Rooms:
+                room[0].HideMe()
+
+        #Show Rooms----------------------
+        if index == 5:
+            self.tab_widget_objects.show()
+            self.ScriptTabChanged(self.tab_widget_objects.currentIndex())
+
+            #Hide Sprite
+            self.tab_widget_sprites.hide()
+            for Sprite in self.Sprites:
+                Sprite[0].HideMe()
+                
+            #Hide Sound
+            self.tab_widget_sound.hide()
+            for Sound in self.Sound:
+                Sound[0].HideMe()
+
+            #Hide Font
+            self.tab_widget_font.hide()
+            for font in self.Fonts:
+                font[0].HideMe()
+
+            #Hide Script
+            self.tab_widget_scripts.hide()
+            for Script in self.Scripts:
+                Script[0].HideMe()
+
+            #Hide Objects
+            self.tab_widget_objects.hide()
+            for objects in self.Objects:
+                objects[0].HideMe()
 
     def SpriteTabChanged(self, index):
         for Zet, Sprite in enumerate(self.Sprites):
@@ -744,7 +807,15 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             if Zet == index:
                 Objects[0].ShowMe()
             else:
-                Objects[0].HideMe() 
+                Objects[0].HideMe()
+
+    def RoomsTabChanged(self, index):
+        for Zet, Room in enumerate(self.Rooms):
+            if Zet == index:
+                Room[0].ShowMe()
+            else:
+                Room[0].HideMe() 
+
 
     def resizeEvent(self, event):
         self.tree.resize(200, self.height()-125)
@@ -761,14 +832,21 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         for sprite in self.Sprites:
             sprite[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
             sprite[0].scrollArea.setGeometry(350, 0, sprite[0].ContainerBox.width()-350, sprite[0].ContainerBox.height())
+
         for sound in self.Sound:
             sound[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
+
         for font in self.Fonts:
             font[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
+
         for scripts in self.Scripts:
             scripts[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
-        for object in self.Objects:
+
+        for objects in self.Objects:
             objects[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
+
+        for room in self.Objects:
+            room[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
             
     def preferencesopen(self):
         
