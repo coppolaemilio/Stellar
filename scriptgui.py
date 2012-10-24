@@ -18,9 +18,13 @@
 # You should have received a copy of the GNU General Public License
 
 
-import sys, pygame.mixer, shutil, os
+import sys
+import pygame.mixer
+import shutil
+import os
+import syntax
 from PyQt4 import QtGui, QtCore
-
+from autocomplete import CompletionTextEdit
 
 class ScriptGUI(QtGui.QWidget):
   
@@ -41,8 +45,27 @@ class ScriptGUI(QtGui.QWidget):
         self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.ContainerBox.setGeometry(QtCore.QRect(0,0,350,400))
         self.ContainerBox.setMinimumSize(350,400)
-
-        self.textEdit = QtGui.QTextEdit(self.ContainerBox)
+		
+        self.ContainerGrid = QtGui.QGridLayout(self.ContainerBox)
+		
+        self.LblName = QtGui.QLabel('Name:')
+        self.nameEdit = QtGui.QLineEdit(self.FileName)
+		
+        self.BtnSave = QtGui.QPushButton('')
+        self.BtnSave.setIcon(QtGui.QIcon('Data/save.png'))
+		
+        self.BtnOpen = QtGui.QPushButton('')
+        self.BtnOpen.setIcon(QtGui.QIcon('Data/folder.png'))
+		
+        editor= self.textEdit = CompletionTextEdit()
+        highlight = syntax.PythonHighlighter(editor.document())
+        self.textEdit.zoomIn(+4)
+        self.texEdit=CompletionTextEdit()
+        self.ContainerGrid.addWidget(editor, 1, 0,1,15)
+        self.ContainerGrid.addWidget(self.LblName, 0, 0)
+        self.ContainerGrid.addWidget(self.nameEdit, 0, 1)
+        self.ContainerGrid.addWidget(self.BtnSave, 0, 2)
+        self.ContainerGrid.addWidget(self.BtnOpen, 0, 3)
 
             
     def ShowMe(self):
