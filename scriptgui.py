@@ -38,7 +38,7 @@ class ScriptGUI(QtGui.QWidget):
         
 
     def initUI(self):
-
+        
         #Groupbox Container-----------------------------------
         self.ContainerBox = QtGui.QGroupBox(self.main)
         self.ContainerBox.setObjectName("groupBox")
@@ -53,9 +53,11 @@ class ScriptGUI(QtGui.QWidget):
 		
         self.BtnSave = QtGui.QPushButton('')
         self.BtnSave.setIcon(QtGui.QIcon('Data/save.png'))
+        self.BtnSave.clicked.connect(self.saveScript)
 		
         self.BtnOpen = QtGui.QPushButton('')
         self.BtnOpen.setIcon(QtGui.QIcon('Data/folder.png'))
+        self.BtnOpen.clicked.connect(self.openScript)
 		
         editor= self.textEdit = CompletionTextEdit()
         highlight = syntax.PythonHighlighter(editor.document())
@@ -66,8 +68,40 @@ class ScriptGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.nameEdit, 0, 1)
         self.ContainerGrid.addWidget(self.BtnSave, 0, 2)
         self.ContainerGrid.addWidget(self.BtnOpen, 0, 3)
+		
+        self.startopen()
 
-            
+	
+    def saveScript(self):
+        print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
+        fname = self.dirname + "/Scripts/" + self.FileName + ".py"
+        f = open(fname, 'w')
+        with f:    
+            data = self.textEdit.toPlainText()
+            f.write(data)
+            f.close()
+			
+    def startopen(self):
+
+        fname = self.dirname + "/Scripts/" + self.FileName + ".py"
+        
+        f = open(fname, 'r')
+        
+        with f:        
+            data = f.read()
+            self.textEdit.setText(data)
+			
+    def openScript(self):
+
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
+                '/home')
+        
+        f = open(fname, 'r')
+        
+        with f:        
+            data = f.read()
+            self.textEdit.setText(data)
+
     def ShowMe(self):
         self.ContainerBox.show()
         
