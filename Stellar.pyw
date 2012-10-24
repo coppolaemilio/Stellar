@@ -845,7 +845,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         for objects in self.Objects:
             objects[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
 
-        for room in self.Objects:
+        for room in self.Rooms:
             room[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
             
     def preferencesopen(self):
