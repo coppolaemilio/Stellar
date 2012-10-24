@@ -37,6 +37,7 @@ from spritegui import SpriteGUI
 from soundgui import SoundGUI
 from fontgui import FontGUI
 from scriptgui import ScriptGUI
+from objectgui import ObjectGUI
 from PyQt4 import QtCore, QtGui
 
 
@@ -61,7 +62,8 @@ class TreeWidget(QtGui.QTreeWidget):
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
         insertAction = menu.addAction("Insert")
-        insertAction.setDisabled (True)
+        insertAction.triggered.connect(self.AddSprChild)
+        
         duplicateAction = menu.addAction("Duplicate")
         duplicateAction.setShortcut('Alt+Ins')
         duplicateAction.setDisabled (True)
@@ -171,6 +173,25 @@ class TreeWidget(QtGui.QTreeWidget):
 					
                     self.main.tab_widget_scripts.setCurrentIndex(len(self.main.Scripts)-1)
                     self.main.tab_widget.setCurrentIndex(3)
+                    
+            elif item.parent().text(0) == "Objects":
+
+                for index, object in enumerate(self.main.Objects):
+                    if object[1] == item.text(0):
+                        bln = False
+                        self.main.tab_widget_objects.setCurrentIndex(index)
+                        self.main.tab_widget.setCurrentIndex(4)
+                        break
+
+                if bln==True:
+                    self.main.tab = QtGui.QWidget()
+                    self.main.tab_widget_objects.addTab(self.main.tab, item.text(0))
+
+                    self.main.Objects.append([ObjectGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
+                    self.main.Objects[len(self.main.Objects)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
+				
+                    self.main.tab_widget_objects.setCurrentIndex(len(self.main.Objects)-1)
+                    self.main.tab_widget.setCurrentIndex(4)
 
                     
 
@@ -254,7 +275,7 @@ class TreeWidget(QtGui.QTreeWidget):
         #Scripts------------------------------------
         for ChildScript in os.listdir(self.PathScripts):
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "addscript.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(ChildScript[:-3])).setIcon(0,icon)
 
         #Objects----------------------------------
@@ -287,6 +308,12 @@ class TreeWidget(QtGui.QTreeWidget):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(name)).setIcon(0,icon)
+        
+    def AddObjectChild(self,name):
+        #Object------------------------------------
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        QtGui.QTreeWidgetItem(self.ParentObjects, QtCore.QStringList(name)).setIcon(0,icon)
 
     def AddFontChild(self,name):
         #Font------------------------------------
@@ -302,6 +329,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.Sound=[]
         self.Fonts=[]
         self.Scripts=[]
+        self.Objects=[]
         self.initUI()
         
     def initUI(self):
@@ -311,12 +339,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         dirname, filename = os.path.split(os.path.abspath(self.stellardir))
         self.pref = "preferences.pyw"
         self.stellarnew = "Stellar.pyw"
-              
-        '''editor= self.textEdit = CompletionTextEdit()
-        highlight = syntax.PythonHighlighter(editor.document())
-        self.textEdit.zoomIn(+4)
-        self.setCentralWidget(self.textEdit)
-        self.texEdit=CompletionTextEdit()'''
         
         #ACTIONS -------------------------------
         newAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'new.png')), 'New Project', self)
@@ -366,6 +388,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         soundAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'sound.png')),'Add Sound', self)
         soundAction.setStatusTip('Add a sound to the game.')
         soundAction.triggered.connect(self.addsound)
+
+        objectAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'object.png')),'Add Object', self)
+        objectAction.setStatusTip('Add an object to the game.')
+        objectAction.triggered.connect(self.addObject)
 
         shareAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'publish.png')),'Share', self)
         shareAction.setStatusTip('Share your creations with the community!')
@@ -431,6 +457,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.fileMenu.addAction(spriteAction)
         self.fileMenu.addAction(animatedspriteAction)
         self.fileMenu.addAction(soundAction)
+        self.fileMenu.addAction(objectAction)
         self.fileMenu.addAction(fontAction)
         self.fileMenu.addSeparator()
         self.fileMenu = menubar.addMenu('&Scripts')
@@ -462,6 +489,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.toolbar.addAction(soundAction)
         self.toolbar.addAction(fontAction)
         self.toolbar.addAction(scriptAction)
+        self.toolbar.addAction(objectAction)
         self.toolbar.addSeparator()
         self.toolbar.addAction(aboutAction)
         self.toolbar.addAction(zoominAction)
@@ -538,6 +566,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.tab_widget_scripts.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
         self.connect(self.tab_widget_scripts, QtCore.SIGNAL("currentChanged(int)"), self.ScriptTabChanged)
 
+        #QFrame QTab Objects
+        self.tab_widget_objects = QtGui.QTabWidget(self.tab_widget)
+        self.tab_widget_objects.setMovable (True)
+        self.tab_widget_objects.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
+        self.connect(self.tab_widget_objects, QtCore.SIGNAL("currentChanged(int)"), self.ObjectsTabChanged)
+
         #WINDOW----------------------------------------
         self.setGeometry(200, 200, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
@@ -572,6 +606,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             for font in self.Fonts:
                 font[0].HideMe()
 
+            #Hide Objects
+            self.tab_widget_objects.hide()
+            for objects in self.Objects:
+                objects[0].HideMe()
+
         #Show Sound----------------------
         if index == 1:
             self.tab_widget_sound.show()
@@ -591,6 +630,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             self.tab_widget_font.hide()
             for font in self.Fonts:
                 font[0].HideMe()
+                
+            #Hide Objects
+            self.tab_widget_objects.hide()
+            for objects in self.Objects:
+                objects[0].HideMe()
 
         #Show Fonts----------------------
         if index == 2:
@@ -611,6 +655,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             self.tab_widget_sound.hide()
             for Sound in self.Sound:
                 Sound[0].HideMe()
+                
+            #Hide Objects
+            self.tab_widget_objects.hide()
+            for objects in self.Objects:
+                objects[0].HideMe()
 
         #Show Script----------------------
         if index == 3:
@@ -631,6 +680,36 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             self.tab_widget_font.hide()
             for font in self.Fonts:
                 font[0].HideMe()
+                
+            #Hide Objects
+            self.tab_widget_objects.hide()
+            for objects in self.Objects:
+                objects[0].HideMe()
+
+        #Show Objects----------------------
+        if index == 4:
+            self.tab_widget_objects.show()
+            self.ScriptTabChanged(self.tab_widget_objects.currentIndex())
+
+            #Hide Sprite
+            self.tab_widget_sprites.hide()
+            for Sprite in self.Sprites:
+                Sprite[0].HideMe()
+                
+            #Hide Sound
+            self.tab_widget_sound.hide()
+            for Sound in self.Sound:
+                Sound[0].HideMe()
+
+            #Hide Font
+            self.tab_widget_font.hide()
+            for font in self.Fonts:
+                font[0].HideMe()
+
+            #Hide Script
+            self.tab_widget_scripts.hide()
+            for Script in self.Scripts:
+                Script[0].HideMe()
 
     def SpriteTabChanged(self, index):
         for Zet, Sprite in enumerate(self.Sprites):
@@ -658,7 +737,14 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             if Zet == index:
                 Fonts[0].ShowMe()
             else:
-                Fonts[0].HideMe()  
+                Fonts[0].HideMe()
+
+    def ObjectsTabChanged(self, index):
+        for Zet, Objects in enumerate(self.Objects):
+            if Zet == index:
+                Objects[0].ShowMe()
+            else:
+                Objects[0].HideMe() 
 
     def resizeEvent(self, event):
         self.tree.resize(200, self.height()-125)
@@ -670,6 +756,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.tab_widget_sound.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-18)
         self.tab_widget_font.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-18)
         self.tab_widget_scripts.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-18)
+        self.tab_widget_objects.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-18)
 
         for sprite in self.Sprites:
             sprite[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
@@ -680,6 +767,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
             font[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
         for scripts in self.Scripts:
             scripts[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
+        for object in self.Objects:
+            objects[0].ContainerBox.setGeometry(10, 50, self.tab_widget.width()-3, self.tab_widget.height()-42)
             
     def preferencesopen(self):
         
@@ -823,6 +912,17 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         f = open(os.path.join(self.dirname, 'Scripts', "{0}.py".format(TmpScript)),'w')
         f.close()
         self.tree.AddScriptChild(TmpScript)
+
+    def addObject(self):
+        object = "obj_"
+        objectnumber = 0
+        TmpObject= object + str(objectnumber)
+        while os.path.exists(os.path.join(self.dirname, 'Objects', "{0}.py".format(TmpObject))):
+            objectnumber += 1 
+            TmpObject = object + str(objectnumber)
+        f = open(os.path.join(self.dirname, 'Objects', "{0}.py".format(TmpObject)),'w')
+        f.close()
+        self.tree.AddObjectChild(TmpObject)
 
 
     def center(self):
