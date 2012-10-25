@@ -48,10 +48,51 @@ class ObjectGUI(QtGui.QWidget):
 		
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
-		
-        self.ContainerGrid.setSpacing(0)
-        self.ContainerGrid.addWidget(self.LblName, 1, 0)
-        self.ContainerGrid.addWidget(self.nameEdit, 1, 1)
+        self.LblSprite = QtGui.QLabel('Sprite:')
+        self.cbvisible = QtGui.QCheckBox('Visible', self)
+        self.cbsolid = QtGui.QCheckBox('Solid', self)
+        self.cbpersis = QtGui.QCheckBox('Persistent', self)
+        self.LblDepth = QtGui.QLabel('Depth:')
+        self.depthEdit = QtGui.QLineEdit("0")
+        self.LblParent = QtGui.QLabel('Parent:')
+        self.ParentEdit = QtGui.QLineEdit()
+        self.LblMask = QtGui.QLabel('Mask:')
+        self.MaskEdit = QtGui.QLineEdit()
+        self.Btninfo = QtGui.QPushButton("Show Information")
+        self.Btninfo.setIcon(QtGui.QIcon('Data/info.png'))
+        self.Btnok = QtGui.QPushButton("OK")
+        self.Btnok.setIcon(QtGui.QIcon('Data/accept.png'))
+        self.temporarything = QtGui.QScrollArea()
+        self.temporarything1 = QtGui.QScrollArea()
+        self.Btnaddevent = QtGui.QPushButton("Add Event")
+        self.Btndelete = QtGui.QPushButton("Delete")
+        self.Btnchange = QtGui.QPushButton("Change")
+        
+        self.ContainerGrid.setSpacing(15)
+        self.ContainerGrid.addWidget(self.LblName, 0, 0)
+        self.ContainerGrid.addWidget(self.nameEdit, 0, 1)
+        self.ContainerGrid.addWidget(self.LblSprite, 1, 0)
+        self.ContainerGrid.addWidget(self.cbvisible, 2, 0)
+        self.ContainerGrid.addWidget(self.cbsolid, 2, 1)
+        self.ContainerGrid.addWidget(self.cbpersis, 3, 0)
+        self.ContainerGrid.addWidget(self.LblDepth, 4, 0)
+        self.ContainerGrid.addWidget(self.depthEdit, 4, 1)
+        self.ContainerGrid.addWidget(self.LblParent, 5, 0)
+        self.ContainerGrid.addWidget(self.ParentEdit, 5, 1)
+        self.ContainerGrid.addWidget(self.LblMask, 6, 0)
+        self.ContainerGrid.addWidget(self.MaskEdit, 6, 1)
+        self.ContainerGrid.addWidget(self.Btninfo, 7, 0, 7, 2)
+        self.ContainerGrid.addWidget(self.Btnok, 8, 0,8,2)
+        #---
+        self.ContainerGrid.addWidget(self.temporarything, 0, 2,10,3)
+        self.ContainerGrid.addWidget(self.Btnaddevent, 2, 2,10,3)
+        self.ContainerGrid.addWidget(self.Btndelete, 11, 2)
+        self.ContainerGrid.addWidget(self.Btnchange, 11, 3)
+
+        #---
+        self.ContainerGrid.addWidget(self.temporarything1, 0, 4,12,7)
+        
+        
 		
         #self.startopen()
 
