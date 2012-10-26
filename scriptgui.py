@@ -81,7 +81,8 @@ class ScriptGUI(QtGui.QWidget):
 		
         editor= self.textEdit = CompletionTextEdit()
         highlight = syntax.PythonHighlighter(editor.document())
-        self.textEdit.zoomIn(+4)
+        self.textEdit.zoomIn(+1)
+        self.textEdit.setFont(QtGui.QFont("Courier"))
         self.texEdit=CompletionTextEdit()
 		
         self.ContainerGrid.setSpacing(0)
