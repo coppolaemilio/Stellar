@@ -342,98 +342,102 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.stellarnew = "Stellar.pyw"
         
         #ACTIONS -------------------------------
-        newAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'new.png')), 'New Project', self)
+        newAction = QtGui.QAction(QtGui.QIcon('Data/new.png'), 'New Project', self)
         newAction.setShortcut('Ctrl+N')
         newAction.setStatusTip('New Project.')
 
         newAction.triggered.connect(self.newproject)
         newAction.setDisabled (True)
         
-        exitAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'exit.png')), 'Exit', self)
+        exitAction = QtGui.QAction(QtGui.QIcon('Data/exit.png'), 'Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application.')
         exitAction.triggered.connect(self.close)
 
-        aboutAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'info.png')),'About', self)
+        aboutAction = QtGui.QAction(QtGui.QIcon('Data/info.png'),'About', self)
         aboutAction.setStatusTip('About Stellar.')
         aboutAction.triggered.connect(self.aboutStellar)
 
-        scriptAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'addscript.png')),'Add Script', self)
+        scriptAction = QtGui.QAction(QtGui.QIcon('Data/addscript.png'),'Add Script', self)
         scriptAction.setStatusTip('Add A Script To The Game.')
         scriptAction.triggered.connect(self.addScript)
 
-        buildAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'build.png')),'Build', self)
+        buildAction = QtGui.QAction(QtGui.QIcon('Data/build.png'),'Build', self)
         buildAction.setStatusTip('Build game.')
         buildAction.triggered.connect(self.Build)
         buildAction.setDisabled (True)
 
-        playAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'play.png')),'Run', self)
+        playAction = QtGui.QAction(QtGui.QIcon('Data/play.png'),'Run', self)
         playAction.setStatusTip('Test your game.')
         playAction.setShortcut('F5')
         playAction.triggered.connect(self.playgame)
         playAction.setDisabled (True)
 
-        playDebugAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'playdebug.png')),'Run in debug mode', self)
+        playDebugAction = QtGui.QAction(QtGui.QIcon('Data/playdebug.png'),'Run in debug mode', self)
         playDebugAction.setStatusTip('Test your game on debug mode.')
         playDebugAction.setShortcut('F6')
         playDebugAction.triggered.connect(self.playgame)
         playDebugAction.setDisabled (True)
 
-        spriteAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'sprite.png')),'Add Sprite', self)
+        spriteAction = QtGui.QAction(QtGui.QIcon('Data/sprite.png'),'Add Sprite', self)
         spriteAction.setStatusTip('Add a sprite to the game.')
         spriteAction.triggered.connect(self.addsprite)
 
-        animatedspriteAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'gif.png')),'Add Animated Sprite', self)
+        animatedspriteAction = QtGui.QAction(QtGui.QIcon('Data/gif.png'),'Add Animated Sprite', self)
         animatedspriteAction.setStatusTip('Add an animated sprite to the game.')
         animatedspriteAction.triggered.connect(self.addAnimatedSprite)
 
-        soundAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'sound.png')),'Add Sound', self)
+        soundAction = QtGui.QAction(QtGui.QIcon('Data/sound.png'),'Add Sound', self)
         soundAction.setStatusTip('Add a sound to the game.')
         soundAction.triggered.connect(self.addsound)
 
-        objectAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'object.png')),'Add Object', self)
+        objectAction = QtGui.QAction(QtGui.QIcon('Data/object.png'),'Add Object', self)
         objectAction.setStatusTip('Add an object to the game.')
         objectAction.triggered.connect(self.addObject)
 
-        shareAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'publish.png')),'Share', self)
+        roomAction = QtGui.QAction(QtGui.QIcon('Data/room.png'), 'Add Room', self)
+        roomAction.setStatusTip('Add an room to the game.')
+        roomAction.triggered.connect(self.addRoom)
+
+        shareAction = QtGui.QAction(QtGui.QIcon('Data/publish.png'),'Share', self)
         shareAction.setStatusTip('Share your creations with the community!')
         shareAction.triggered.connect(self.sharegame)
 
-        fontAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'font.png')),'Add Font', self)
+        fontAction = QtGui.QAction(QtGui.QIcon('Data/font.png'),'Add Font', self)
         fontAction.setStatusTip('Add a font to the game.')
         fontAction.triggered.connect(self.addfont)
 
-        zoominAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'plus.png')),'Zoom In', self)
+        zoominAction = QtGui.QAction(QtGui.QIcon('Data/plus.png'),'Zoom In', self)
         zoominAction.setStatusTip('Zoom in the font of the editor.')
         zoominAction.triggered.connect(self.onZoomInClicked)
 
-        zoomoutAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'minus.png')),'Zoom Out', self)
+        zoomoutAction = QtGui.QAction(QtGui.QIcon('Data/minus.png'),'Zoom Out', self)
         zoomoutAction.setStatusTip('Zoom out the font of the editor.')
         zoomoutAction.triggered.connect(self.onZoomOutClicked)
 
-        sfontAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'font.png')),'Set Font', self)
+        sfontAction = QtGui.QAction(QtGui.QIcon('Data/font.png'),'Set Font', self)
         sfontAction.setStatusTip('Change the font of the text editor.')
         sfontAction.triggered.connect(self.fontdialog)
 
-        loadAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'folder.png')),'Open...', self)
+        loadAction = QtGui.QAction(QtGui.QIcon('Data/folder.png'),'Open...', self)
         loadAction.setShortcut('Ctrl+O')
         loadAction.setStatusTip('Open Game.')
         loadAction.triggered.connect(self.openfile)
         loadAction.setDisabled (True)
 
-        saveAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'save.png')),'Save Game As...', self)
+        saveAction = QtGui.QAction(QtGui.QIcon('Data/save.png'),'Save Game As...', self)
         saveAction.setShortcut('Ctrl+Shift+S')
         saveAction.setStatusTip('Save Game As...')
         saveAction.triggered.connect(self.savefile)
         saveAction.setDisabled (True)
 
-        fsaveAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'save.png')),'Save', self)
+        fsaveAction = QtGui.QAction(QtGui.QIcon('Data/save.png'),'Save', self)
         fsaveAction.setShortcut('Ctrl+S')
         fsaveAction.setStatusTip('Save Game.')
         fsaveAction.triggered.connect(self.fsavefile)
         fsaveAction.setDisabled (True)
 
-        preferencesAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'preferences.png')),'Preferences...', self)
+        preferencesAction = QtGui.QAction(QtGui.QIcon('Data/preferences.png'),'Preferences...', self)
         preferencesAction.setStatusTip('Change Stellar preferences.')
         preferencesAction.triggered.connect(self.preferencesopen)
         preferencesAction.setDisabled (True)
@@ -492,6 +496,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.toolbar.addAction(fontAction)
         self.toolbar.addAction(scriptAction)
         self.toolbar.addAction(objectAction)
+        self.toolbar.addAction(roomAction)
         self.toolbar.addSeparator()
         self.toolbar.addAction(aboutAction)
         self.toolbar.addAction(zoominAction)
@@ -505,7 +510,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
 
         #QLogo-----------------------------------------
         self.logo = QtGui.QLabel(self)
-        self.logo.setPixmap(QtGui.QPixmap(os.path.join("data", "Logo.png")))
+        self.logo.setPixmap(QtGui.QPixmap("Data/Logo.png"))
         self.logo.resize(200,55)
         self.logo.move(0,self.height()-122+self.toolbar.height()+self.fileMenu.height())
         self.logo.show()
@@ -582,7 +587,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
 
         #WINDOW----------------------------------------
         self.setGeometry(200, 200, 800, 600)
-        self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
+        self.setWindowIcon(QtGui.QIcon('Data/icon.png'))
         self.fname = "<New game>"
         self.dirname = ''
         self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
@@ -1001,6 +1006,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         f = open(os.path.join(self.dirname, 'Objects', "{0}.py".format(TmpObject)),'w')
         f.close()
         self.tree.AddObjectChild(TmpObject)
+
+    def addRoom(self):
+        pass
 
 
     def center(self):
