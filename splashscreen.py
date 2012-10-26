@@ -183,7 +183,7 @@ class Start(QtGui.QWidget):
         else:
             #Main Folder for Windows
             if self.name != "":
-                if not os.path.exists(self.dirname):
+                if not os.path.exists(self.dirname) and not os.path.isfile(os.path.join(self.dirname, self.name)):
                     os.mkdir(self.dirname)
                     #Project Sub-Folders for Windows
 
@@ -213,10 +213,10 @@ class Start(QtGui.QWidget):
                     self.main.show()
                 else:
                     reply = QtGui.QMessageBox.question(self, "Already Exists",
-                                                            "That Project already exists, Do you want to open it?",
+                                                            "That Project already exists. Do you want to open it?",
                                                             QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
-                        print("#Program Anchor#")
+                        self.OpenFile(self.dirname, self.name)
 
     def openwebsite(self):
         webbrowser.open("http://stellarpygame.blogspot.com")
@@ -257,23 +257,32 @@ class Start(QtGui.QWidget):
             self.main.tree.InitChild()
             self.main.show()
         
-    def OpenFile(self):
+    def OpenFile(self, dirname = None, name = None):
         self.main.tmp = self.main.fname
-        self.project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+        
+        # check if we opens existing file from CreateProject function
+        if dirname != None and name != None:
+            self.dirname = dirname
+            self.main.dirname = self.dirname
+            self.main.fname = name
+            data = os.path.join(dirname, name)
+        else:
+            self.project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                 '', self.tr("Python files (*.py *.pyw)")))
 
-        if not os.path.isfile(self.project):
-            QtGui.QMessageBox.question(self, "Project doesn't exist",
-                    "This project doesn't exist or has been removed",
-                    QtGui.QMessageBox.Ok)
-            return
+            if not os.path.isfile(self.project):
+                QtGui.QMessageBox.question(self, "Project doesn't exist",
+                        "This project doesn't exist or has been removed",
+                        QtGui.QMessageBox.Ok)
+                return
 
-        #Recent project
+            self.dirname = os.path.dirname(self.project)
+            self.main.dirname = self.dirname
+            self.main.fname = os.path.basename(self.project)
+            data = self.project
 
-        self.dirname = os.path.dirname(self.project)
-        self.main.dirname = self.dirname
-
-        cfg.config.set('stellar', 'recentproject', self.project)
+        
+        cfg.config.set('stellar', 'recentproject', data)
         with open('config.ini', 'wb') as configfile:
             cfg.config.write(configfile)
         #-------------
