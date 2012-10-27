@@ -553,6 +553,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.tab_widget_sprites.setTabsClosable (True)
         self.tab_widget_sprites.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
         self.connect(self.tab_widget_sprites, QtCore.SIGNAL("currentChanged(int)"), self.SpriteTabChanged)
+	self.connect(self.tab_widget_sprites, QtCore.SIGNAL('tabCloseRequested(int)'), self.closeTab)
 
         #QFrame QTab Sound
         self.tab_widget_sound = QtGui.QTabWidget(self.tab_widget)
@@ -597,6 +598,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.start = Start(self)
         self.tab_widget.setCurrentIndex(0)
         self.TopTabChanged(0)
+
+    def closeTab(self, index):
+        self.tab_widget_sprites.removeTab(index)
 
     def TopTabChanged(self, index):
 
