@@ -831,9 +831,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget):
 
 
     def resizeEvent(self, event):
-        self.tree.resize(200, self.height()-125)
-        self.tree.move(0,self.toolbar.height()+self.fileMenu.height())
-        self.logo.move(0,self.height()-122+self.toolbar.height()+self.fileMenu.height())
+        #self.tree.resize(200, self.height()-125)
+        #self.tree.move(0,self.toolbar.height()+self.fileMenu.height())
+        #self.logo.move(0,self.height()-122+self.toolbar.height()+self.fileMenu.height())
         self.Frame.setGeometry(QtCore.QRect(200,self.toolbar.height()+self.fileMenu.height()-10,self.width()-200,self.height()-(self.toolbar.height()+self.fileMenu.height())*0.8))        
         self.tab_widget.setGeometry(9, 9, self.Frame.width()-18, self.Frame.height()-18)
         self.tab_widget_sprites.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-18)
