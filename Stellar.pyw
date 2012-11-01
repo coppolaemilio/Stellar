@@ -321,7 +321,7 @@ class TreeWidget(QtGui.QTreeWidget):
         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentFonts, QtCore.QStringList(name[:-4])).setIcon(0,icon)        
    
-class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
+class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget):
     
     def __init__(self):
         super(Stellar, self).__init__()
@@ -507,14 +507,14 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.tree = TreeWidget(self)
         self.tree.resize(200, self.height()-125)
         self.tree.move(0,self.toolbar.height()+self.fileMenu.height())
-        self.tree.show()
+        #self.tree.show()
 
         #QLogo-----------------------------------------
-        self.logo = QtGui.QLabel(self)
-        self.logo.setPixmap(QtGui.QPixmap("Data/Logo.png"))
-        self.logo.resize(200,55)
-        self.logo.move(0,self.height()-122+self.toolbar.height()+self.fileMenu.height())
-        self.logo.show()
+        #self.logo = QtGui.QLabel(self)
+        #self.logo.setPixmap(QtGui.QPixmap("Data/Logo.png"))
+        #self.logo.resize(200,55)
+        #self.logo.move(0,self.height()-122+self.toolbar.height()+self.fileMenu.height())
+        #self.logo.show()
 
         #QFrame ---------------------------------------
         self.Frame = QtGui.QFrame(self)
@@ -553,7 +553,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.tab_widget_sprites.setTabsClosable (True)
         self.tab_widget_sprites.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
         self.connect(self.tab_widget_sprites, QtCore.SIGNAL("currentChanged(int)"), self.SpriteTabChanged)
-	self.connect(self.tab_widget_sprites, QtCore.SIGNAL('tabCloseRequested(int)'), self.closeTab)
+        self.connect(self.tab_widget_sprites, QtCore.SIGNAL('tabCloseRequested(int)'), self.closeTab)
 
         #QFrame QTab Sound
         self.tab_widget_sound = QtGui.QTabWidget(self.tab_widget)
@@ -588,16 +588,19 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
 
 
         #WINDOW----------------------------------------
-        self.setGeometry(200, 200, 800, 600)
+        self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon('Data/icon.png'))
         self.fname = "<New game>"
         self.dirname = ''
         self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
-        self.setMinimumSize(800,600)
         self.center()
         self.start = Start(self)
         self.tab_widget.setCurrentIndex(0)
         self.TopTabChanged(0)
+        self.splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
+        self.splitter1.addWidget(self.tree)
+        self.splitter1.addWidget(self.Frame)
+        self.setCentralWidget(self.splitter1)
 
     def closeTab(self, index):
         self.tab_widget_sprites.removeTab(index)
