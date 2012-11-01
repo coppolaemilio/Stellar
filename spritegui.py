@@ -22,6 +22,7 @@ import sys
 import os
 import os.path
 import shutil
+from PyQt4.Qt import Qt
 from PyQt4 import QtGui, QtCore
 from PIL import Image
 
@@ -51,7 +52,6 @@ class SpriteGUI(QtGui.QWidget):
         self.ContainerBox.setObjectName("groupBox")
         self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.ContainerBox.setGeometry(200, 150, 600, 330)
-        self.ContainerBox.setMinimumSize(480,330)
                 
         self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
@@ -66,12 +66,13 @@ class SpriteGUI(QtGui.QWidget):
                                     
         self.scrollArea = QtGui.QScrollArea(self.ContainerBox)
         self.scrollArea.setWidget(self.spriteLbl)
+        self.scrollArea.setWidgetResizable(True)
+        
         
         #Groupbox General-------------------------------------
         self.GeneralBox = QtGui.QGroupBox(self.ContainerBox)
         self.GeneralBox.setGeometry(QtCore.QRect(16,16,180,160))
         self.GeneralBox.setObjectName("groupBox")
-        self.GeneralBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.GeneralBox.setTitle("General")
  
         self.BtnLoad = QtGui.QPushButton('Load Sprite', self.GeneralBox)
@@ -101,7 +102,6 @@ class SpriteGUI(QtGui.QWidget):
         self.InformationBox = QtGui.QGroupBox(self.ContainerBox)
         self.InformationBox.setGeometry(QtCore.QRect(210,16,125,130))
         self.InformationBox.setObjectName("groupBox")
-        self.InformationBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.InformationBox.setTitle("Image Information")
 
         self.LblWidth = QtGui.QLabel(self.InformationBox) 
@@ -123,7 +123,6 @@ class SpriteGUI(QtGui.QWidget):
         self.CollisionBox = QtGui.QGroupBox(self.ContainerBox)
         self.CollisionBox.setGeometry(QtCore.QRect(210,155,125,55))
         self.CollisionBox.setObjectName("groupBox")
-        self.CollisionBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.CollisionBox.setTitle("Collision Checking")
 
         self.BtnLoad = QtGui.QPushButton('Modify Mask', self.CollisionBox)
