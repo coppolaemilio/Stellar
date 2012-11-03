@@ -189,7 +189,6 @@ class TreeWidget(QtGui.QTreeWidget):
 
                     self.main.Objects.append([ObjectGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
                     self.main.Objects[len(self.main.Objects)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
-				
                     self.main.tab_widget_objects.setCurrentIndex(len(self.main.Objects)-1)
                     self.main.tab_widget.setCurrentIndex(4)
 
@@ -342,166 +341,86 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
         self.stellarnew = "Stellar.pyw"
         
         #ACTIONS -------------------------------
-        newAction = QtGui.QAction(QtGui.QIcon('Data/new.png'), 'New Project', self)
-        newAction.setShortcut('Ctrl+N')
-        newAction.setStatusTip('New Project.')
-
-        newAction.triggered.connect(self.newproject)
-        newAction.setDisabled (True)
         
-        exitAction = QtGui.QAction(QtGui.QIcon('Data/exit.png'), 'Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application.')
-        exitAction.triggered.connect(self.close)
+        def newAction(name, image, trigger, statusTip, shortcut='', enabled=True):
+            action = QtGui.QAction(QtGui.QIcon('Data/'+image), name, self)
+            action.setShortcut(shortcut)
+            action.setStatusTip(statusTip)
+            action.triggered.connect(trigger)
+            action.setEnabled(enabled)
+            return action
+        
+        projectAction = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N', False)
+        
+        loadAction = newAction('Open...', 'folder.png', self.openfile, 'Open Game.', 'Ctrl+O')
+        saveAction = newAction('Save Game As...', 'save.png', self.savefile, 'Save Game As...', 'Ctrl+Shift+S')
+        fsaveAction = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S')
+        
+        shareAction = newAction('Share', 'publish.png', self.sharegame, 'Share your creations with the community!')
+        buildAction = newAction('Build', 'build.png', self.Build, 'Build game.')
+        playAction = newAction('Run', 'play.png', self.playgame, 'Test your game.', 'F5')
+        playDebugAction = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game on debug mode.', 'F6')
+        
+        spriteAction = newAction('Add Sprite', 'sprite.png', self.addsprite, 'Add a sprite to the game.')
+        animatedspriteAction = newAction('Add Animated Sprite', 'gif.png', self.addAnimatedSprite, 'Add an animated sprite to the game.')
+        soundAction = newAction('Add Sound', 'sound.png', self.addsound, 'Add a sound to the game.')
+        fontAction = newAction('Add Font', 'font.png', self.addfont, 'Add a font to the game.')
+        objectAction = newAction('Add Object', 'object.png', self.addObject, 'Add an object to the game.')
+        roomAction = newAction('Add Room', 'room.png', self.addRoom, 'Add an room to the game.')
+        scriptAction = newAction('Add Script', 'addscript.png', self.addScript, 'Add A Script To The Game.')
+        
+        zoominAction = newAction('Zoom In', 'plus.png', self.onZoomInClicked, 'Zoom in the font of the editor.')
+        zoomoutAction = newAction('Zoom Out', 'minus.png', self.onZoomOutClicked, 'Zoom out the font of the editor.')
+        sfontAction = newAction('Set Font', 'font.png', self.fontdialog, 'Change the font of the text editor.')
 
-        aboutAction = QtGui.QAction(QtGui.QIcon('Data/info.png'),'About', self)
-        aboutAction.setStatusTip('About Stellar.')
-        aboutAction.triggered.connect(self.aboutStellar)
-
-        scriptAction = QtGui.QAction(QtGui.QIcon('Data/addscript.png'),'Add Script', self)
-        scriptAction.setStatusTip('Add A Script To The Game.')
-        scriptAction.triggered.connect(self.addScript)
-
-        buildAction = QtGui.QAction(QtGui.QIcon('Data/build.png'),'Build', self)
-        buildAction.setStatusTip('Build game.')
-        buildAction.triggered.connect(self.Build)
-        buildAction.setDisabled (True)
-
-        playAction = QtGui.QAction(QtGui.QIcon('Data/play.png'),'Run', self)
-        playAction.setStatusTip('Test your game.')
-        playAction.setShortcut('F5')
-        playAction.triggered.connect(self.playgame)
-        playAction.setDisabled (True)
-
-        playDebugAction = QtGui.QAction(QtGui.QIcon('Data/playdebug.png'),'Run in debug mode', self)
-        playDebugAction.setStatusTip('Test your game on debug mode.')
-        playDebugAction.setShortcut('F6')
-        playDebugAction.triggered.connect(self.playgame)
-        playDebugAction.setDisabled (True)
-
-        spriteAction = QtGui.QAction(QtGui.QIcon('Data/sprite.png'),'Add Sprite', self)
-        spriteAction.setStatusTip('Add a sprite to the game.')
-        spriteAction.triggered.connect(self.addsprite)
-
-        animatedspriteAction = QtGui.QAction(QtGui.QIcon('Data/gif.png'),'Add Animated Sprite', self)
-        animatedspriteAction.setStatusTip('Add an animated sprite to the game.')
-        animatedspriteAction.triggered.connect(self.addAnimatedSprite)
-
-        soundAction = QtGui.QAction(QtGui.QIcon('Data/sound.png'),'Add Sound', self)
-        soundAction.setStatusTip('Add a sound to the game.')
-        soundAction.triggered.connect(self.addsound)
-
-        objectAction = QtGui.QAction(QtGui.QIcon('Data/object.png'),'Add Object', self)
-        objectAction.setStatusTip('Add an object to the game.')
-        objectAction.triggered.connect(self.addObject)
-
-        roomAction = QtGui.QAction(QtGui.QIcon('Data/room.png'), 'Add Room', self)
-        roomAction.setStatusTip('Add an room to the game.')
-        roomAction.triggered.connect(self.addRoom)
-
-        shareAction = QtGui.QAction(QtGui.QIcon('Data/publish.png'),'Share', self)
-        shareAction.setStatusTip('Share your creations with the community!')
-        shareAction.triggered.connect(self.sharegame)
-
-        fontAction = QtGui.QAction(QtGui.QIcon('Data/font.png'),'Add Font', self)
-        fontAction.setStatusTip('Add a font to the game.')
-        fontAction.triggered.connect(self.addfont)
-
-        zoominAction = QtGui.QAction(QtGui.QIcon('Data/plus.png'),'Zoom In', self)
-        zoominAction.setStatusTip('Zoom in the font of the editor.')
-        zoominAction.triggered.connect(self.onZoomInClicked)
-
-        zoomoutAction = QtGui.QAction(QtGui.QIcon('Data/minus.png'),'Zoom Out', self)
-        zoomoutAction.setStatusTip('Zoom out the font of the editor.')
-        zoomoutAction.triggered.connect(self.onZoomOutClicked)
-
-        sfontAction = QtGui.QAction(QtGui.QIcon('Data/font.png'),'Set Font', self)
-        sfontAction.setStatusTip('Change the font of the text editor.')
-        sfontAction.triggered.connect(self.fontdialog)
-
-        loadAction = QtGui.QAction(QtGui.QIcon('Data/folder.png'),'Open...', self)
-        loadAction.setShortcut('Ctrl+O')
-        loadAction.setStatusTip('Open Game.')
-        loadAction.triggered.connect(self.openfile)
-        loadAction.setDisabled (True)
-
-        saveAction = QtGui.QAction(QtGui.QIcon('Data/save.png'),'Save Game As...', self)
-        saveAction.setShortcut('Ctrl+Shift+S')
-        saveAction.setStatusTip('Save Game As...')
-        saveAction.triggered.connect(self.savefile)
-        saveAction.setDisabled (True)
-
-        fsaveAction = QtGui.QAction(QtGui.QIcon('Data/save.png'),'Save', self)
-        fsaveAction.setShortcut('Ctrl+S')
-        fsaveAction.setStatusTip('Save Game.')
-        fsaveAction.triggered.connect(self.fsavefile)
-        fsaveAction.setDisabled (True)
-
-        preferencesAction = QtGui.QAction(QtGui.QIcon('Data/preferences.png'),'Preferences...', self)
-        preferencesAction.setStatusTip('Change Stellar preferences.')
-        preferencesAction.triggered.connect(self.preferencesopen)
-        preferencesAction.setDisabled (True)
+        exitAction = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
+        aboutAction = newAction('About', 'info.png', self.close, 'About Stellar.')
+        preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.')
+        
 
         self.statusBar()
 
         #MENU BAR --------------------------------------
         menubar = self.menuBar()
-        self.fileMenu = menubar.addMenu('&File')
-        self.fileMenu.addAction(newAction)
-        self.fileMenu.addAction(loadAction)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(fsaveAction)
-        self.fileMenu.addAction(saveAction)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(buildAction)
-        self.fileMenu.addAction(shareAction)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(preferencesAction)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(exitAction)
-        self.fileMenu = menubar.addMenu('&Resources')
-        self.fileMenu.addAction(spriteAction)
-        self.fileMenu.addAction(animatedspriteAction)
-        self.fileMenu.addAction(soundAction)
-        self.fileMenu.addAction(objectAction)
-        self.fileMenu.addAction(fontAction)
-        self.fileMenu.addAction(roomAction)
-        self.fileMenu.addSeparator()
-        self.fileMenu = menubar.addMenu('&Scripts')
-        self.fileMenu.addAction(scriptAction)
-        self.fileMenu = menubar.addMenu('&Run')
-        self.fileMenu.addAction(playAction)
-        self.fileMenu.addAction(playDebugAction)
-        self.fileMenu = menubar.addMenu('&Text Editor')
-        self.fileMenu.addAction(zoominAction)
-        self.fileMenu.addAction(zoomoutAction)
-        self.fileMenu.addAction(sfontAction)
-        self.fileMenu = menubar.addMenu('&Help')
-        self.fileMenu.addAction(aboutAction)
+        
+        def addBar(bar, action):
+            if bar == 'menubar':
+                self.fileMenu = menubar.addMenu(action[0])
+            
+            for i in range(1, len(action)):
+                if action[i] == '|':
+                    self.fileMenu.addSeparator()
+                else:
+                    if bar == 'menubar':
+                        self.fileMenu.addAction(action[i])
+                    elif bar == 'toolbar': 
+                        self.toolbar.addAction(action[i])
+            
+                        
+                
+        addBar('menubar', ['&File', projectAction, loadAction, '|', fsaveAction, saveAction, '|',\
+                                buildAction, shareAction, '|', preferencesAction, '|', exitAction])
+        
+        addBar('menubar', ['&Resources', spriteAction, animatedspriteAction, soundAction, objectAction,\
+                                fontAction, roomAction])
+        
+        addBar('menubar', ['&Scripts', scriptAction])
+        addBar('menubar', ['&Run', playAction, playDebugAction])
+        addBar('menubar', ['&Text Editor', zoominAction, zoomoutAction, sfontAction])
+        addBar('menubar', ['&Help', aboutAction])
+        
+        
 
         #TOOL BAR --------------------------------------
         self.toolbar = self.addToolBar('Toolbar')
         self.toolbar.setMovable (False)
-        self.toolbar.addAction(newAction)
-        self.toolbar.addAction(fsaveAction)
-        self.toolbar.addAction(loadAction)
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(buildAction)
-        self.toolbar.addAction(shareAction)
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(playAction)
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(spriteAction)
-        self.toolbar.addAction(animatedspriteAction)
-        self.toolbar.addAction(soundAction)
-        self.toolbar.addAction(fontAction)
-        self.toolbar.addAction(scriptAction)
-        self.toolbar.addAction(objectAction)
-        self.toolbar.addAction(roomAction)
-        self.toolbar.addSeparator()
-        self.toolbar.addAction(aboutAction)
-        self.toolbar.addAction(zoominAction)
-        self.toolbar.addAction(zoomoutAction)
+        
+        addBar('toolbar', [ None, projectAction, fsaveAction, loadAction, '|', buildAction, shareAction, '|',\
+                                playAction, '|', spriteAction, animatedspriteAction, soundAction, fontAction,\
+                                scriptAction, objectAction, roomAction, '|', aboutAction, zoominAction, zoomoutAction ] )
+        
+        
+        
 
         #Qtree----------------------------------------
         self.tree = TreeWidget(self)
@@ -521,70 +440,42 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget):
 
         self.tab_widget = QtGui.QTabWidget()
         self.tab_widget.setMovable (False) # True will give some errors, could be fixed though with an array when True
-        self.tab1 = QtGui.QWidget() 
-        self.tab2 = QtGui.QWidget()
-        self.tab3 = QtGui.QWidget()
-        self.tab4 = QtGui.QWidget()
-        self.tab5 = QtGui.QWidget()
-        self.tab6 = QtGui.QWidget() 
-         
-        self.p1_vertical = QtGui.QVBoxLayout(self.tab1) 
-        self.p2_vertical = QtGui.QVBoxLayout(self.tab2)
-        self.p3_vertical = QtGui.QVBoxLayout(self.tab3)
-        self.p4_vertical = QtGui.QVBoxLayout(self.tab4)
-        self.p5_vertical = QtGui.QVBoxLayout(self.tab5)
-        self.p6_vertical = QtGui.QVBoxLayout(self.tab6) 
-         
-        self.tab_widget.addTab(self.tab1, "Sprites") 
-        self.tab_widget.addTab(self.tab2, "Sound")
-        self.tab_widget.addTab(self.tab3, "Fonts") 
-        self.tab_widget.addTab(self.tab4, "Scripts")
-        self.tab_widget.addTab(self.tab5, "Objects")
-        self.tab_widget.addTab(self.tab6, "Rooms")
+        
+        def create_tab(names, tab_widget):
+            for name in names:
+                tab = QtGui.QWidget()
+                vertical = QtGui.QVBoxLayout(tab) 
+                tab_widget.addTab(tab, name)
+        
+        
+        create_tab( ["Sprites", "Sound", "Fonts", "Scripts", "Objects", "Rooms"] , self.tab_widget)
+        
 
         self.vbox = QtGui.QVBoxLayout()
         self.vbox.addWidget(self.tab_widget)
         self.Frame.setLayout(self.vbox)
         self.connect(self.tab_widget, QtCore.SIGNAL("currentChanged(int)"), self.TopTabChanged)
 
-        #QFrame QTab Sprites
-        self.tab_widget_sprites = QtGui.QTabWidget(self.tab_widget)
-        self.tab_widget_sprites.setMovable (True)
-        self.tab_widget_sprites.setTabsClosable (True)
-        self.tab_widget_sprites.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
-        self.connect(self.tab_widget_sprites, QtCore.SIGNAL("currentChanged(int)"), self.SpriteTabChanged)
-	self.connect(self.tab_widget_sprites, QtCore.SIGNAL('tabCloseRequested(int)'), self.closeTab)
 
-        #QFrame QTab Sound
-        self.tab_widget_sound = QtGui.QTabWidget(self.tab_widget)
-        self.tab_widget_sound.setMovable (True)
-        self.tab_widget_sound.setTabsClosable (True)
-        self.tab_widget_sound.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
-        self.connect(self.tab_widget_sound, QtCore.SIGNAL("currentChanged(int)"), self.SoundTabChanged)
+        
+        def add_tab_widget(event):
+            tab_widget = QtGui.QTabWidget(self.tab_widget)
+            tab_widget.setMovable (True)
+            tab_widget.setTabsClosable (True)
+            tab_widget.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
+            self.connect(tab_widget, QtCore.SIGNAL("currentChanged(int)"), event)
+            self.connect(tab_widget, QtCore.SIGNAL('tabCloseRequested(int)'), self.closeTab)
+            return tab_widget
+        
 
-        #QFrame QTab Fonts
-        self.tab_widget_font = QtGui.QTabWidget(self.tab_widget)
-        self.tab_widget_font.setMovable (True)
-        self.tab_widget_font.setTabsClosable (True)
-        self.tab_widget_font.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-22)
-        self.connect(self.tab_widget_font, QtCore.SIGNAL("currentChanged(int)"), self.FontsTabChanged)
+        self.tab_widget_sprites = add_tab_widget(self.SpriteTabChanged)         #QFrame QTab Sprites
+        self.tab_widget_sound = add_tab_widget(self.SoundTabChanged)            #QFrame QTab Sounds
+        self.tab_widget_font = add_tab_widget(self.FontsTabChanged)             #QFrame QTab Font
+        self.tab_widget_scripts = add_tab_widget(self.ScriptTabChanged)         #QFrame QTab Rooms
+        self.tab_widget_objects = add_tab_widget(self.ObjectsTabChanged)        #QFrame QTab Objects
+        self.tab_widget_rooms = add_tab_widget(self.RoomsTabChanged)            #QFrame QTab Rooms
+        
 
-        #QFrame QTab Scripts
-        self.tab_widget_scripts = QtGui.QTabWidget(self.tab_widget)
-        self.tab_widget_scripts.setMovable (True)
-        self.tab_widget_scripts.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
-        self.connect(self.tab_widget_scripts, QtCore.SIGNAL("currentChanged(int)"), self.ScriptTabChanged)
-
-        #QFrame QTab Objects
-        self.tab_widget_objects = QtGui.QTabWidget(self.tab_widget)
-        self.tab_widget_objects.setMovable (True)
-        self.tab_widget_objects.setGeometry(0, 22, self.tab_widget.width(), self.tab_widget.height()-22)
-        self.connect(self.tab_widget_objects, QtCore.SIGNAL("currentChanged(int)"), self.ObjectsTabChanged)
-
-        #QFrame QTab Rooms
-        self.tab_widget_rooms = QtGui.QTabWidget(self.tab_widget) 
-        self.tab_widget_rooms.setGeometry(0, 18, self.tab_widget.width(), self.tab_widget.height()-22)
-        self.connect(self.tab_widget_rooms, QtCore.SIGNAL("currentChanged(int)"), self.RoomsTabChanged)
 
 
         #WINDOW----------------------------------------
