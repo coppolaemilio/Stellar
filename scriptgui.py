@@ -94,13 +94,19 @@ class ScriptGUI(QtGui.QWidget):
         self.main.setWindowIcon(QtGui.QIcon('Data/addscript.png'))
         fname = self.FileName + ".py"
         finalname= text + ".py"
-        os.rename(str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py", str(self.dirname)+ ("/Scripts/") + str(text)+".py")
-        self.main.updatetree()
+
+        #rename file in folder
+        os.rename(os.path.join(self.dirname, "Scripts", self.FileName , ".py"),
+                  os.path.join(self.dirname, "Scripts", str(text), ".py"))
+        
+        #rename file in tree widget
+        #print self.main.Scripts
+
         self.FileName = text
 	
     def exportScript(self):
         print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
-        fname = self.dirname + "/Scripts/" + self.FileName + ".py"
+        fname = os.path.join(self.dirname, "Scripts", self.FileName, ".py")
         f = open(fname, 'w')
         with f:    
             data = self.textEdit.toPlainText()
@@ -109,7 +115,7 @@ class ScriptGUI(QtGui.QWidget):
 
     def saveScript(self):
         print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
-        fname = self.dirname + "/Scripts/" + self.FileName + ".py"
+        fname = os.path.join(self.dirname, "Scripts", self.FileName, ".py")
         f = open(fname, 'w')
         with f:    
             data = self.textEdit.toPlainText()
@@ -119,7 +125,7 @@ class ScriptGUI(QtGui.QWidget):
 			
     def startopen(self):
 
-        fname = self.dirname + "/Scripts/" + self.FileName + ".py"
+        fname = os.path.join(self.dirname, "Scripts", self.FileName, ".py")
         
         f = open(fname, 'r')
         
