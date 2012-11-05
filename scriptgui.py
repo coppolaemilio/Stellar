@@ -96,17 +96,17 @@ class ScriptGUI(QtGui.QWidget):
         finalname= text + ".py"
 
         #rename file in folder
-        os.rename(os.path.join(self.dirname, "Scripts", self.FileName , ".py"),
-                  os.path.join(self.dirname, "Scripts", str(text), ".py"))
+        os.rename(os.path.join(str(self.dirname), "Scripts", str(self.FileName), ".py"),
+                  os.path.join(str(self.dirname), "Scripts", str(text), ".py"))
         
         #rename file in tree widget
-        #print self.main.Scripts
+        self.main.updatetree()
 
         self.FileName = text
 	
     def exportScript(self):
         print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
-        fname = os.path.join(self.dirname, "Scripts", self.FileName, ".py")
+        fname = os.path.join(str(self.dirname), "Scripts", str(self.FileName), ".py")
         f = open(fname, 'w')
         with f:    
             data = self.textEdit.toPlainText()
@@ -115,7 +115,7 @@ class ScriptGUI(QtGui.QWidget):
 
     def saveScript(self):
         print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
-        fname = os.path.join(self.dirname, "Scripts", self.FileName, ".py")
+        fname = os.path.join(str(self.dirname), "Scripts", str(self.FileName), ".py")
         f = open(fname, 'w')
         with f:    
             data = self.textEdit.toPlainText()
@@ -124,14 +124,14 @@ class ScriptGUI(QtGui.QWidget):
         self.main.close()
 			
     def startopen(self):
-
-        fname = os.path.join(self.dirname, "Scripts", self.FileName, ".py")
+        fname = os.path.join(self.dirname, "Scripts", str(self.FileName)) + ".py"
         
         f = open(fname, 'r')
         
         with f:        
             data = f.read()
             self.textEdit.setText(data)
+            f.close()
 			
     def openScript(self):
 
