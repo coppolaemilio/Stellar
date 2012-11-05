@@ -158,7 +158,8 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.script = ScriptGUI(self.main.window,item.text(0), self.main.dirname)
                     self.main.qmdiarea.addSubWindow(self.main.window)
                     self.main.window.setVisible(True)
-                    self.main.window.setWindowTitle("Script Properties: "+ item.text(0))
+                    
+                    #self.main.window.setWindowTitle("Script Properties: "+ item.text(0))
                     
                 
                 
@@ -361,7 +362,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         sfontAction = newAction('Set Font', 'font.png', self.fontdialog, 'Change the font of the text editor.')
 
         exitAction = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
-        aboutAction = newAction('About', 'info.png', self.close, 'About Stellar.')
+        aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
         preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.')
         
 
@@ -400,7 +401,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         #TOOL BAR --------------------------------------
         self.toolbar = self.addToolBar('Toolbar')
-        self.toolbar.setMovable (False)
+        self.toolbar.setMovable (True)
         
         addBar('toolbar', [ None, projectAction, fsaveAction, loadAction, '|', buildAction, shareAction, '|',\
                                 playAction, '|', spriteAction, animatedspriteAction, soundAction, fontAction,\
@@ -411,9 +412,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         #Qtree----------------------------------------
         self.tree = TreeWidget(self)
-
-        #QFrame ---------------------------------------
-        self.Frame = QtGui.QFrame(self)
         
 
 
