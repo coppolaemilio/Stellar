@@ -106,17 +106,11 @@ class TreeWidget(QtGui.QTreeWidget):
                         break
 
                 if bln==True:
-                
-                    self.main.tab = QtGui.QWidget()
-                    self.main.tab_widget_sprites.addTab(self.main.tab, item.text(0))
-
-                    self.main.Sprites.append([SpriteGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
-                    self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
-                    self.main.Sprites[len(self.main.Sprites)-1][0].scrollArea.setGeometry(350, 0, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.width()-350, self.main.Sprites[len(self.main.Sprites)-1][0].ContainerBox.height())
-                    
-                    self.main.tab_widget_sprites.setCurrentIndex(len(self.main.Sprites)-1)
-                    self.main.tab_widget_sprites.setTabIcon(len(self.main.Sprites)-1,(QtGui.QIcon(os.path.join(self.main.dirname, 'Sprites', str(item.text(0))))))
-                    self.main.tab_widget.setCurrentIndex(0)
+                    self.main.window = QtGui.QWidget()
+                    self.main.sprite = SpriteGUI(self.main.window,item.text(0), self.main.dirname)
+                    self.main.qmdiarea.addSubWindow(self.main.window)
+                    self.main.window.setVisible(True)
+                    self.main.window.setWindowTitle("Sprite Properties: "+ item.text(0))
                     
                     
             elif item.parent().text(0) == "Sound":
@@ -129,16 +123,11 @@ class TreeWidget(QtGui.QTreeWidget):
                         break
 
                 if bln==True:
-                    self.main.tab = QtGui.QWidget()
-                    self.main.tab_widget_sound.addTab(self.main.tab, item.text(0))
-
-                    self.main.Sound.append([SoundGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
-                    self.main.Sound[len(self.main.Sound)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
-
-                    
-
-                    self.main.tab_widget_sound.setCurrentIndex(len(self.main.Sound)-1)
-                    self.main.tab_widget.setCurrentIndex(1)
+                    self.main.window = QtGui.QWidget()
+                    self.main.sound = SoundGUI(self.main.window,item.text(0), self.main.dirname)
+                    self.main.qmdiarea.addSubWindow(self.main.window)
+                    self.main.window.setVisible(True)
+                    self.main.window.setWindowTitle("Sound Properties: "+ item.text(0))
 
             elif item.parent().text(0) == "Fonts":
 
@@ -150,15 +139,11 @@ class TreeWidget(QtGui.QTreeWidget):
                         break
 
                 if bln==True:
-                    self.main.tab = QtGui.QWidget()
-                    self.main.tab_widget_font.addTab(self.main.tab, item.text(0))
-
-                    self.main.Fonts.append([FontGUI(self.main.Frame, self.main.dirname),item.text(0)])
-                    self.main.Fonts[len(self.main.Fonts)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-4, self.main.tab_widget.height()-42)
-
-                    
-                    self.main.tab_widget_font.setCurrentIndex(len(self.main.Fonts)-1)
-                    self.main.tab_widget.setCurrentIndex(2)
+                    self.main.window = QtGui.QWidget()
+                    self.main.font = FontGUI(self.main.window,item.text(0))
+                    self.main.qmdiarea.addSubWindow(self.main.window)
+                    self.main.window.setVisible(True)
+                    self.main.window.setWindowTitle("Font Properties: "+ item.text(0))
 
             elif item.parent().text(0) == "Scripts":
 
@@ -166,9 +151,6 @@ class TreeWidget(QtGui.QTreeWidget):
                     if script[1] == item.text(0):
                         bln = False
                         self.main.qmdiarea.setActiveSubWindow(index)
-                        #self.main.qmdiarea.setActiveSubWindow (self.main.window)
-                        #self.main.window.show(QtGui.QFocusEvent.gotFocus(self))
-                        #self.main.tab_widget.setCurrentIndex(3)
                         break
 
                 if bln==True:
@@ -177,17 +159,8 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.qmdiarea.addSubWindow(self.main.window)
                     self.main.window.setVisible(True)
                     self.main.window.setWindowTitle("Script Properties: "+ item.text(0))
-                    #self.main.window.setGeometry(0,0,200,100)
                     
                 
-                    
-
-
-                
-                print "bla bla bla"+str(item.text(0))
-                #self.qmdiarea= QMdiAreaW(self)
-                
-                print "llego"
                 
                     
             elif item.parent().text(0) == "Objects":
@@ -200,13 +173,11 @@ class TreeWidget(QtGui.QTreeWidget):
                         break
 
                 if bln==True:
-                    self.main.tab = QtGui.QWidget()
-                    self.main.tab_widget_objects.addTab(self.main.tab, item.text(0))
-
-                    self.main.Objects.append([ObjectGUI(self.main.Frame,item.text(0), self.main.dirname),item.text(0)])
-                    self.main.Objects[len(self.main.Objects)-1][0].ContainerBox.setGeometry(10, 50, self.main.tab_widget.width()-3, self.main.tab_widget.height()-42)
-                    self.main.tab_widget_objects.setCurrentIndex(len(self.main.Objects)-1)
-                    self.main.tab_widget.setCurrentIndex(4)
+                    self.main.window = QtGui.QWidget()
+                    self.main.object = ObjectGUI(self.main.window,item.text(0), self.main.dirname)
+                    self.main.qmdiarea.addSubWindow(self.main.window)
+                    self.main.window.setVisible(True)
+                    self.main.window.setWindowTitle("Object Properties: "+ item.text(0))
 
                     
 
