@@ -38,15 +38,7 @@ class ScriptGUI(QtGui.QWidget):
         
 
     def initUI(self):
-        
-        #Groupbox Container-----------------------------------
-        self.ContainerBox = QtGui.QGroupBox(self.main)
-        self.ContainerBox.setObjectName("groupBox")
-        self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
-        self.ContainerBox.setGeometry(QtCore.QRect(0,0,350,400))
-        self.ContainerBox.setMinimumSize(350,400)
-		
-        self.ContainerGrid = QtGui.QGridLayout(self.ContainerBox)
+        self.ContainerGrid = QtGui.QGridLayout(self.main)
 		
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
@@ -92,6 +84,7 @@ class ScriptGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.toolbar, 0, 0)
 		
         self.startopen()
+        self.show()
 
 	
     def exportScript(self):
