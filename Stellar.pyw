@@ -44,7 +44,7 @@ from PyQt4 import QtCore, QtGui
 class QMdiAreaW(QtGui.QMdiArea):
     def __init__(self, main):
         super(QMdiAreaW, self).__init__(main)
-        #self.setBackground (self, QBrush background)
+        self.setBackground (QtGui.QBrush(QtGui.QPixmap(os.path.join("Data", "background.png"))))
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
 
