@@ -39,7 +39,6 @@ class SpriteGUI(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-
         self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
         img = Image.open(self.image_file)
         width, height = img.size
@@ -47,15 +46,10 @@ class SpriteGUI(QtGui.QWidget):
         Format  = str(extension)
 
         #Groupbox Container-----------------------------------
-        self.ContainerBox = QtGui.QGroupBox(self.main)
-        self.ContainerBox.setGeometry(QtCore.QRect(25,25,self.width()-100,550))
-        self.ContainerBox.setObjectName("groupBox")
-        self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
-        self.ContainerBox.setGeometry(200, 150, 600, 330)
+        self.ContainerGrid = QtGui.QGridLayout(self.main)
                 
-        self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
+        self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
-        self.BtnOK.setGeometry(32, 240, 60, 25)
         self.BtnOK.clicked.connect(self.HideMe)
 
         #Scroll Area------------------------------------------
@@ -64,73 +58,88 @@ class SpriteGUI(QtGui.QWidget):
         self.spriteLbl = QtGui.QLabel(self.main)
         self.spriteLbl.setPixmap(self.sprite)
                                     
-        self.scrollArea = QtGui.QScrollArea(self.ContainerBox)
+        self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.spriteLbl)
         self.scrollArea.setWidgetResizable(True)
         
         
         #Groupbox General-------------------------------------
-        self.GeneralBox = QtGui.QGroupBox(self.ContainerBox)
-        self.GeneralBox.setGeometry(QtCore.QRect(16,16,180,160))
-        self.GeneralBox.setObjectName("groupBox")
-        self.GeneralBox.setTitle("General")
+        self.GeneralBox = QtGui.QWidget()
+        self.layout = QtGui.QGridLayout()  	
  
-        self.BtnLoad = QtGui.QPushButton('Load Sprite', self.GeneralBox)
+        self.BtnLoad = QtGui.QPushButton('Load Sprite')
         self.BtnLoad.setIcon(QtGui.QIcon('Data/folder.png'))
-        self.BtnLoad.setGeometry(50, 55, 115, 25)
         self.BtnLoad.clicked.connect(self.LoadSprite)
 
-        self.BtnSave = QtGui.QPushButton('Save Sprite', self.GeneralBox)
+        self.BtnSave = QtGui.QPushButton('Save Sprite')
         self.BtnSave.setIcon(QtGui.QIcon('Data/save.png'))
-        self.BtnSave.setGeometry(50, 85, 115, 25)
         self.BtnSave.clicked.connect(self.SaveSprite)
  
-        self.BtnEdit = QtGui.QPushButton('Edit Sprite', self.GeneralBox)
+        self.BtnEdit = QtGui.QPushButton('Edit Sprite')
         self.BtnEdit.setIcon(QtGui.QIcon('Data/editbutton.png'))
-        self.BtnEdit.setGeometry(50, 114, 115, 25)
         self.BtnEdit.clicked.connect(self.EditSprite)
 
-        self.LblName = QtGui.QLabel(self.GeneralBox) 
+        self.LblName = QtGui.QLabel() 
         self.LblName.setText('Name:') 
         self.LblName.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
-        self.LblName.setGeometry(15, 25, 100, 25)
 
-        self.qleSprite = QtGui.QLineEdit("%s"%(self.icon), self.GeneralBox)
-        self.qleSprite.setGeometry(50, 25, 115, 25)
+        self.qleSprite = QtGui.QLineEdit("%s"%(self.icon))
+		
+        self.layout.addWidget(self.LblName,0,0)	
+        self.layout.addWidget(self.qleSprite,0,1)
+        self.layout.addWidget(self.BtnLoad,1,0,1,2)
+        self.layout.addWidget(self.BtnSave,2,0,2,2)
+        self.layout.addWidget(self.BtnEdit,3,0,3,2)	
+        self.layout.addWidget(self.BtnOK,4,0,4,2)
+		
 
+        self.GeneralBox.setLayout(self.layout)		
+		
         #Groupbox Image Information---------------------------
-        self.InformationBox = QtGui.QGroupBox(self.ContainerBox)
-        self.InformationBox.setGeometry(QtCore.QRect(210,16,125,130))
-        self.InformationBox.setObjectName("groupBox")
-        self.InformationBox.setTitle("Image Information")
+        self.InformationBox = QtGui.QGroupBox()
+        self.layout1 = QtGui.QGridLayout()	
 
-        self.LblWidth = QtGui.QLabel(self.InformationBox) 
+        self.LblWidth = QtGui.QLabel() 
         self.LblWidth.setText('Width:   %d Pixels'%(width)) 
         self.LblWidth.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
-        self.LblWidth.setGeometry(15, 25, 125, 25) 
  
-        self.LblHeight = QtGui.QLabel(self.InformationBox) 
+        self.LblHeight = QtGui.QLabel() 
         self.LblHeight.setText('Height:  %d Pixels'%(height)) 
         self.LblHeight.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
-        self.LblHeight.setGeometry(15, 55, 125, 25) 
 
-        self.LblFormat = QtGui.QLabel(self.InformationBox) 
+        self.LblFormat = QtGui.QLabel() 
         self.LblFormat.setText('File Format:  %s'%(Format)) 
         self.LblFormat.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
-        self.LblFormat.setGeometry(15, 85, 125, 25) 
-
+		
+        self.layout1.addWidget(self.LblWidth,0,0)	
+        self.layout1.addWidget(self.LblHeight,1,0)
+        self.layout1.addWidget(self.LblFormat,3,0)
+        self.InformationBox.setLayout(self.layout1)	
+		
         #Groupbox Collision Checking---------------------------
-        self.CollisionBox = QtGui.QGroupBox(self.ContainerBox)
-        self.CollisionBox.setGeometry(QtCore.QRect(210,155,125,55))
-        self.CollisionBox.setObjectName("groupBox")
-        self.CollisionBox.setTitle("Collision Checking")
+        #self.CollisionBox = QtGui.QGroupBox()
+        #self.CollisionBox.setObjectName("groupBox")
+        #self.CollisionBox.setTitle("Collision Checking")
 
-        self.BtnLoad = QtGui.QPushButton('Modify Mask', self.CollisionBox)
-        self.BtnLoad.setGeometry(15, 20, 100, 25) 
+        #self.BtnLoad = QtGui.QPushButton('Modify Mask', self.CollisionBox)
       
 
         #Main Window------------------------------------------
-        self.ContainerBox.show()
+		
+        self.ContainerGrid.setSpacing(0)
+
+
+
+		
+        self.spritesplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
+        self.spritesplitter.addWidget(self.GeneralBox)
+        self.spritesplitter.addWidget(self.InformationBox)
+        self.spritesplitter.addWidget(self.scrollArea)
+        self.ContainerGrid.addWidget(self.spritesplitter, 0, 0)
+
+		
+		
+		
 
     def LoadSprite(self):
         self.asprite = QtGui.QFileDialog.getOpenFileNames(self, 'Open Sprite(s)', 
