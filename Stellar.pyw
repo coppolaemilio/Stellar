@@ -54,6 +54,7 @@ class TreeWidget(QtGui.QTreeWidget):
         super(TreeWidget, self).__init__(main)
         self.header().setHidden(True)
         self.setWindowTitle('Resources')
+        self.setDragDropMode(QtGui.QAbstractItemView.InternalMove)
         self.main = main
         self.dirname = ''
         self.connect(self, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*, int)"),self.DoEvent)
