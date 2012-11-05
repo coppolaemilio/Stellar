@@ -136,7 +136,7 @@ class ScriptGUI(QtGui.QWidget):
     def openScript(self):
 
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
-                '/home')
+                str(os.getcwd()))
         
         f = open(fname, 'r')
         
