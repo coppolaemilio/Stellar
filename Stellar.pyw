@@ -435,13 +435,15 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.splitter1.addWidget(self.qmdiarea)
         self.splitter1.setStretchFactor(1, 1)
         self.setCentralWidget(self.splitter1)
+
+
+
+    def updatetree(self):
+        self.tree.clear()
+        self.tree.InitParent()
+        self.tree.InitChild()
         
-    def addSubWindow(self, name, widg):
-        self.subWindow = QtGui.QMdiSubWindow();
-        self.qmdiarea.addSubWindow(self.subWindow)
-        self.subWindow.setWindowTitle(name)
-        self.subWindow.setVisible(True)
-        self.subWindow.setWidget(widg)
+
         
     def preferencesopen(self):
         
@@ -482,6 +484,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
     def openfile(self):
         print "To do"
+
 
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
