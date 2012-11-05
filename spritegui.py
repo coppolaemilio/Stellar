@@ -65,8 +65,10 @@ class SpriteGUI(QtGui.QWidget):
         
         #Groupbox General-------------------------------------
         self.GeneralBox = QtGui.QWidget()
-        self.layout = QtGui.QGridLayout()  	
- 
+        self.layout = QtGui.QGridLayout()		
+        self.NameAndThingsBox = QtGui.QFrame() 
+        self.nameandlayout = QtGui.QGridLayout()
+		
         self.BtnLoad = QtGui.QPushButton('Load Sprite')
         self.BtnLoad.setIcon(QtGui.QIcon('Data/folder.png'))
         self.BtnLoad.clicked.connect(self.LoadSprite)
@@ -85,11 +87,15 @@ class SpriteGUI(QtGui.QWidget):
 
         self.qleSprite = QtGui.QLineEdit("%s"%(self.icon))
 		
-        self.layout.addWidget(self.LblName,0,0)	
-        self.layout.addWidget(self.qleSprite,0,1)
-        self.layout.addWidget(self.BtnLoad,1,0,1,2)
-        self.layout.addWidget(self.BtnSave,2,0,2,2)
-        self.layout.addWidget(self.BtnEdit,3,0,3,2)	
+        self.nameandlayout.addWidget(self.LblName,0,0)	
+        self.nameandlayout.addWidget(self.qleSprite,0,1)
+        self.nameandlayout.addWidget(self.BtnLoad,1,0,1,2)
+        self.nameandlayout.addWidget(self.BtnSave,2,0,2,2)
+        self.nameandlayout.addWidget(self.BtnEdit,4,0,4,2)	
+        self.NameAndThingsBox.setLayout(self.nameandlayout)
+
+		
+        self.layout.addWidget(self.NameAndThingsBox,0,0)		
         self.layout.addWidget(self.BtnOK,4,0,4,2)
 		
 
@@ -135,6 +141,7 @@ class SpriteGUI(QtGui.QWidget):
         self.spritesplitter.addWidget(self.GeneralBox)
         self.spritesplitter.addWidget(self.InformationBox)
         self.spritesplitter.addWidget(self.scrollArea)
+        self.spritesplitter.setMinimumSize(100,200)
         self.ContainerGrid.addWidget(self.spritesplitter, 0, 0)
 
 		
