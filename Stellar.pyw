@@ -155,7 +155,7 @@ class TreeWidget(QtGui.QTreeWidget):
 
                 if bln==True:
                     self.main.window = QtGui.QWidget()
-                    self.main.script = ScriptGUI(self.main.window,item.text(0), self.main.dirname)
+                    self.main.script = ScriptGUI(self.main.window,item.text(0), self.main.dirname, self.main)
                     self.main.qmdiarea.addSubWindow(self.main.window)
                     self.main.window.setVisible(True)
                     
@@ -439,6 +439,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
 
     def updatetree(self):
+        self.Scripts = []
         self.tree.clear()
         self.tree.InitParent()
         self.tree.InitChild()

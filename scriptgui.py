@@ -28,10 +28,11 @@ from autocomplete import CompletionTextEdit
 
 class ScriptGUI(QtGui.QWidget):
   
-    def __init__(self, main, FileName, dirname):
+    def __init__(self, main, FileName, dirname, parent):
         super(ScriptGUI, self).__init__(main)
         
         self.main = main
+        self.parent = parent
         self.dirname = dirname
         self.FileName = FileName
         self.initUI()
@@ -101,6 +102,9 @@ class ScriptGUI(QtGui.QWidget):
         
         #rename file in tree widget
         #self.main.updatetree()
+        self.parent.tree.clear()
+        self.parent.tree.InitParent()
+        self.parent.tree.InitChild()
 
         self.FileName = text
 	
