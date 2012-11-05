@@ -35,13 +35,13 @@ class ScriptGUI(QtGui.QWidget):
         self.dirname = dirname
         self.FileName = FileName
         self.initUI()
-        
 
     def initUI(self):
         self.ContainerGrid = QtGui.QGridLayout(self.main)
 		
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
+        self.nameEdit.textChanged[str].connect(self.onChanged)
 		
         saveAction = QtGui.QAction(QtGui.QIcon('Data/tick.png'), 'Save', self)
         saveAction.setShortcut('Ctrl+S')
@@ -84,8 +84,19 @@ class ScriptGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.toolbar, 0, 0)
 		
         self.startopen()
+        
+        self.main.setWindowTitle("Script Properties: "+ self.FileName)
+        
         self.show()
 
+    def onChanged(self, text):
+        self.main.setWindowTitle("Script Properties: "+ text)
+        self.main.setWindowIcon(QtGui.QIcon('Data/addscript.png'))
+        fname = self.FileName + ".py"
+        finalname= text + ".py"
+        os.rename(str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py", str(self.dirname)+ ("/Scripts/") + str(text)+".py")
+        self.main.updatetree()
+        self.FileName = text
 	
     def exportScript(self):
         print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
@@ -104,6 +115,7 @@ class ScriptGUI(QtGui.QWidget):
             data = self.textEdit.toPlainText()
             f.write(data)
             f.close()
+        self.main.close()
 			
     def startopen(self):
 
@@ -125,9 +137,3 @@ class ScriptGUI(QtGui.QWidget):
         with f:        
             data = f.read()
             self.textEdit.setText(data)
-
-    def ShowMe(self):
-        self.ContainerBox.show()
-        
-    def HideMe(self):
-        self.ContainerBox.hide()
