@@ -40,6 +40,7 @@ class SoundGUI(QtGui.QWidget):
     def initUI(self):
 
         #Groupbox Container-----------------------------------
+        self.ContainerGrid = QtGui.QGridLayout(self.main)
         self.ContainerBox = QtGui.QGroupBox(self.main)
         self.ContainerBox.setObjectName("groupBox")
         self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
@@ -138,7 +139,8 @@ class SoundGUI(QtGui.QWidget):
       
 
         #Main Window------------------------------------------
-        self.ContainerBox.show()
+        #self.ContainerBox.show()
+        self.ContainerGrid.addWidget(self.ContainerBox, 0, 0)
  
     def changeValuePan(self, value):
 
