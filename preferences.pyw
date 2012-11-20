@@ -16,10 +16,18 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
+# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 import sys
+import os
 import inspect
+
 from PyQt4 import QtGui, QtCore
 
 direc = inspect.getfile(inspect.currentframe())
@@ -49,7 +57,6 @@ class MainWindow(QtGui.QWidget):
          
         tab_widget.addTab(tab1, "Editors") 
         tab_widget.addTab(tab2, "General")
-
 
         self.ContainerBox = QtGui.QGroupBox(self)
         
@@ -81,7 +88,6 @@ class MainWindow(QtGui.QWidget):
         self.button1.setGeometry(280,65,40,21)
         self.button1.clicked.connect(self.imageeditor)
 
-        
         self.soundeditorbox = QtGui.QGroupBox('Sound Editor',self.ContainerBox)
         self.soundeditorbox.setGeometry(16, 246, 330, 100)
         self.usebuilt2 = QtGui.QRadioButton("Use built-in code editor", self.soundeditorbox)
@@ -98,8 +104,6 @@ class MainWindow(QtGui.QWidget):
         
         p1_vertical.addWidget(self.ContainerBox)
 
-
-
         okButton = QtGui.QPushButton("OK")
         okButton.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
         okButton.clicked.connect(self.okbutton)
@@ -113,14 +117,11 @@ class MainWindow(QtGui.QWidget):
         hbox.addWidget(okButton)
         hbox.addWidget(cancelButton)
 
-        
-
         self.ResolutionBox = QtGui.QGroupBox(self)
         self.full = QtGui.QCheckBox('Set the resolution of the screen', self.ResolutionBox)
         self.full.move(16, 16)
         p2_vertical.addWidget(self.ResolutionBox)
 
-        
         vbox = QtGui.QVBoxLayout()
         vbox.addWidget(tab_widget) 
         vbox.addLayout(hbox)
@@ -128,8 +129,7 @@ class MainWindow(QtGui.QWidget):
 
         #Load Preferences-----------------------------
         self.fname = os.path.join("Data", "editors.txt")
-        f = open(self.fname, 'r')
-        with f:
+        with open(self.fname, 'r') as f:
             data = f.readline()
             data1 = f.readline()
             data2 = f.readline()
@@ -153,11 +153,9 @@ class MainWindow(QtGui.QWidget):
             else:
                 self.useexternal2.toggle()
                 self.editor2.setText(data2)
-            
-            
+
             f.close()
-            
-        
+
         #-----------------------------------------
 
     def codeeditor(self):
@@ -189,10 +187,9 @@ class MainWindow(QtGui.QWidget):
                 
     def okbutton(self):
             self.fname = os.path.join("Data", "editors.txt")
-            f = open(self.fname, 'w')
-            p = self.fname
-            d = p.split('/')[-1]
-            with f:
+            #p = self.fname
+            #d = os.path.basename(p)
+            with open(self.fname, 'w') as f:
                 if self.editor.text():
                     data = self.editor.text()
                     f.write(data)
@@ -214,12 +211,11 @@ class MainWindow(QtGui.QWidget):
                 f.close()
                 self.close()
 
-
     def center(self): 
         screen = QtGui.QDesktopWidget().screenGeometry() 
         size = self.geometry() 
-        self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2) 
-
+        self.move((screen.width() - size.width()) // 2,
+                  (screen.height() - size.height()) // 2) 
 
 app = QtGui.QApplication(sys.argv) 
 frame = MainWindow() 

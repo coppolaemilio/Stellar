@@ -22,6 +22,12 @@
 Stellar
 """
 
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 import sys
 import os
 import webbrowser
@@ -93,7 +99,6 @@ class TreeWidget(QtGui.QTreeWidget):
         propertiesAction.triggered.connect(self.DoEvent)
         action = menu.exec_(self.mapToGlobal(event.pos()))
 
-
     def DoEvent(self):
         item = self.currentItem()
         bln = True
@@ -113,8 +118,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.qmdiarea.addSubWindow(self.main.window)
                     self.main.window.setVisible(True)
                     self.main.window.setWindowTitle("Sprite Properties: "+ item.text(0))
-                    
-                    
+
             elif item.parent().text(0) == "Sound":
 
                 for index, sound in enumerate(self.main.Sound):
@@ -163,9 +167,6 @@ class TreeWidget(QtGui.QTreeWidget):
                     
                     #self.main.window.setWindowTitle("Script Properties: "+ item.text(0))
                     
-                
-                
-                    
             elif item.parent().text(0) == "Objects":
 
                 for index, object in enumerate(self.main.Objects):
@@ -181,8 +182,6 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.qmdiarea.addSubWindow(self.main.window)
                     self.main.window.setVisible(True)
                     self.main.window.setWindowTitle("Object Properties: "+ item.text(0))
-
-                    
 
     def InitParent(self):
 
@@ -279,7 +278,6 @@ class TreeWidget(QtGui.QTreeWidget):
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "game.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentRooms, QtCore.QStringList(ChildRoom[:-4])).setIcon(0,icon)
 
-
     def AddSprChild(self,name):
         #Sprites----------------------------------
         icon = QtGui.QIcon()
@@ -309,7 +307,8 @@ class TreeWidget(QtGui.QTreeWidget):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         QtGui.QTreeWidgetItem(self.ParentFonts, QtCore.QStringList(name[:-4])).setIcon(0,icon)        
-   
+
+
 class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiArea):
     
     def __init__(self):
@@ -333,7 +332,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #ACTIONS -------------------------------
         
         def newAction(name, image, trigger, statusTip, shortcut='', enabled=True):
-            action = QtGui.QAction(QtGui.QIcon('Data/'+image), name, self)
+            action = QtGui.QAction(QtGui.QIcon(os.path.join('Data', image)), name, self)
             action.setShortcut(shortcut)
             action.setStatusTip(statusTip)
             action.triggered.connect(trigger)
@@ -366,7 +365,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         exitAction = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
         aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
         preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.')
-        
 
         self.statusBar()
 
@@ -385,12 +383,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                         self.fileMenu.addAction(action[i])
                     elif bar == 'toolbar': 
                         self.toolbar.addAction(action[i])
-            
-                        
-                
+
         addBar('menubar', ['&File', projectAction, loadAction, '|', fsaveAction, saveAction, '|',\
                                 buildAction, shareAction, '|', preferencesAction, '|', exitAction])
-        
+
         addBar('menubar', ['&Resources', spriteAction, animatedspriteAction, soundAction, objectAction,\
                                 fontAction, roomAction])
         
@@ -398,8 +394,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         addBar('menubar', ['&Run', playAction, playDebugAction])
         addBar('menubar', ['&Text Editor', zoominAction, zoomoutAction, sfontAction])
         addBar('menubar', ['&Help', aboutAction])
-        
-        
 
         #TOOL BAR --------------------------------------
         self.toolbar = self.addToolBar('Toolbar')
@@ -408,28 +402,20 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         addBar('toolbar', [ None, projectAction, fsaveAction, loadAction, '|', buildAction, shareAction, '|',\
                                 playAction, '|', spriteAction, animatedspriteAction, soundAction, fontAction,\
                                 scriptAction, objectAction, roomAction, '|', aboutAction, zoominAction, zoomoutAction ] )
-        
-        
-        
 
         #Qtree----------------------------------------
         self.tree = TreeWidget(self)
-        
-
 
         #QMdiArea--------------------------------------
         self.qmdiarea= QMdiAreaW(self)
         #self.addScriptsubWindow("hola")
 
-        
-        
-        
         #WINDOW----------------------------------------
         self.setGeometry(0, 0, 800, 600)
-        self.setWindowIcon(QtGui.QIcon('Data/icon.png'))
+        self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         self.fname = "<New game>"
         self.dirname = ''
-        self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
+        self.setWindowTitle('{0} - Stellar {1}'.format(self.fname, cfg.__version__))
         self.center()
         self.start = Start(self)
         self.splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
@@ -438,28 +424,22 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.splitter1.setStretchFactor(1, 1)
         self.setCentralWidget(self.splitter1)
 
-
-
     def updatetree(self):
         self.Scripts = []
         self.tree.clear()
         self.tree.InitParent()
         self.tree.InitChild()
-        
 
-        
     def preferencesopen(self):
-        
-        print self.pref
+        print(self.pref)
         execfile(self.pref, {})
 
     def newproject(self):
-        print "To do"
+        print("To do")
 
-        
     def Build(self):
-        print "To do"
-        
+        print("To do")
+
     def aboutStellar(self):
         about = QtGui.QMessageBox.information(self, 'About Stellar',
             "<center><b>Stellar</b> is an open-source program inspired in 'Game Maker' for <b>Pygame/Python</b> development.<br/><br/>    The goal is to have a program to design your own games using easy-to-learn drag-and-drop actions and different easy tools for begginers.<br/>    When you become more experienced, you will have the possibilitie of writing and editing your game with the full flexibility given by <b>Python/Pygame</b>.<br/><br/>    This is an uncomplete version, it has almost nothing, but I would love to be helped by anyone interested in the project.<br/><br/>    You are free to distribute the games you create with <b>Stellar</b> in any way you like. You can even sell them.<br/>     This of course assumes that the sprites, images, and sounds you use can be distributed or sold as well.<br/><HR><br/>  You can contribute to the project on our Github:<br/><a href=\'https://github.com/Coppolaemilio/stellar'>Stellar on Git</a></center>", QtGui.QMessageBox.Ok)
@@ -470,15 +450,14 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            f = open(os.path.join(self.dirname, os.path.basename(self.fname)), 'w')
-            p = self.fname
-            d = os.path.basename(str(p))
-            self.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
+            p = str(self.fname)
+            d = os.path.basename(p)
+            fname = os.path.join(self.dirname, d)
+            self.setWindowTitle('{0} - Stellar {1}'.format(d, cfg.__version__))
 
-            with f:
+            with open(fname, 'w') as f:
                 data = self.textEdit.toPlainText()
                 f.write(data)
-                f.close()
             event.accept()
         elif reply == QtGui.QMessageBox.No:
             event.accept()
@@ -486,18 +465,16 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             event.ignore()
             
     def openfile(self):
-        print "To do"
-
+        print("To do")
 
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
             
     def savefile(self):
-        print "To do"
-        
+        print("To do")
             
     def fsavefile(self):
-        print "To do"
+        print("To do")
 
     def onZoomInClicked(self):
         self.textEdit.zoomIn(+1)
@@ -506,7 +483,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.textEdit.zoomOut(+1)       
         
     def playgame(self):
-        print "To do"
+        print("To do")
 
     def fontdialog(self):
 
@@ -529,7 +506,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     else:
                         shutil.copy(sprite, os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
                         self.tree.AddSprChild('spr_' + d)
-            
 
     def addAnimatedSprite(self):
 
@@ -546,7 +522,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     else:
                         shutil.copy(sprite,os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
                         self.tree.AddSprChild('spr_' + d)
-
 
     def addsound(self):
 
@@ -606,13 +581,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     def addRoom(self):
         pass
 
-
     def center(self):
         qr = self.frameGeometry()
         cp = QtGui.QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
-
 
       
 def main():
@@ -620,5 +593,6 @@ def main():
     st = Stellar()
     sys.exit(app.exec_())
 
+
 if __name__ == '__main__':
-    main()    
+    main()

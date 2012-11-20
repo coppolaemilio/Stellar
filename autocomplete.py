@@ -18,11 +18,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 from PyQt4 import QtGui, QtCore
+
 from dictionary import all_words
 from stringmanipulation import TabifyRegion, UnTabifyRegion , StatementFound
 
 min_show=2
+
 
 class DictionaryCompleter(QtGui.QCompleter):
     def __init__(self, parent=None):
@@ -39,6 +47,7 @@ class DictionaryCompleter(QtGui.QCompleter):
             
         QtGui.QCompleter.__init__(self, self.words, parent=None)
         
+
 class CompletionTextEdit(QtGui.QTextEdit):
     def __init__(self):
         super(CompletionTextEdit, self).__init__()
@@ -47,8 +56,7 @@ class CompletionTextEdit(QtGui.QTextEdit):
         self.dictionary = DictionaryCompleter()
         self.setCompleter(self.dictionary)
         self.center()
-        
-        
+
     def Update_dictionary(self,list):
         self.dictionary.append(list)
         self.setCompleter(self.dictionary)
@@ -66,7 +74,6 @@ class CompletionTextEdit(QtGui.QTextEdit):
         self.completer = completer
         self.connect(self.completer,
             QtCore.SIGNAL("activated(const QString&)"), self.insertCompletion)
-    
 
     def insertCompletion(self, completion):
         tc = self.textCursor()

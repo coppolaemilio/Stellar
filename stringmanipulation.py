@@ -16,21 +16,28 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
+# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 
 
 from PyQt4 import QtGui
+
 
 def StatementFound(Text):
     String = str(Text)
     bln = False
     for lastchar in String:
-        if lastchar !=" ":
+        if lastchar != " ":
             if lastchar == ":":
                 bln = True
             else:
                 bln = False
     if bln == True:
-        return(4*" ")
+        return(4 * " ")
     else:
         return("")
 
@@ -42,8 +49,8 @@ def TabifyRegion(Text):
             String = String[1:]
             Count += 1
     except IndexError:
-        return (Count*" ")
-    return (Count*" ")
+        return (Count * " ")
+    return (Count * " ")
 
 def UnTabifyRegion(self,Text):
     String = str(Text)
@@ -55,7 +62,7 @@ def UnTabifyRegion(self,Text):
             Count += 1
         else:
             Count = 0
-    if Count%4 == 0:
+    if Count % 4 == 0:
         if Count == 0:
             chars = 1
         else:

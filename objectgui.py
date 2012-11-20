@@ -16,13 +16,21 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
+# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 
 
 import sys
-import pygame.mixer
-import shutil
 import os
+import shutil
+
+import pygame.mixer
 from PyQt4 import QtGui, QtCore
+
 
 class ObjectGUI(QtGui.QWidget):
   
@@ -33,7 +41,6 @@ class ObjectGUI(QtGui.QWidget):
         self.dirname = dirname
         self.FileName = FileName
         self.initUI()
-        
 
     def initUI(self):
         
@@ -59,7 +66,7 @@ class ObjectGUI(QtGui.QWidget):
         self.LblMask = QtGui.QLabel('Mask:')
         self.MaskEdit = QtGui.QLineEdit()
         self.Btninfo = QtGui.QPushButton("Show Information")
-        self.Btninfo.setIcon(QtGui.QIcon('Data/info.png'))
+        self.Btninfo.setIcon(QtGui.QIcon(os.path.join('Data', 'info.png')))
         self.Btnok = QtGui.QPushButton("OK")
         self.Btnok.setIcon(QtGui.QIcon('Data/accept.png'))
         self.temporarything = QtGui.QScrollArea()
@@ -91,11 +98,8 @@ class ObjectGUI(QtGui.QWidget):
 
         #---
         self.ContainerGrid.addWidget(self.temporarything1, 0, 4,12,7)
-        
-        
-		
-        #self.startopen()
 
+        #self.startopen()
 
     def ShowMe(self):
         self.ContainerBox.show()

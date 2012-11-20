@@ -16,8 +16,16 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
+# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
 
 import sys
+
 from PyQt4 import QtGui, QtCore
 
 
@@ -45,7 +53,6 @@ class FontGUI(QtGui.QWidget):
         self.name.move(6,13)
         self.nameEdit = QtGui.QLineEdit('',self.basicwidg)
         self.nameEdit.setGeometry(45,10,145,21)
-        
 
         self.font = QtGui.QLabel('Font:',self.basicwidg)
         self.font.move(6,40)
@@ -77,21 +84,17 @@ class FontGUI(QtGui.QWidget):
         #self.digitsb = QtGui.QPushButton('Digits')
         #self.allb = QtGui.QPushButton('All')
         #self.lettersb = QtGui.QPushButton('Letters')
-        
 
         self.testtext = QtGui.QTextEdit('A text. 1234567890',self.ContainerBox)
         self.testtext.setGeometry(200,9,240,100)
-
 
         self.previewtext = QtGui.QTextEdit('A text. 1234567890',self.ContainerBox)
         self.previewtext.setGeometry(200,119,240,100)
         self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), 10, True) )
 
         self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
-        self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
+        self.BtnOK.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
         self.BtnOK.setGeometry(32, 240, 60, 25)
-        
-      
 
         #Main Window------------------------------------------
         self.ContainerBox.show()

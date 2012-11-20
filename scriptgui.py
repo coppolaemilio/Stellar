@@ -16,15 +16,24 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
+# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 
 
 import sys
-import pygame.mixer
-import shutil
 import os
+import shutil
 import syntax
+
+import pygame.mixer
 from PyQt4 import QtGui, QtCore
+
 from autocomplete import CompletionTextEdit
+
 
 class ScriptGUI(QtGui.QWidget):
   
@@ -44,24 +53,24 @@ class ScriptGUI(QtGui.QWidget):
         self.nameEdit = QtGui.QLineEdit(self.FileName)
         self.nameEdit.textChanged[str].connect(self.onChanged)
 		
-        saveAction = QtGui.QAction(QtGui.QIcon('Data/tick.png'), 'Save', self)
+        saveAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'tick.png')), 'Save', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.triggered.connect(self.saveScript)
 		
-        exportAction = QtGui.QAction(QtGui.QIcon('Data/save.png'), 'Export', self)
+        exportAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'save.png')), 'Export', self)
         exportAction.triggered.connect(self.exportScript)
 		
-        importAction = QtGui.QAction(QtGui.QIcon('Data/folder.png'), 'Open', self)
+        importAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'folder.png')), 'Open', self)
         importAction.triggered.connect(self.openScript)
 
-        undoAction = QtGui.QAction(QtGui.QIcon('Data/undo.png'), 'Undo', self)
-        redoAction = QtGui.QAction(QtGui.QIcon('Data/redo.png'), 'Redo', self)
+        undoAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'undo.png')), 'Undo', self)
+        redoAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'redo.png')), 'Redo', self)
 		
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
         self.toolbar.addAction(saveAction)
         self.toolbar.addSeparator()
-        self.toolbar.addAction(exportAction)		
+        self.toolbar.addAction(exportAction)
         self.toolbar.addAction(importAction)
         self.toolbar.addSeparator()
         self.toolbar.addAction(undoAction)
@@ -69,9 +78,7 @@ class ScriptGUI(QtGui.QWidget):
         self.toolbar.addSeparator()
         self.toolbar.addWidget(self.LblName)
         self.toolbar.addWidget(self.nameEdit)
-		
-		
-		
+
         editor= self.textEdit = CompletionTextEdit()
         highlight = syntax.PythonHighlighter(editor.document())
         self.textEdit.setFont(QtGui.QFont("Courier"))
@@ -79,7 +86,6 @@ class ScriptGUI(QtGui.QWidget):
         self.textEdit.setLineWrapMode(0)
         self.texEdit=CompletionTextEdit()
 
-		
         self.ContainerGrid.setSpacing(0)
         self.ContainerGrid.addWidget(editor, 1, 0,1,15)
         self.ContainerGrid.addWidget(self.toolbar, 0, 0)
@@ -92,7 +98,7 @@ class ScriptGUI(QtGui.QWidget):
 
     def onChanged(self, text):
         self.main.setWindowTitle("Script Properties: "+ text)
-        self.main.setWindowIcon(QtGui.QIcon('Data/addscript.png'))
+        self.main.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'addscript.png')))
         fname = self.FileName + ".py"
         finalname = str(text) + ".py"
 
@@ -111,8 +117,7 @@ class ScriptGUI(QtGui.QWidget):
     def exportScript(self):
         #print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
         fname = os.path.join(self.dirname, "Scripts", str(self.FileName))+ ".py"
-        f = open(fname, 'w')
-        with f:    
+        with open(fname, 'w') as f:    
             data = self.textEdit.toPlainText()
             f.write(data)
             f.close()
@@ -120,8 +125,7 @@ class ScriptGUI(QtGui.QWidget):
     def saveScript(self):
         #print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
         fname = os.path.join(self.dirname, "Scripts", str(self.FileName)) + ".py"
-        f = open(fname, 'w')
-        with f:    
+        with open(fname, 'w') as f:    
             data = self.textEdit.toPlainText()
             f.write(data)
             f.close()
@@ -129,10 +133,8 @@ class ScriptGUI(QtGui.QWidget):
 			
     def startopen(self):
         fname = os.path.join(self.dirname, "Scripts", str(self.FileName)) + ".py"
-        
-        f = open(fname, 'r')
-        
-        with f:        
+
+        with open(fname, 'r') as f:
             data = f.read()
             self.textEdit.setText(data)
             f.close()
@@ -141,9 +143,7 @@ class ScriptGUI(QtGui.QWidget):
 
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 str(os.getcwd()))
-        
-        f = open(fname, 'r')
-        
-        with f:        
+
+        with open(fname, 'r') as f:
             data = f.read()
             self.textEdit.setText(data)
