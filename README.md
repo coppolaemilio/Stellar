@@ -9,6 +9,12 @@ When you become more experienced, you will have the possibilitie of writing and 
 You are free to distribute the games you create with <b>Stellar</b> in any way you like. You can even sell them.<br/>
 This of course assumes that the sprites, images, and sounds you use can be distributed or sold as well.
 
+## Dependencies
+* Python 2.x +
+* Pygame
+* PyQt 4
+* PIL
+
 ## Contributing
 1. Fork this repository
 2. Hack
