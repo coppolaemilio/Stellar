@@ -18,11 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-import cfg
-
 """
-Stellar %s
-""" % cfg.__version__
+Stellar
+"""
 
 import sys
 import os
@@ -32,13 +30,16 @@ import syntax
 import platform
 import subprocess
 import shutil
+
+from PyQt4 import QtCore, QtGui
+
+import cfg
 from splashscreen import Start
 from spritegui import SpriteGUI
 from soundgui import SoundGUI
 from fontgui import FontGUI
 from scriptgui import ScriptGUI
 from objectgui import ObjectGUI
-from PyQt4 import QtCore, QtGui
 
 
 class QMdiAreaW(QtGui.QMdiArea):
