@@ -274,9 +274,19 @@ class Start(QtGui.QWidget):
                 return
             if not os.path.isfile(self.project):
                 QtGui.QMessageBox.question(self, "Project doesn't exist",
-                        "This project doesn't exist or has been removed",
-                        QtGui.QMessageBox.Ok)
+                    "This project doesn't exist or has been removed",
+                    QtGui.QMessageBox.Ok)
                 return
+
+
+            subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
+                
+            for subfolder in subfolders:
+                if not os.path.exists(os.path.join(os.path.dirname(self.project), subfolder)):
+                    QtGui.QMessageBox.question(self, "Project is broken",
+                        "Project is broken or doesn't contain important folders",
+                        QtGui.QMessageBox.Ok)
+                    return
 
             self.dirname = os.path.dirname(self.project)
             self.main.dirname = self.dirname
