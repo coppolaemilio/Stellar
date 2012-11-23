@@ -270,6 +270,8 @@ class Start(QtGui.QWidget):
             self.project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                 '', self.tr("Python files (*.py *.pyw)")))
 
+            if self.project == '':
+                return
             if not os.path.isfile(self.project):
                 QtGui.QMessageBox.question(self, "Project doesn't exist",
                         "This project doesn't exist or has been removed",
