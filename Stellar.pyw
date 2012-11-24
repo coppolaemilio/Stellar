@@ -377,7 +377,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
             for i in range(1, len(action)):
                 if action[i] == '|':
-                    self.fileMenu.addSeparator()
+                    if bar == 'menubar':
+                        self.fileMenu.addSeparator()
+                    elif bar == 'toolbar':
+                        self.toolbar.addSeparator()
                 else:
                     if bar == 'menubar':
                         self.fileMenu.addAction(action[i])
