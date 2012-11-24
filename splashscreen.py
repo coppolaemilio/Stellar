@@ -149,7 +149,7 @@ class Start(QtGui.QWidget):
         #Window-----------------
  
         self.setWindowTitle('Stellar - %s' % cfg.__version__)
-        self.setWindowIcon(QtGui.QIcon(os.path.join('data', 'icon.png')))
+        self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         self.resize(500,350)
         self.setMinimumSize(500,350)
         self.setMaximumSize(500,350) 

@@ -107,10 +107,7 @@ class ScriptGUI(QtGui.QWidget):
                   os.path.join(self.dirname, "Scripts", finalname))
         
         #rename file in tree widget
-        #self.main.updatetree()
-        self.parent.tree.clear()
-        self.parent.tree.InitParent()
-        self.parent.tree.InitChild()
+        self.parent.updatetree()
 
         self.FileName = text
 	

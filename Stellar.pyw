@@ -41,6 +41,7 @@ from PyQt4 import QtCore, QtGui
 
 import cfg
 from splashscreen import Start
+from newprojectdialog import NewProjectDialog
 from spritegui import SpriteGUI
 from soundgui import SoundGUI
 from fontgui import FontGUI
@@ -339,7 +340,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             action.setEnabled(enabled)
             return action
         
-        projectAction = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N', False)
+        projectAction = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N', True)
         
         loadAction = newAction('Open...', 'folder.png', self.openfile, 'Open Game.', 'Ctrl+O')
         saveAction = newAction('Save Game As...', 'save.png', self.savefile, 'Save Game As...', 'Ctrl+Shift+S')
@@ -438,7 +439,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         execfile(self.pref, {})
 
     def newproject(self):
-        print("To do")
+        self.window = QtGui.QWidget()
+        projectdirname = NewProjectDialog(self.window)
 
     def Build(self):
         print("To do")
