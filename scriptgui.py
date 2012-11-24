@@ -144,6 +144,9 @@ class ScriptGUI(QtGui.QWidget):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 str(os.getcwd()))
 
+        if fname == '':
+            return
+
         with open(fname, 'r') as f:
             data = f.read()
             self.textEdit.setText(data)
