@@ -470,7 +470,46 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             event.ignore()
             
     def openfile(self):
-        print("To do")
+        project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+                            '', self.tr("Python files (*.py *.pyw)")))
+
+        if project == '':
+            return
+        if not os.path.isfile(project):
+            QtGui.QMessageBox.question(self, "Project doesn't exist",
+                "This project doesn't exist or has been removed",
+                QtGui.QMessageBox.Ok)
+            return
+
+        subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
+            
+        for subfolder in subfolders:
+            if not os.path.exists(os.path.join(os.path.dirname(project), subfolder)):
+                QtGui.QMessageBox.question(self, "Project is broken",
+                    "Project is broken or doesn't contain important folders",
+                    QtGui.QMessageBox.Ok)
+                return
+
+        self.dirname = os.path.dirname(project)
+        self.fname = os.path.basename(project)
+
+        cfg.config.set('stellar', 'recentproject', project)
+        with open('config.ini', 'wb') as configfile:
+            cfg.config.write(configfile)
+            
+        self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
+
+        self.Sprites=[]
+        self.Sound=[]
+        self.Fonts=[]
+        self.Scripts=[]
+        self.Objects=[]
+        self.Rooms=[]
+
+        self.tree.clear()
+        self.tree.InitParent()
+        self.tree.InitChild()
+        self.show()
 
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
