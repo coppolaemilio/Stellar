@@ -346,16 +346,16 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             action.setEnabled(enabled)
             return action
         
-        projectAction = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N', True)
+        projectAction = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N')
         
         loadAction = newAction('Open...', 'folder.png', self.openfile, 'Open Game.', 'Ctrl+O')
         saveAction = newAction('Save Game As...', 'save.png', self.savefile, 'Save Game As...', 'Ctrl+Shift+S')
-        fsaveAction = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S')
+        fsaveAction = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S', False)
         
         shareAction = newAction('Share', 'publish.png', self.sharegame, 'Share your creations with the community!')
-        buildAction = newAction('Build', 'build.png', self.Build, 'Build game.')
+        buildAction = newAction('Build', 'build.png', self.Build, 'Build game.', '', False)
         playAction = newAction('Run', 'play.png', self.playgame, 'Test your game.', 'F5')
-        playDebugAction = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game on debug mode.', 'F6')
+        playDebugAction = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game on debug mode.', 'F6', False)
         
         spriteAction = newAction('Add Sprite', 'sprite.png', self.addsprite, 'Add a sprite to the game.')
         animatedspriteAction = newAction('Add Animated Sprite', 'gif.png', self.addAnimatedSprite, 'Add an animated sprite to the game.')
@@ -371,7 +371,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         exitAction = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
         aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
-        preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.')
+        preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.', '', False)
 
         self.statusBar()
 
