@@ -186,13 +186,10 @@ class Start(QtGui.QWidget):
                 if not os.path.exists(self.dirname) and not os.path.isfile(os.path.join(self.dirname, self.name)):
                     os.mkdir(self.dirname)
                     #Project Sub-Folders for Windows
-
-                    subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
                     
-                    for subfolder in subfolders:
+                    for subfolder in self.main.subfolders:
                         if not os.path.exists(os.path.join(self.dirname, subfolder)):
                             os.mkdir(os.path.join(self.dirname, subfolder))
-
 
                     f = open(os.path.join(self.dirname, self.name), 'w+')
                     f.write('# This file was created with Stellar')
@@ -250,8 +247,7 @@ class Start(QtGui.QWidget):
             '''with f:        
                 data = f.read()
                 self.main.textEdit.setText(data)'''
-                
-            #dirname, filename = os.path.split(os.path.abspath(self.main.fname))
+
             self.close()
             self.main.tree.InitParent()
             self.main.tree.InitChild()

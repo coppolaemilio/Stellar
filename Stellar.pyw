@@ -245,36 +245,42 @@ class TreeWidget(QtGui.QTreeWidget):
 
         #Sprites----------------------------------
         for ChildSprite in os.listdir(self.PathSprite):
+            self.main.Sprites.append(ChildSprite)
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join(self.PathSprite, ChildSprite)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentSprite, QtCore.QStringList(ChildSprite[:-4])).setIcon(0,icon)      
 
         #Sound------------------------------------
         for ChildSound in os.listdir(self.PathSound):
+            self.main.Sound.append(ChildSound)
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "sound.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentSound, QtCore.QStringList(ChildSound[:-4])).setIcon(0,icon)
 
         #Fonts------------------------------------
         for ChildFont in os.listdir(self.PathFonts):
+            self.main.Fonts.append(ChildFont)
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "font.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentFonts, QtCore.QStringList(ChildFont[:-4])).setIcon(0,icon)
 
         #Scripts------------------------------------
         for ChildScript in os.listdir(self.PathScripts):
+            self.main.Scripts.append(ChildScript)
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "addscript.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentScripts, QtCore.QStringList(ChildScript[:-3])).setIcon(0,icon)
 
         #Objects----------------------------------
         for ChildObject in os.listdir(self.PathObjects):
+            self.main.Objects.append(ChildObject)
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "object.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentObjects, QtCore.QStringList(ChildObject[:-3])).setIcon(0,icon)
 
         #Rooms------------------------------------
         for ChildRoom in os.listdir(self.PathRooms):
+            self.main.Rooms.append(ChildRoom)
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "game.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             QtGui.QTreeWidgetItem(self.ParentRooms, QtCore.QStringList(ChildRoom[:-4])).setIcon(0,icon)
@@ -355,9 +361,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         animatedspriteAction = newAction('Add Animated Sprite', 'gif.png', self.addAnimatedSprite, 'Add an animated sprite to the game.')
         soundAction = newAction('Add Sound', 'sound.png', self.addsound, 'Add a sound to the game.')
         fontAction = newAction('Add Font', 'font.png', self.addfont, 'Add a font to the game.')
-        objectAction = newAction('Add Object', 'object.png', self.addObject, 'Add an object to the game.')
-        roomAction = newAction('Add Room', 'room.png', self.addRoom, 'Add an room to the game.')
-        scriptAction = newAction('Add Script', 'addscript.png', self.addScript, 'Add A Script To The Game.')
+        objectAction = newAction('Add Object', 'object.png', self.addobject, 'Add an object to the game.')
+        roomAction = newAction('Add Room', 'room.png', self.addroom, 'Add an room to the game.')
+        scriptAction = newAction('Add Script', 'addscript.png', self.addscript, 'Add A Script To The Game.')
         
         zoominAction = newAction('Zoom In', 'plus.png', self.onZoomInClicked, 'Zoom in the font of the editor.')
         zoomoutAction = newAction('Zoom Out', 'minus.png', self.onZoomOutClicked, 'Zoom out the font of the editor.')
@@ -417,6 +423,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #WINDOW----------------------------------------
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
+        self.subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
         self.fname = "<New game>"
         self.dirname = ''
         self.setWindowTitle('{0} - Stellar {1}'.format(self.fname, cfg.__version__))
@@ -480,10 +487,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 "This project doesn't exist or has been removed",
                 QtGui.QMessageBox.Ok)
             return
-
-        subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
             
-        for subfolder in subfolders:
+        for subfolder in self.subfolders:
             if not os.path.exists(os.path.join(os.path.dirname(project), subfolder)):
                 QtGui.QMessageBox.question(self, "Project is broken",
                     "Project is broken or doesn't contain important folders",
@@ -515,7 +520,39 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         webbrowser.open("http://www.pygame.org/news.html")
             
     def savefile(self):
-        print("To do")
+        project = str(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
+                            self.dirname, self.tr("Python files (*.py *.pyw)")))
+
+        if project == "":
+            return
+        else:
+            fromDir = self.dirname
+            self.fname = os.path.basename(project)
+            self.dirname = os.path.dirname(project)
+
+            if not os.path.exists(self.dirname):
+                os.mkdir(self.dirname)
+                
+            for subfolder in self.subfolders:
+                if not os.path.exists(os.path.join(self.dirname, subfolder)):
+                    os.mkdir(os.path.join(self.dirname, subfolder))
+
+            f = open(os.path.join(self.dirname, self.fname), 'w+')
+            f.write('# This file was created with Stellar')
+            f.close()
+
+            cfg.config.set('stellar', 'recentproject', project)
+            with open('config.ini', 'wb') as configfile:
+                cfg.config.write(configfile)
+
+            self.setWindowTitle('%s - Stellar %s'% (os.path.basename(project), cfg.__version__))
+
+            self.addsprite(self.Sprites, fromDir)
+            self.addsound(self.Sound, fromDir)
+            self.addfont(self.Fonts, fromDir)
+            self.addscript(self.Scripts, fromDir)
+            self.addobject(self.Objects, fromDir)
+            self.addroom(self.Rooms, fromDir)
             
     def fsavefile(self):
         print("To do")
@@ -535,94 +572,134 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         if ok:
             self.textEdit.setFont(font)
 
-    def addsprite(self):
-
-        self.asprite = QtGui.QFileDialog.getOpenFileNames(self, 'Open Sprite(s)', 
+    def addsprite(self, asprite = None, fromDir = None):
+        if asprite is None:
+            self.asprite = QtGui.QFileDialog.getOpenFileNames(self, 'Open Sprite(s)', 
                 '', self.tr("Image file (*.png *.gif *.jpg)"))
         
-        if self.asprite !='':
-            for sprite in self.asprite:
-                d = os.path.basename(str(sprite))
-                if not os.path.exists(os.path.join(self.dirname, 'Sprites', d)):
-                    if d[:4]=='spr_':
-                        shutil.copy(sprite, os.path.join('Sprites', d))
-                        self.tree.AddSprChild(d)
-                    else:
-                        shutil.copy(sprite, os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
-                        self.tree.AddSprChild('spr_' + d)
+            if self.asprite !='':
+                for sprite in self.asprite:
+                    d = os.path.basename(str(sprite))
+                    if not os.path.exists(os.path.join(self.dirname, 'Sprites', d)):
+                        if d[:4]=='spr_':
+                            shutil.copy(sprite, os.path.join('Sprites', d))
+                            self.tree.AddSprChild(d)
+                            self.Sprites.append(d)
+                        else:
+                            shutil.copy(sprite, os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
+                            self.tree.AddSprChild('spr_' + d)
+                            self.Sprites.append('spr_' + d)
+ 
+        else:
+            for sprite in asprite:
+                if not os.path.isfile(os.path.join(self.dirname, 'Sprites', sprite)):
+                    shutil.copy(os.path.join(fromDir, 'Sprites', sprite), os.path.join(self.dirname, 'Sprites', sprite))
 
-    def addAnimatedSprite(self):
+    def addAnimatedSprite(self, aGIFsprite = None, fromDir = None):
+        if aGIFsprite is None:
+            self.aGIFsprite = QtGui.QFileDialog.getOpenFileNames(self, 'Open Animated Sprite(s)', 
+                    '', self.tr("Image file (*.png *.gif *.jpg)"))
+            
+            if self.aGIFsprite !='':
+                for sprite in self.aGIFsprite:
+                    d = os.path.basename(str(sprite))
+                    if not os.path.exists(os.path.join(self.dirname, 'Sprites', d)):
+                        if d[:4]=='spr_':
+                            shutil.copy(sprite,os.path.join(self.dirname, 'Sprites', d))
+                            self.tree.AddSprChild(d)
+                            self.Sprites.append(d)
+                        else:
+                            shutil.copy(sprite,os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
+                            self.tree.AddSprChild('spr_' + d)
+                            self.Sprites.append('spr_' + d)
 
-        self.aGIFsprite = QtGui.QFileDialog.getOpenFileNames(self, 'Open Animated Sprite(s)', 
-                '', self.tr("Image file (*.png *.gif *.jpg)"))
-        
-        if self.aGIFsprite !='':
-            for sprite in self.aGIFsprite:
-                d = os.path.basename(str(sprite))
-                if not os.path.exists(os.path.join(self.dirname, 'Sprites', d)):
-                    if d[:4]=='spr_':
-                        shutil.copy(sprite,os.path.join(self.dirname, 'Sprites', d))
-                        self.tree.AddSprChild(d)
-                    else:
-                        shutil.copy(sprite,os.path.join(self.dirname, 'Sprites', 'spr_{0}'.format(d)))
-                        self.tree.AddSprChild('spr_' + d)
+        else:
+            for sprite in aGIFsprite:
+                if not os.path.isfile(os.path.join(self.dirname, 'Sprites', sprite)):
+                    shutil.copy(os.path.join(fromDir, 'Sprites', sprite), os.path.join(self.dirname, 'Sprites', sprite))
 
-    def addsound(self):
+    def addsound(self, asound = None, fromDir = None):
+        if asound is None:
+            self.asound = QtGui.QFileDialog.getOpenFileNames(self, 'Open Sound(s)', 
+                    '', self.tr("Sound file (*.ogg *.wav)"))
+            
+            if self.asound !='':
+                for sound in self.asound:
+                    d = os.path.basename(str(sound))
+                    if not os.path.exists(os.path.join(self.dirname, 'Sound', d)):
+                        if d[:4]=='snd_':
+                            shutil.copy(sound,os.path.join(self.dirname, 'Sound', d))
+                            self.tree.AddSndChild(d)
+                            self.Sound.append(d)
+                        else:
+                            shutil.copy(sound,os.path.join(self.dirname, 'Sound', 'snd_{0}'.format(d)))
+                            self.tree.AddSndChild('snd_'+d)
+                            self.Sound.append('snd_' + d)
 
-        self.asound = QtGui.QFileDialog.getOpenFileNames(self, 'Open Sound(s)', 
-                '', self.tr("Sound file (*.ogg *.wav)"))
-        
-        if self.asound !='':
-            for sound in self.asound:
-                d = os.path.basename(str(sound))
-                if not os.path.exists(os.path.join(self.dirname, 'Sound', d)):
-                    if d[:4]=='snd_':
-                        shutil.copy(sound,os.path.join(self.dirname, 'Sound', d))
-                        self.tree.AddSndChild(d)
-                    else:
-                        shutil.copy(sound,os.path.join(self.dirname, 'Sound', 'snd_{0}'.format(d)))
-                        self.tree.AddSndChild('snd_'+d)
+        else:
+            for sound in asound:
+                if not os.path.isfile(os.path.join(self.dirname, 'Sound', sound)):
+                    shutil.copy(os.path.join(fromDir, 'Sound', sound), os.path.join(self.dirname, 'Sound', sound))
 
-    def addfont(self):
+    def addfont(self, afont = None, fromDir = None):
+        if afont is None:
+            self.afont = QtGui.QFileDialog.getOpenFileNames(self, 'Open Font(s)', 
+                    '', self.tr("Font file (*.ttf *.ttc *.fon)"))
+            
+            if self.afont !='':
+                for font in self.afont:
+                    d = os.path.basename(str(font))
+                    f = os.path.splitext(d)[0]
+                    if not os.path.exists(os.path.join(self.dirname, 'Fonts', d)):
+                        if d[:5]=='font_':
+                            shutil.copy(font,os.path.join(self.dirname, 'Fonts', d))
+                            self.tree.AddFontChild(d)
+                            self.Fonts.append(d)
+                        else:
+                            shutil.copy(font,os.path.join(self.dirname, 'Fonts', 'font_{0}'.format(d)))
+                            self.tree.AddFontChild('font_'+d)
+                            self.Fonts.append('font_' + d)
 
-        self.afont = QtGui.QFileDialog.getOpenFileNames(self, 'Open Font(s)', 
-                '', self.tr("Font file (*.ttf *.ttc *.fon)"))
-        
-        if self.afont !='':
-            for font in self.afont:
-                d = os.path.basename(str(font))
-                f = os.path.splitext(d)[0]
-                if not os.path.exists(os.path.join(self.dirname, 'Fonts', d)):
-                    if d[:5]=='font_':
-                        shutil.copy(font,os.path.join(self.dirname, 'Fonts', d))
-                        self.tree.AddFontChild(d)
-                    else:
-                        shutil.copy(font,os.path.join(self.dirname, 'Fonts', 'font_{0}'.format(d)))
-                        self.tree.AddFontChild('font_'+d)         
+        else:
+            for font in afont:
+                if not os.path.isfile(os.path.join(self.dirname, 'Fonts', font)):
+                    shutil.copy(os.path.join(fromDir, 'Fonts', font), os.path.join(self.dirname, 'Fonts', font))
 
-    def addScript(self):
-        script = "script_"
-        scriptnumber = 0
-        TmpScript = script + str(scriptnumber)
-        while os.path.exists(os.path.join(self.dirname, 'Scripts', "{0}.py".format(TmpScript))):
-            scriptnumber += 1 
+    def addscript(self, ascript = None, fromDir = None):
+        if ascript is None:
+            script = "script_"
+            scriptnumber = 0
             TmpScript = script + str(scriptnumber)
-        f = open(os.path.join(self.dirname, 'Scripts', "{0}.py".format(TmpScript)),'w')
-        f.close()
-        self.tree.AddScriptChild(TmpScript)
+            while os.path.exists(os.path.join(self.dirname, 'Scripts', "{0}.py".format(TmpScript))):
+                scriptnumber += 1 
+                TmpScript = script + str(scriptnumber)
+            f = open(os.path.join(self.dirname, 'Scripts', "{0}.py".format(TmpScript)),'w')
+            f.close()
+            self.tree.AddScriptChild(TmpScript)
+            self.Scripts.append(TmpScript)
+        else:
+            for script in ascript:
+                if not os.path.isfile(os.path.join(self.dirname, 'Scripts', script)):
+                    shutil.copy(os.path.join(fromDir, 'Scripts', script), os.path.join(self.dirname, 'Scripts', script))
 
-    def addObject(self):
-        object = "obj_"
-        objectnumber = 0
-        TmpObject= object + str(objectnumber)
-        while os.path.exists(os.path.join(self.dirname, 'Objects', "{0}.py".format(TmpObject))):
-            objectnumber += 1 
-            TmpObject = object + str(objectnumber)
-        f = open(os.path.join(self.dirname, 'Objects', "{0}.py".format(TmpObject)),'w')
-        f.close()
-        self.tree.AddObjectChild(TmpObject)
+    def addobject(self, aobject = None, fromDir = None):
+        if aobject is None:
+            object = "obj_"
+            objectnumber = 0
+            TmpObject= object + str(objectnumber)
+            while os.path.exists(os.path.join(self.dirname, 'Objects', "{0}.py".format(TmpObject))):
+                objectnumber += 1 
+                TmpObject = object + str(objectnumber)
+            f = open(os.path.join(self.dirname, 'Objects', "{0}.py".format(TmpObject)),'w')
+            f.close()
+            self.tree.AddObjectChild(TmpObject)
+            self.Objects.append(TmpObject)
+        else:
+            for object in aobject:
+                if not os.path.isfile(os.path.join(self.dirname, 'Objects', object)):
+                    shutil.copy(os.path.join(fromDir, 'Objects', object), os.path.join(self.dirname, 'Objects', object))
 
-    def addRoom(self):
+    def addroom(self, aroom = None, fromDir = None):
         pass
 
     def center(self):
