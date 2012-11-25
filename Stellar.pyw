@@ -527,7 +527,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.textEdit.zoomOut(+1)       
         
     def playgame(self):
-        print("To do")
+        execfile(os.path.join(self.dirname, self.fname), {})
 
     def fontdialog(self):
 
