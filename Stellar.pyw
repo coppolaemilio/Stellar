@@ -351,7 +351,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.setCentralWidget(self.splitter1)
 
     def updatetree(self):
-        self.Scripts = []
         self.tree.clear()
         self.tree.InitParent()
         self.tree.InitChild()
