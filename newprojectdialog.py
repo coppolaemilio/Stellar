@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 
 
 from PyQt4 import QtCore, QtGui
-import os, webbrowser
+import os, sys
 import cfg
 
 class NewProjectDialog(QtGui.QWidget):
@@ -35,6 +35,10 @@ class NewProjectDialog(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
+        widget = QtGui.QWidget() 
+        vertical = QtGui.QVBoxLayout(widget)
+
+        
         self.name = QtGui.QLabel('Project Name: ')
         self.nameEdit = QtGui.QLineEdit()
 
@@ -61,11 +65,13 @@ class NewProjectDialog(QtGui.QWidget):
         self.grid.addWidget(self.browsebtn, 3, 2)
         self.grid.addWidget(self.btn_New, 4, 1)
 
+        vertical.addLayout(self.grid)
+
         self.setWindowTitle('Stellar - %s - New project' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         self.resize(500,350)
-        self.setMinimumSize(300,350)
-        self.setMaximumSize(300,350) 
+        self.setMinimumSize(300,200)
+        self.setMaximumSize(300,200) 
         self.center()
         self.show()
 
@@ -126,3 +132,9 @@ class NewProjectDialog(QtGui.QWidget):
         cp = QtGui.QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    name= NewProjectDialog(None)
+    sys.exit(app.exec_())
+

@@ -360,8 +360,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         execfile(self.pref, {})
 
     def newproject(self):
-        self.window = QtGui.QWidget()
-        projectdirname = NewProjectDialog(self.window)
+        projectdirname = NewProjectDialog(self)
 
     def Build(self):
         print("To do")
