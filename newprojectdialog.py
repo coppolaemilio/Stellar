@@ -35,8 +35,7 @@ class NewProjectDialog(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-        widget = QtGui.QWidget() 
-        vertical = QtGui.QVBoxLayout(widget)
+        self.ContainerGrid = QtGui.QGridLayout(self)
 
         
         self.name = QtGui.QLabel('Project Name: ')
@@ -56,16 +55,14 @@ class NewProjectDialog(QtGui.QWidget):
         QtCore.QObject.connect(self.btn_New, QtCore.SIGNAL('clicked()'), self.CreateProject)
 
         
-        self.grid = QtGui.QGridLayout()
-        self.grid.setSpacing(15)
-        self.grid.addWidget(self.name, 2, 0)
-        self.grid.addWidget(self.nameEdit, 2, 1)
-        self.grid.addWidget(self.pathname, 3, 0)
-        self.grid.addWidget(self.pathEdit, 3, 1)
-        self.grid.addWidget(self.browsebtn, 3, 2)
-        self.grid.addWidget(self.btn_New, 4, 1)
 
-        vertical.addLayout(self.grid)
+        self.ContainerGrid.addWidget(self.name, 2, 0)
+        self.ContainerGrid.addWidget(self.nameEdit, 2, 1)
+        self.ContainerGrid.addWidget(self.pathname, 3, 0)
+        self.ContainerGrid.addWidget(self.pathEdit, 3, 1)
+        self.ContainerGrid.addWidget(self.browsebtn, 3, 2)
+        self.ContainerGrid.addWidget(self.btn_New, 4, 1)
+
 
         self.setWindowTitle('Stellar - %s - New project' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
@@ -137,4 +134,3 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     name= NewProjectDialog(None)
     sys.exit(app.exec_())
-
