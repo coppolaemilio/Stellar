@@ -358,9 +358,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     def preferencesopen(self):
         print(self.pref)
         execfile(self.pref, {})
-
+        
     def newproject(self):
-        projectdirname = NewProjectDialog(self)
+        self.window= QtGui.QWidget()
+        projectdirname = NewProjectDialog(self.window)
+        self.window.show()
 
     def Build(self):
         print("To do")
