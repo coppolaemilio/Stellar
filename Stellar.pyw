@@ -201,9 +201,7 @@ class TreeWidget(QtGui.QTreeWidget):
         
         for name in self.Names:
             self.Path[name] = os.path.join(dirname, name)
-            for ChildSource in sorted(os.listdir(self.Path[name])):
-                
-                self.main.Sprites.append(ChildSource)
+            for ChildSource in sorted(os.listdir(self.Path[name])):                
                 icon = QtGui.QIcon()
                 if name == "Sprites":
                     icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
