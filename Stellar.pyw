@@ -41,7 +41,7 @@ from PyQt4 import QtCore, QtGui
 
 import cfg
 from splashscreen import Start
-from newprojectdialog import NewProjectDialog
+from dialogs import NewProjectDialog
 from spritegui import SpriteGUI
 from soundgui import SoundGUI
 from fontgui import FontGUI
@@ -360,9 +360,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         execfile(self.pref, {})
         
     def newproject(self):
-        self.window= QtGui.QWidget()
-        projectdirname = NewProjectDialog(self.window)
-        self.window.show()
+        newprojectdialog = NewProjectDialog(self)
 
     def Build(self):
         print("To do")
@@ -502,9 +500,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         font, ok = QtGui.QFontDialog.getFont()
         if ok:
             self.textEdit.setFont(font)
-
- 
-        
 
     def addsprite(self, asprite = False, fromDir = None):
         if asprite is False:

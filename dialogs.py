@@ -29,7 +29,7 @@ import os, sys
 import cfg
 
 class NewProjectDialog(QtGui.QWidget):
-    def __init__(self, main, parent=None):
+    def __init__(self, main):
         super(NewProjectDialog, self).__init__(main)
         self.main = main
         self.initUI()
@@ -37,7 +37,6 @@ class NewProjectDialog(QtGui.QWidget):
     def initUI(self):
         self.ContainerGrid = QtGui.QGridLayout(self)
 
-        
         self.name = QtGui.QLabel('Project Name: ')
         self.nameEdit = QtGui.QLineEdit()
 
@@ -63,13 +62,12 @@ class NewProjectDialog(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.browsebtn, 3, 2)
         self.ContainerGrid.addWidget(self.btn_New, 4, 1)
 
-
         self.setWindowTitle('Stellar - %s - New project' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
-        self.resize(500,350)
-        self.setMinimumSize(300,200)
-        self.setMaximumSize(300,200) 
-        self.center()
+        self.setGeometry(300, 300, 250, 150)        
+        #self.resize(500,350)
+        #self.setMinimumSize(300,200)
+        #self.setMaximumSize(300,200) 
         self.show()
 
     def CreateProject(self):
@@ -123,12 +121,7 @@ class NewProjectDialog(QtGui.QWidget):
         self.dirname = dir
         self.pathEdit.setText(dir)
         self.pathEdit.setCursorPosition(0)
-
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QtGui.QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
+        
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
