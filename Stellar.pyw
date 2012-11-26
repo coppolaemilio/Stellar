@@ -423,7 +423,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #WINDOW----------------------------------------
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
-        self.subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
+        self.subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
         self.fname = "<New game>"
         self.dirname = ''
         self.setWindowTitle('{0} - Stellar {1}'.format(self.fname, cfg.__version__))
@@ -477,7 +477,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             event.ignore()
             
     def openfile(self):
-        project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+        project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                             '', self.tr("Python files (*.py *.pyw)")))
 
         if project == '':
@@ -487,22 +487,31 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 "This project doesn't exist or has been removed",
                 QtGui.QMessageBox.Ok)
             return
-            
-        for subfolder in self.subfolders:
-            if not os.path.exists(os.path.join(os.path.dirname(project), subfolder)):
+            
+
+        for subfolder in self.subfolders:
+
+            if not os.path.exists(os.path.join(os.path.dirname(project), subfolder)):
+
                 QtGui.QMessageBox.question(self, "Project is broken",
                     "Project is broken or doesn't contain important folders",
                     QtGui.QMessageBox.Ok)
                 return
 
-        self.dirname = os.path.dirname(project)
-        self.fname = os.path.basename(project)
-
-        cfg.config.set('stellar', 'recentproject', project)
-        with open('config.ini', 'wb') as configfile:
+        self.dirname = os.path.dirname(project)
+
+        self.fname = os.path.basename(project)
+
+
+
+        cfg.config.set('stellar', 'recentproject', project)
+
+        with open('config.ini', 'wb') as configfile:
+
             cfg.config.write(configfile)
             
-        self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
+        self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
+
 
         self.Sprites=[]
         self.Sound=[]
@@ -512,7 +521,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.Rooms=[]
 
         self.tree.clear()
-        self.tree.InitParent()
+        self.tree.InitParent()
+
         self.tree.InitChild()
         self.show()
 
@@ -520,7 +530,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         webbrowser.open("http://www.pygame.org/news.html")
             
     def savefile(self):
-        project = str(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
+        project = str(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
+
                             self.dirname, self.tr("Python files (*.py *.pyw)")))
 
         if project == "":
@@ -534,15 +545,20 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 os.mkdir(self.dirname)
                 
             for subfolder in self.subfolders:
-                if not os.path.exists(os.path.join(self.dirname, subfolder)):
+                if not os.path.exists(os.path.join(self.dirname, subfolder)):
+
                     os.mkdir(os.path.join(self.dirname, subfolder))
 
-            f = open(os.path.join(self.dirname, self.fname), 'w+')
-            f.write('# This file was created with Stellar')
+            f = open(os.path.join(self.dirname, self.fname), 'w+')
+
+            f.write('# This file was created with Stellar')
+
             f.close()
 
-            cfg.config.set('stellar', 'recentproject', project)
-            with open('config.ini', 'wb') as configfile:
+            cfg.config.set('stellar', 'recentproject', project)
+
+            with open('config.ini', 'wb') as configfile:
+
                 cfg.config.write(configfile)
 
             self.setWindowTitle('%s - Stellar %s'% (os.path.basename(project), cfg.__version__))
