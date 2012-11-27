@@ -196,7 +196,7 @@ class TreeWidget(QtGui.QTreeWidget):
             
 
 
-    def InitChild(self):
+    def InitChild(self, fillarrays=False):
         dirname = self.main.dirname
         
         for name in self.Names:
@@ -212,7 +212,20 @@ class TreeWidget(QtGui.QTreeWidget):
                     QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-4])).setIcon(0,icon) 
                 elif name == "Objects" or name == "Scripts":
                     QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-3])).setIcon(0,icon)
-            
+
+                if fillarrays:
+                    if name == 'Sprites':
+                        self.main.Sprites.append(ChildSource)
+                    elif name == 'Sound':
+                        self.main.Sound.append(ChildSource)
+                    elif name == 'Fonts':
+                        self.main.Fonts.append(ChildSource)
+                    elif name == 'Scripts':
+                        self.main.Scripts.append(ChildSource)
+                    elif name == 'Objects':
+                        self.main.Objects.append(ChildSource)
+                    elif name == 'Rooms':
+                        self.main.Rooms.append(ChildSource)
         
 
     def addChild(self, directory, name):
@@ -435,8 +448,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         self.tree.clear()
         self.tree.InitParent()
-
-        self.tree.InitChild()
+        self.tree.InitChild(fillarrays = True)
         self.show()
 
     def sharegame(self):

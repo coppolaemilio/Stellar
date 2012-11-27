@@ -206,7 +206,7 @@ class Start(QtGui.QWidget):
                     self.close()
                     self.main.dirname = self.dirname
                     self.main.tree.InitParent()
-                    self.main.tree.InitChild()
+                    self.main.tree.InitChild(fillarrays = True)
                     self.main.show()
                 else:
                     reply = QtGui.QMessageBox.question(self, "Already Exists",
@@ -250,7 +250,7 @@ class Start(QtGui.QWidget):
 
             self.close()
             self.main.tree.InitParent()
-            self.main.tree.InitChild()
+            self.main.tree.InitChild(fillarrays = True)
             self.main.show()
         
     def OpenFile(self, dirname = None, name = None):
@@ -307,5 +307,5 @@ class Start(QtGui.QWidget):
                 
             self.close()
             self.main.tree.InitParent()
-            self.main.tree.InitChild()
+            self.main.tree.InitChild(fillarrays = True)
             self.main.show()
