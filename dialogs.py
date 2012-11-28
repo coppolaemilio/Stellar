@@ -28,7 +28,7 @@ from PyQt4 import QtCore, QtGui
 import os, sys
 import cfg
 
-class NewProjectDialog(QtGui.QWidget):
+class NewProjectDialog(QtGui.QDialog):
     def __init__(self, main):
         super(NewProjectDialog, self).__init__(main)
         self.main = main
@@ -62,15 +62,25 @@ class NewProjectDialog(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.browsebtn, 3, 2)
         self.ContainerGrid.addWidget(self.btn_New, 4, 1)
 
-        self.setWindowTitle('Stellar - %s - New project' % cfg.__version__)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
-        self.setGeometry(300, 300, 250, 150)        
-        #self.resize(500,350)
+        self.setWindowTitle("New project")
+        self.resize(500,100)
         #self.setMinimumSize(300,200)
         #self.setMaximumSize(300,200) 
         self.show()
 
     def CreateProject(self):
+        if str(self.nameEdit.text()) == '':
+            QtGui.QMessageBox.information(self, "Name not specified",
+                                                "You must specify name before creating.",
+                                                QtGui.QMessageBox.Ok)
+            return
+        elif str(self.pathEdit.text()) == '':
+            QtGui.QMessageBox.information(self, "Project directory not specified",
+                                                "You must specify project directory before creating.",
+                                                QtGui.QMessageBox.Ok)
+            return
+        
         self.name = str(self.nameEdit.text()).replace(".py", "") + '.py'
         self.path = str(self.pathEdit.text())
 
