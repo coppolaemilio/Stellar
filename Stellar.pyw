@@ -65,6 +65,8 @@ class TreeWidget(QtGui.QTreeWidget):
         self.setDragDropMode(QtGui.QAbstractItemView.InternalMove)
         self.main = main
         self.connect(self, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*, int)"),self.DoEvent)
+        self.connect(self, QtCore.SIGNAL("itemCollapsed(QTreeWidgetItem *)"), self.itemCollapsed)
+        self.connect(self, QtCore.SIGNAL("itemExpanded(QTreeWidgetItem *)"), self.itemExpanded)
         self.Path = {}
         
         self.Names = ('Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms')
@@ -75,6 +77,16 @@ class TreeWidget(QtGui.QTreeWidget):
         for i in self.Names:
             self.ImageName[i] = self.ImageNames[j]
             j+=1
+
+    def itemCollapsed(self):
+        item = self.currentItem()
+        print (item.parent().text(0))
+        #self.main.expanded[item.text(0)] = False
+
+    def itemExpanded(self):
+        item = self.currentItem()
+        #self.main.expanded[item.text(0)] = True
+        print (item.text(0))
 
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
@@ -352,6 +364,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         self.subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
+        self.expanded = {'Sprites' : False, 'Sound' : False, 'Fonts' : False, 'Scripts' : False,
+                         'Objects' : False, 'Rooms' : False}
         self.fname = "<New game>"
         self.dirname = ''
         self.setWindowTitle('{0} - Stellar {1}'.format(self.fname, cfg.__version__))
@@ -367,6 +381,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.tree.clear()
         self.tree.InitParent()
         self.tree.InitChild()
+
+        for key in self.expanded:
+            if self.expanded[key]:
+                self.tree.expandItem(self.tree.Parent[key])
 
     def preferencesopen(self):
         print(self.pref)
