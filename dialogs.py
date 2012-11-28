@@ -91,8 +91,7 @@ class NewProjectDialog(QtGui.QDialog):
         #Main Folder for Windows
         if self.name is not "" and self.path is not "":
             if not os.path.exists(self.dirname) and not os.path.isfile(os.path.join(self.dirname, self.name)):
-                self.main.fname = os.path.join(str(self.nameEdit.text()),
-                                      "{0}.py".format(self.nameEdit.text()))
+                self.main.fname = "{0}.py".format(self.nameEdit.text())
                 os.mkdir(self.dirname)
 
                 #Project Sub-Folders for Windows
@@ -115,7 +114,15 @@ class NewProjectDialog(QtGui.QDialog):
                 self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
                 self.close()
+                self.main.Sprites = []
+                self.main.Sound = []
+                self.main.Fonts = []
+                self.main.Scripts = []
+                self.main.Objects = []
+                self.main.Rooms = []
+                
                 self.main.dirname = self.dirname
+                self.main.tree.clear()
                 self.main.tree.InitParent()
                 self.main.tree.InitChild()
                 self.main.show()
@@ -125,6 +132,61 @@ class NewProjectDialog(QtGui.QDialog):
                                                         QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
                 if reply == QtGui.QMessageBox.Yes:
                     self.OpenFile(self.dirname, self.name)
+
+    def OpenFile(self, dirname = None, name = None):        
+        # check if we opens existing file from CreateProject function
+        if dirname != None and name != None:
+            self.dirname = dirname
+            self.main.dirname = self.dirname
+            self.main.fname = name
+            data = os.path.join(dirname, name)
+        else:
+            self.project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+                '', self.tr("Python files (*.py *.pyw)")))
+
+            if self.project == '':
+                return
+            if not os.path.isfile(self.project):
+                QtGui.QMessageBox.information(self, "Project doesn't exist",
+                    "This project doesn't exist or has been removed",
+                    QtGui.QMessageBox.Ok)
+                return
+
+
+            subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
+                
+            for subfolder in subfolders:
+                if not os.path.exists(os.path.join(os.path.dirname(self.project), subfolder)):
+                    QtGui.QMessageBox.information(self, "Project is broken",
+                        "Project is broken or doesn't contain important folders",
+                        QtGui.QMessageBox.Ok)
+                    return
+
+            self.dirname = os.path.dirname(self.project)
+            self.main.dirname = self.dirname
+            self.main.fname = os.path.basename(self.project)
+
+        
+        cfg.config.set('stellar', 'recentproject', self.project)
+        with open('config.ini', 'wb') as configfile:
+            cfg.config.write(configfile)
+        #-------------
+
+        #f = open(self.main.fname, 'r')
+        self.main.setWindowTitle('%s - Stellar %s'% (self.main.fname, cfg.__version__))
+            
+        self.close()
+        self.main.Sprites = []
+        self.main.Sound = []
+        self.main.Fonts = []
+        self.main.Scripts = []
+        self.main.Objects = []
+        self.main.Rooms = []
+
+        self.main.tree.clear()
+        self.main.tree.InitParent()
+        self.main.tree.InitChild(fillarrays = True)
+        self.main.show()
 
     def ChooseFolder(self):
         dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))

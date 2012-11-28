@@ -173,8 +173,7 @@ class Start(QtGui.QWidget):
         self.tmp = self.main.fname
         self.name = str(self.nameEdit.text()).replace(".py", "") + '.py'
         self.path = str(self.pathEdit.text())
-        self.main.fname =  os.path.join(str(self.nameEdit.text()),
-                                        "{0}.py".format(self.nameEdit.text()))
+        self.main.fname =  "{0}.py".format(self.nameEdit.text())
 
         self.dirname = os.path.join(self.path, str(self.nameEdit.text()))
         
@@ -223,7 +222,7 @@ class Start(QtGui.QWidget):
                     
     def openlastproject(self):
         if not os.path.exists(os.path.dirname(cfg.recentproject)):
-            QtGui.QMessageBox.question(self, "Project doesn't exist",
+            QtGui.QMessageBox.information(self, "Project doesn't exist",
                                             "This project doesn't exist or has been removed",
                                             QtGui.QMessageBox.Ok)
             return
