@@ -70,7 +70,7 @@ class TreeWidget(QtGui.QTreeWidget):
         self.Path = {}
         
         self.Names = self.main.Names
-        self.ImageNames = (None, 'sound.png', 'font.png', 'object.png', 'object.png', 'game.png')
+        self.ImageNames = (None, 'sound.png', 'font.png', 'script.png', 'object.png', 'game.png')
         self.Parent = {}
         self.ImageName = {}
         j=0
@@ -126,17 +126,18 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.script = ScriptGUI(self.main.window,item.text(0), self.main.dirname, self.main)
                 elif directory == "Objects":
                     self.main.object = ObjectGUI(self.main.window,item.text(0), self.main.dirname)
-        
-            
+                
+                if directory[-1:] == "s":
+                    directory = directory[:-1]
+                
                 self.main.qmdiarea.addSubWindow(self.main.window)
                 self.main.window.setVisible(True)
-                self.main.window.setWindowTitle( directory + " Properties: " + item.text(0) )
+                self.main.window.setWindowTitle( directory + " properties: " + item.text(0) )
         
         
         item = self.currentItem()
         if not item.parent() == None:
             for name in self.Names:
-                
                 openWindow(name)
                 
                 
@@ -204,9 +205,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     def __init__(self):
         super(Stellar, self).__init__()
         self.Names = ('Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms')
-        self.Sources = {}
-        for i in self.Names:
-            self.Sources[i] = []
+        self.Sprites=[]
+        self.Sound=[]
+        self.Fonts=[]
+        self.Scripts=[]
+        self.Objects=[]
+        self.Rooms=[]
         
         self.initUI()
         
