@@ -108,7 +108,6 @@ class ScriptGUI(QtGui.QWidget):
         
         #rename file in tree widget
         self.parent.updatetree()
-
         self.FileName = text
 	
     def exportScript(self):
