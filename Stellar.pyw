@@ -78,15 +78,11 @@ class TreeWidget(QtGui.QTreeWidget):
             self.ImageName[i] = self.ImageNames[j]
             j+=1
 
-    def itemCollapsed(self):
-        item = self.currentItem()
-        print (item.parent().text(0))
-        #self.main.expanded[item.text(0)] = False
+    def itemCollapsed(self, obj):
+        self.main.expanded[str(obj.text(0))] = False
 
-    def itemExpanded(self):
-        item = self.currentItem()
-        #self.main.expanded[item.text(0)] = True
-        print (item.text(0))
+    def itemExpanded(self, obj):
+        self.main.expanded[str(obj.text(0))] = True
 
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
