@@ -69,8 +69,8 @@ class TreeWidget(QtGui.QTreeWidget):
         self.connect(self, QtCore.SIGNAL("itemExpanded(QTreeWidgetItem *)"), self.itemExpanded)
         self.Path = {}
         
-        self.Names = ('Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms')
-        self.ImageNames = (None, 'sound.png', 'font.png', 'object.png', 'object.png', 'game.png')
+        self.Names = self.main.Names
+        self.ImageNames = (None, 'sound.png', 'font.png', 'script.png', 'object.png', 'game.png')
         self.Parent = {}
         self.ImageName = {}
         j=0
@@ -111,88 +111,36 @@ class TreeWidget(QtGui.QTreeWidget):
         action = menu.exec_(self.mapToGlobal(event.pos()))
 
     def DoEvent(self):
-        item = self.currentItem()
-        bln = True
-        if not item.parent() == None:
-            if item.parent().text(0) == "Sprites":
-
-                for index, sprite in enumerate(self.main.Sprites):
-                    if sprite[1] == item.text(0):
-                        bln = False
-                        self.main.tab_widget_sprites.setCurrentIndex(index)
-                        self.main.tab_widget.setCurrentIndex(0)
-                        break
-
-                if bln==True:
-                    self.main.window = QtGui.QWidget()
+       
+        def openWindow(directory):
+            if item.parent().text(0) == directory:
+                self.main.window = QtGui.QWidget()
+                
+                if directory == "Sprites":
                     self.main.sprite = SpriteGUI(self.main.window,item.text(0), self.main.dirname)
-                    self.main.qmdiarea.addSubWindow(self.main.window)
-                    self.main.window.setVisible(True)
-                    self.main.window.setWindowTitle("Sprite Properties: "+ item.text(0))
-
-            elif item.parent().text(0) == "Sound":
-
-                for index, sound in enumerate(self.main.Sound):
-                    if sound[1] == item.text(0):
-                        bln = False
-                        self.main.tab_widget_sound.setCurrentIndex(index)
-                        self.main.tab_widget.setCurrentIndex(1)
-                        break
-
-                if bln==True:
-                    self.main.window = QtGui.QWidget()
+                elif directory == "Sound":
                     self.main.sound = SoundGUI(self.main.window,item.text(0), self.main.dirname)
-                    self.main.qmdiarea.addSubWindow(self.main.window)
-                    self.main.window.setVisible(True)
-                    self.main.window.setWindowTitle("Sound Properties: "+ item.text(0))
-
-            elif item.parent().text(0) == "Fonts":
-
-                for index, font in enumerate(self.main.Fonts):
-                    if font[1] == item.text(0):
-                        bln = False
-                        self.main.tab_widget_font.setCurrentIndex(index)
-                        self.main.tab_widget.setCurrentIndex(2)
-                        break
-
-                if bln==True:
-                    self.main.window = QtGui.QWidget()
+                elif directory == "Fonts":
                     self.main.font = FontGUI(self.main.window,item.text(0))
-                    self.main.qmdiarea.addSubWindow(self.main.window)
-                    self.main.window.setVisible(True)
-                    self.main.window.setWindowTitle("Font Properties: "+ item.text(0))
-
-            elif item.parent().text(0) == "Scripts":
-
-                for index, script in enumerate(self.main.Scripts):
-                    if script[1] == item.text(0):
-                        bln = False
-                        self.main.qmdiarea.setActiveSubWindow(index)
-                        break
-
-                if bln==True:
-                    self.main.window = QtGui.QWidget()
+                elif directory == "Scripts":
                     self.main.script = ScriptGUI(self.main.window,item.text(0), self.main.dirname, self.main)
-                    self.main.qmdiarea.addSubWindow(self.main.window)
-                    self.main.window.setVisible(True)
-                    
-                    #self.main.window.setWindowTitle("Script Properties: "+ item.text(0))
-                    
-            elif item.parent().text(0) == "Objects":
-
-                for index, object in enumerate(self.main.Objects):
-                    if object[1] == item.text(0):
-                        bln = False
-                        self.main.tab_widget_objects.setCurrentIndex(index)
-                        self.main.tab_widget.setCurrentIndex(4)
-                        break
-
-                if bln==True:
-                    self.main.window = QtGui.QWidget()
+                elif directory == "Objects":
                     self.main.object = ObjectGUI(self.main.window,item.text(0), self.main.dirname)
-                    self.main.qmdiarea.addSubWindow(self.main.window)
-                    self.main.window.setVisible(True)
-                    self.main.window.setWindowTitle("Object Properties: "+ item.text(0))
+                
+                if directory[-1:] == "s":
+                    directory = directory[:-1]
+                
+                self.main.qmdiarea.addSubWindow(self.main.window)
+                self.main.window.setVisible(True)
+                self.main.window.setWindowTitle( directory + " properties: " + item.text(0) )
+        
+        
+        item = self.currentItem()
+        if not item.parent() == None:
+            for name in self.Names:
+                openWindow(name)
+                
+                
 
     def InitParent(self):
         
@@ -256,12 +204,14 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     
     def __init__(self):
         super(Stellar, self).__init__()
+        self.Names = ('Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms')
         self.Sprites=[]
         self.Sound=[]
         self.Fonts=[]
         self.Scripts=[]
         self.Objects=[]
         self.Rooms=[]
+        
         self.initUI()
         
     def initUI(self):
@@ -388,6 +338,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
     def newproject(self):
         newprojectdialog = NewProjectDialog(self)
+        
 
     def Build(self):
         print("To do")
