@@ -251,10 +251,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         roomAction = newAction('Add Room', 'room.png', self.addroom, 'Add an room to the game.')
         scriptAction = newAction('Add Script', 'addscript.png', self.addscript, 'Add A Script To The Game.')
         
-        zoominAction = newAction('Zoom In', 'plus.png', self.onZoomInClicked, 'Zoom in the font of the editor.')
-        zoomoutAction = newAction('Zoom Out', 'minus.png', self.onZoomOutClicked, 'Zoom out the font of the editor.')
-        sfontAction = newAction('Set Font', 'font.png', self.fontdialog, 'Change the font of the text editor.')
-
         exitAction = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
         aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
         preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.', '', False)
@@ -293,7 +289,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         addBar('menubar', ['&Scripts', scriptAction])
         addBar('menubar', ['&Run', playAction, playDebugAction])
         addBar('menubar', ['&Windows', cascadeAction, closeallwindowsAction, '|', settabbedAction])
-        addBar('menubar', ['&Text Editor', zoominAction, zoomoutAction, sfontAction])
         addBar('menubar', ['&Help', aboutAction])
 
         #TOOL BAR --------------------------------------
@@ -310,6 +305,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #QMdiArea--------------------------------------
         self.qmdiarea= QMdiAreaW(self)
         self.qmdiareaview = False
+        self.qmdiarea.setTabsClosable( True)
         #self.addScriptsubWindow("hola")
 
         #WINDOW----------------------------------------
@@ -483,21 +479,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
     def fsavefile(self):
         print("To do")
-
-    def onZoomInClicked(self):
-        self.textEdit.zoomIn(+1)
-
-    def onZoomOutClicked(self):
-        self.textEdit.zoomOut(+1)       
+ 
         
     def playgame(self):
         execfile(os.path.join(self.dirname, self.fname), {})
 
-    def fontdialog(self):
-
-        font, ok = QtGui.QFontDialog.getFont()
-        if ok:
-            self.textEdit.setFont(font)
 
     def addsprite(self, asprite = False, fromDir = None):
         if asprite is False:
