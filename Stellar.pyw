@@ -258,6 +258,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         cascadeAction = newAction('Cascade', 'cascade.png', self.cascadewindows, '', '', True)
         closeallwindowsAction = newAction('Close All', 'closeall.png', self.closeallwindows, '', '', True)
         settabbedAction = newAction('Toggle Tabbed View', 'tabs.png', self.settabbedview, '', '', True)
+
+        expandAction = newAction('Expand Resource Tree', '', self.expandtree, '', '', True)
+        collapseAction = newAction('Collapse Resource Tree', '', self.collapsetree, '', '', True)
         
         self.statusBar()
 
@@ -282,6 +285,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         addBar('menubar', ['&File', projectAction, loadAction, '|', fsaveAction, saveAction, '|',\
                                 buildAction, shareAction, '|', preferencesAction, '|', exitAction])
+
+        addBar('menubar', ['&Edit', expandAction, collapseAction])
 
         addBar('menubar', ['&Resources', spriteAction, animatedspriteAction, soundAction, objectAction,\
                                 fontAction, roomAction])
@@ -334,6 +339,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             if self.expanded[key]:
                 self.tree.expandItem(self.tree.Parent[key])
 
+    def expandtree(self):
+        self.tree.expandAll()
+        
+    def collapsetree(self):
+        self.tree.collapseAll()
+        
     def cascadewindows(self):
         self.qmdiarea.cascadeSubWindows()
         
