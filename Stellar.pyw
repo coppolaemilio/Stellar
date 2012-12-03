@@ -296,8 +296,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.toolbar.setMovable (True)
         
         addBar('toolbar', [ None, projectAction, fsaveAction, loadAction, '|', buildAction, shareAction, '|',\
-                                playAction, '|', spriteAction, animatedspriteAction, soundAction, fontAction,\
-                                scriptAction, objectAction, roomAction, '|', aboutAction, zoominAction, zoomoutAction ] )
+                                playAction, '|', spriteAction, animatedspriteAction, soundAction,\
+                                scriptAction, objectAction, roomAction, '|', aboutAction, ] )
 
         #Qtree----------------------------------------
         self.tree = TreeWidget(self)
