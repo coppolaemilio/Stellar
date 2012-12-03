@@ -142,6 +142,7 @@ class SpriteGUI(QtGui.QWidget):
         self.spritesplitter.addWidget(self.InformationBox)
         self.spritesplitter.addWidget(self.scrollArea)
         self.spritesplitter.setMinimumSize(100,200)
+        self.spritesplitter.setStretchFactor(2, 1)
         self.ContainerGrid.addWidget(self.spritesplitter, 0, 0)
 
 		
