@@ -255,9 +255,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
         preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.', '', False)
 
-        cascadeAction = newAction('Cascade', 'room.png', self.cascadewindows, '', '', True)
-        closeallwindowsAction = newAction('Close All', 'room.png', self.closeallwindows, '', '', True)
-        settabbedAction = newAction('Toggle Tabbed View', 'room.png', self.settabbedview, '', '', True)
+        cascadeAction = newAction('Cascade', 'cascade.png', self.cascadewindows, '', '', True)
+        closeallwindowsAction = newAction('Close All', 'closeall.png', self.closeallwindows, '', '', True)
+        settabbedAction = newAction('Toggle Tabbed View', 'tabs.png', self.settabbedview, '', '', True)
         
         self.statusBar()
 
