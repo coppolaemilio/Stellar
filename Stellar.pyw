@@ -259,6 +259,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
         preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.', '', False)
 
+        cascadeAction = newAction('Cascade', 'room.png', self.cascadewindows, '', '', True)
+        closeallwindowsAction = newAction('Close All', 'room.png', self.closeallwindows, '', '', True)
+        settabbedAction = newAction('Toggle Tabbed View', 'room.png', self.settabbedview, '', '', True)
+        
         self.statusBar()
 
         #MENU BAR --------------------------------------
@@ -288,6 +292,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
         addBar('menubar', ['&Scripts', scriptAction])
         addBar('menubar', ['&Run', playAction, playDebugAction])
+        addBar('menubar', ['&Windows', cascadeAction, closeallwindowsAction, '|', settabbedAction])
         addBar('menubar', ['&Text Editor', zoominAction, zoomoutAction, sfontAction])
         addBar('menubar', ['&Help', aboutAction])
 
@@ -304,6 +309,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         #QMdiArea--------------------------------------
         self.qmdiarea= QMdiAreaW(self)
+        self.qmdiareaview = False
         #self.addScriptsubWindow("hola")
 
         #WINDOW----------------------------------------
@@ -331,6 +337,21 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         for key in self.expanded:
             if self.expanded[key]:
                 self.tree.expandItem(self.tree.Parent[key])
+
+    def cascadewindows(self):
+        self.qmdiarea.cascadeSubWindows()
+        
+    def closeallwindows(self):
+        self.qmdiarea.closeAllSubWindows()
+        
+    def settabbedview(self):
+        self.qmdiareaview ^= True
+
+        if self.qmdiareaview:
+            self.qmdiarea.setViewMode(self.qmdiarea.TabbedView)
+        else:
+            self.qmdiarea.setViewMode(self.qmdiarea.SubWindowView)
+
 
     def preferencesopen(self):
         print(self.pref)
