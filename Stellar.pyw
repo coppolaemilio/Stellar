@@ -311,7 +311,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.qmdiarea= QMdiAreaW(self)
         self.qmdiareaview = False
         self.qmdiarea.setTabsClosable( True)
-        #self.addScriptsubWindow("hola")
+        self.qmdiarea.setTabsMovable(True)
 
         #WINDOW----------------------------------------
         self.setGeometry(0, 0, 800, 600)
