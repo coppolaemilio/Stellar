@@ -420,7 +420,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.dirname = os.path.dirname(project)
 
         self.fname = os.path.basename(project)
-
+        
+        self.closeallwindows()
 
 
         cfg.config.set('stellar', 'recentproject', project)
