@@ -47,8 +47,10 @@ class SpriteGUI(QtGui.QWidget):
 
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self.main)
+        self.ContainerGrid.setMargin (0)
                 
         self.BtnOK = QtGui.QPushButton('OK')
+        self.BtnOK.setGeometry (32,32,32,32)
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
         self.BtnOK.clicked.connect(self.HideMe)
 
@@ -60,6 +62,7 @@ class SpriteGUI(QtGui.QWidget):
                                     
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.spriteLbl)
+        self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
         self.scrollArea.setWidgetResizable(True)
         
         
@@ -83,20 +86,26 @@ class SpriteGUI(QtGui.QWidget):
 
         self.LblName = QtGui.QLabel() 
         self.LblName.setText('Name:') 
-        self.LblName.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
+        self.LblName.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+
+        self.Lblspacer = QtGui.QLabel(" ")
+        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
 
         self.qleSprite = QtGui.QLineEdit("%s"%(self.icon))
-		
+
+	
         self.nameandlayout.addWidget(self.LblName,0,0)	
         self.nameandlayout.addWidget(self.qleSprite,0,1)
-        self.nameandlayout.addWidget(self.BtnLoad,1,0,1,2)
-        self.nameandlayout.addWidget(self.BtnSave,2,0,2,2)
-        self.nameandlayout.addWidget(self.BtnEdit,4,0,4,2)	
+        self.nameandlayout.addWidget(self.Lblspacer,1,0)
+        self.nameandlayout.addWidget(self.BtnLoad,1,1,1,2)
+        self.nameandlayout.addWidget(self.BtnSave,2,1,2,2)
+        self.nameandlayout.addWidget(self.BtnEdit,4,1,4,2)	
         self.NameAndThingsBox.setLayout(self.nameandlayout)
 
 		
-        self.layout.addWidget(self.NameAndThingsBox,0,0)		
-        self.layout.addWidget(self.BtnOK,4,0,4,2)
+        self.layout.addWidget(self.NameAndThingsBox,0,0)
+        self.layout.addItem(spacerItem)
+        self.layout.addWidget(self.BtnOK)
 		
 
         self.GeneralBox.setLayout(self.layout)		
@@ -139,9 +148,11 @@ class SpriteGUI(QtGui.QWidget):
 		
         self.spritesplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
         self.spritesplitter.addWidget(self.GeneralBox)
+        self.spritesplitter.setCollapsible ( 0, False)
+        
         self.spritesplitter.addWidget(self.InformationBox)
         self.spritesplitter.addWidget(self.scrollArea)
-        self.spritesplitter.setMinimumSize(100,200)
+        self.spritesplitter.setMinimumSize(350,200)
         self.spritesplitter.setStretchFactor(2, 1)
         self.ContainerGrid.addWidget(self.spritesplitter, 0, 0)
 
@@ -184,5 +195,3 @@ class SpriteGUI(QtGui.QWidget):
         
     def HideMe(self):
         self.ContainerBox.hide()
-        
-
