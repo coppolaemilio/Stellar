@@ -48,6 +48,7 @@ class ScriptGUI(QtGui.QWidget):
 
     def initUI(self):
         self.ContainerGrid = QtGui.QGridLayout(self.main)
+        self.ContainerGrid.setMargin (0)
 		
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
