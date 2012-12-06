@@ -59,10 +59,12 @@ class SpriteGUI(QtGui.QWidget):
                                     
         self.spriteLbl = QtGui.QLabel(self.main)
         self.spriteLbl.setPixmap(self.sprite)
+        self.spriteLbl.setAlignment(QtCore.Qt.AlignTop)
                                     
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.spriteLbl)
         self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
+        
         self.scrollArea.setWidgetResizable(True)
         
         
