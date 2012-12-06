@@ -131,8 +131,19 @@ class TreeWidget(QtGui.QTreeWidget):
                     directory = directory[:-1]
                 
                 self.main.qmdiarea.addSubWindow(self.main.window)
+                
                 self.main.window.setVisible(True)
                 self.main.window.setWindowTitle( directory + " properties: " + item.text(0) )
+                if directory == "Sprite":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
+                elif directory == "Sound":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
+                elif directory == "Font":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'font.png')))
+                elif directory == "Script":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))
+                elif directory == "Object":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'object.png')))
         
         
         item = self.currentItem()
@@ -310,8 +321,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #QMdiArea--------------------------------------
         self.qmdiarea= QMdiAreaW(self)
         self.qmdiareaview = False
-        self.qmdiarea.setTabsClosable( True)
+        self.qmdiarea.setTabsClosable(True)
         self.qmdiarea.setTabsMovable(True)
+        #self.addScriptsubWindow("hola")
 
         #WINDOW----------------------------------------
         self.setGeometry(0, 0, 800, 600)
@@ -420,8 +432,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.dirname = os.path.dirname(project)
 
         self.fname = os.path.basename(project)
-        
         self.closeallwindows()
+
 
 
         cfg.config.set('stellar', 'recentproject', project)
