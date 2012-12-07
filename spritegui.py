@@ -30,14 +30,14 @@ from PIL import Image
 
 class SpriteGUI(QtGui.QWidget):
   
-    def __init__(self, main,icon, dirname):
+    def __init__(self, main, icon, dirname):
         super(SpriteGUI, self).__init__()
-
         self.main = main
         self.dirname = dirname
         self.icon = icon
         self.initUI()
-
+        
+        
     def initUI(self):
         self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
         img = Image.open(self.image_file)
@@ -48,6 +48,7 @@ class SpriteGUI(QtGui.QWidget):
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self.main)
         self.ContainerGrid.setMargin (0)
+        
                 
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setGeometry (32,32,32,32)
@@ -95,13 +96,28 @@ class SpriteGUI(QtGui.QWidget):
 
         self.qleSprite = QtGui.QLineEdit("%s"%(self.icon))
 
+        self.LblWidth = QtGui.QLabel('Width:   %d Pixels'%(width)) 
+ 
+        self.LblHeight = QtGui.QLabel('Height:  %d Pixels'%(height))
+        
+        self.LblSubimages = QtGui.QLabel('Number of subimages: %d'%(frames))
+
+        self.LblFormat = QtGui.QLabel('File Format:  %s'%(Format)) 
+
 	
         self.nameandlayout.addWidget(self.LblName,0,0)	
         self.nameandlayout.addWidget(self.qleSprite,0,1)
+        
         self.nameandlayout.addWidget(self.Lblspacer,1,0)
-        self.nameandlayout.addWidget(self.BtnLoad,1,1,1,2)
-        self.nameandlayout.addWidget(self.BtnSave,2,1,2,2)
-        self.nameandlayout.addWidget(self.BtnEdit,4,1,4,2)	
+        
+        self.nameandlayout.addWidget(self.BtnLoad,1,0,1,2)
+        self.nameandlayout.addWidget(self.BtnSave,2,0,2,2)
+        self.nameandlayout.addWidget(self.BtnEdit,4,0,4,2)
+        
+        self.nameandlayout.addWidget(self.LblWidth,8,0,8,0)
+        self.nameandlayout.addWidget(self.LblHeight,12,0,12,0)
+        self.nameandlayout.addWidget(self.LblSubimages,18,0,18,0)
+        
         self.NameAndThingsBox.setLayout(self.nameandlayout)
 
 		
@@ -113,25 +129,13 @@ class SpriteGUI(QtGui.QWidget):
         self.GeneralBox.setLayout(self.layout)		
 		
         #Groupbox Image Information---------------------------
-        self.InformationBox = QtGui.QGroupBox()
-        self.layout1 = QtGui.QGridLayout()	
-
-        self.LblWidth = QtGui.QLabel() 
-        self.LblWidth.setText('Width:   %d Pixels'%(width)) 
-        self.LblWidth.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
- 
-        self.LblHeight = QtGui.QLabel() 
-        self.LblHeight.setText('Height:  %d Pixels'%(height)) 
-        self.LblHeight.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
-
-        self.LblFormat = QtGui.QLabel() 
-        self.LblFormat.setText('File Format:  %s'%(Format)) 
-        self.LblFormat.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
+        #self.InformationBox = QtGui.QGroupBox()
+        #self.layout1 = QtGui.QGridLayout()	 
 		
-        self.layout1.addWidget(self.LblWidth,0,0)	
-        self.layout1.addWidget(self.LblHeight,1,0)
-        self.layout1.addWidget(self.LblFormat,3,0)
-        self.InformationBox.setLayout(self.layout1)	
+        #self.layout1.addWidget(self.LblWidth,0,0)	
+        #self.layout1.addWidget(self.LblHeight,1,0)
+        #self.layout1.addWidget(self.LblFormat,3,0)
+        #self.InformationBox.setLayout(self.layout1)	
 		
         #Groupbox Collision Checking---------------------------
         #self.CollisionBox = QtGui.QGroupBox()
@@ -152,10 +156,10 @@ class SpriteGUI(QtGui.QWidget):
         self.spritesplitter.addWidget(self.GeneralBox)
         self.spritesplitter.setCollapsible ( 0, False)
         
-        self.spritesplitter.addWidget(self.InformationBox)
+        #self.spritesplitter.addWidget(self.InformationBox)
         self.spritesplitter.addWidget(self.scrollArea)
         self.spritesplitter.setMinimumSize(350,200)
-        self.spritesplitter.setStretchFactor(2, 1)
+        self.spritesplitter.setStretchFactor(1, 2)
         self.ContainerGrid.addWidget(self.spritesplitter, 0, 0)
 
 		
@@ -197,3 +201,5 @@ class SpriteGUI(QtGui.QWidget):
         
     def HideMe(self):
         self.ContainerBox.hide()
+        
+
