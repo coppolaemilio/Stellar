@@ -55,7 +55,6 @@ class ScriptGUI(QtGui.QWidget):
         self.textEdit.setFont(QtGui.QFont("Courier"))
         self.textEdit.zoomIn(+2)
         self.textEdit.setLineWrapMode(0)
-        self.texEdit=CompletionTextEdit()
         
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
