@@ -107,6 +107,7 @@ class NewProjectDialog(QtGui.QDialog):
                 f.close() 
 
                 cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name))
+                cfg.recentproject = os.path.join(self.dirname, self.name)
                 with open('config.ini', 'wb') as configfile:
                     cfg.config.write(configfile)
 
@@ -124,7 +125,7 @@ class NewProjectDialog(QtGui.QDialog):
                 self.main.dirname = self.dirname
                 self.main.tree.clear()
                 self.main.tree.InitParent()
-                self.main.tree.InitChild()
+                self.main.tree.InitChild(fillarrays = True)
                 self.main.show()
             else:
                 reply = QtGui.QMessageBox.question(self, "Already Exists",
@@ -168,6 +169,7 @@ class NewProjectDialog(QtGui.QDialog):
 
         
         cfg.config.set('stellar', 'recentproject', self.project)
+        cfg.recentproject = self.project
         with open('config.ini', 'wb') as configfile:
             cfg.config.write(configfile)
         #-------------

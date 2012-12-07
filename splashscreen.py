@@ -195,6 +195,7 @@ class Start(QtGui.QWidget):
                     f.close() 
   
                     cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name))
+                    cfg.recentproject = os.path.join(self.dirname, self.name)
                     with open('config.ini', 'wb') as configfile:
                         cfg.config.write(configfile)
                     p = self.main.fname
@@ -290,6 +291,7 @@ class Start(QtGui.QWidget):
 
         
         cfg.config.set('stellar', 'recentproject', data)
+        cfg.recentproject = data
         with open('config.ini', 'wb') as configfile:
             cfg.config.write(configfile)
         #-------------

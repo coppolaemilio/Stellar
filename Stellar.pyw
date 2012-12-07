@@ -434,7 +434,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
 
         cfg.config.set('stellar', 'recentproject', project)
-
+        cfg.recentproject = project
         with open('config.ini', 'wb') as configfile:
 
             cfg.config.write(configfile)
@@ -484,7 +484,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             f.close()
 
             cfg.config.set('stellar', 'recentproject', project)
-
+            cfg.recentproject = project
             with open('config.ini', 'wb') as configfile:
 
                 cfg.config.write(configfile)
