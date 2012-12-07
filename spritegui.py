@@ -44,6 +44,7 @@ class SpriteGUI(QtGui.QWidget):
         width, height = img.size
         extension = os.path.splitext(self.image_file)[1][1:]
         Format  = str(extension)
+        frames = 1
 
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self.main)
