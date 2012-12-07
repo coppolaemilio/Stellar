@@ -99,8 +99,7 @@ class ScriptGUI(QtGui.QWidget):
         
         self.main.setWindowTitle("Script Properties: "+ self.FileName)
         
-        self.textEdit.undoAvailable.connect(self.undoAction.setEnabled)
-        self.textEdit.redoAvailable.connect(self.redoAction.setEnabled)
+
         
         self.show()
         
