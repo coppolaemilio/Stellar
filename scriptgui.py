@@ -49,7 +49,14 @@ class ScriptGUI(QtGui.QWidget):
     def initUI(self):
         self.ContainerGrid = QtGui.QGridLayout(self.main)
         self.ContainerGrid.setMargin (0)
-		
+        
+        editor= self.textEdit = CompletionTextEdit()
+        highlight = syntax.PythonHighlighter(editor.document())
+        self.textEdit.setFont(QtGui.QFont("Courier"))
+        self.textEdit.zoomIn(+2)
+        self.textEdit.setLineWrapMode(0)
+        self.texEdit=CompletionTextEdit()
+        
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
         self.nameEdit.textChanged[str].connect(self.onChanged)
@@ -64,8 +71,11 @@ class ScriptGUI(QtGui.QWidget):
         importAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'folder.png')), 'Open', self)
         importAction.triggered.connect(self.openScript)
 
-        undoAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'undo.png')), 'Undo', self)
-        redoAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'redo.png')), 'Redo', self)
+        self.undoAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'undo.png')), 'Undo', self)
+        self.undoAction.triggered.connect(self.undo)
+        
+        self.redoAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'redo.png')), 'Redo', self)
+        self.redoAction.triggered.connect(self.redo)
 		
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
@@ -74,18 +84,12 @@ class ScriptGUI(QtGui.QWidget):
         self.toolbar.addAction(exportAction)
         self.toolbar.addAction(importAction)
         self.toolbar.addSeparator()
-        self.toolbar.addAction(undoAction)
-        self.toolbar.addAction(redoAction)
+        self.toolbar.addAction(self.undoAction)
+        self.toolbar.addAction(self.redoAction)
         self.toolbar.addSeparator()
         self.toolbar.addWidget(self.LblName)
         self.toolbar.addWidget(self.nameEdit)
 
-        editor= self.textEdit = CompletionTextEdit()
-        highlight = syntax.PythonHighlighter(editor.document())
-        self.textEdit.setFont(QtGui.QFont("Courier"))
-        self.textEdit.zoomIn(+2)
-        self.textEdit.setLineWrapMode(0)
-        self.texEdit=CompletionTextEdit()
 
         self.ContainerGrid.setSpacing(0)
         self.ContainerGrid.addWidget(editor, 1, 0,1,15)
@@ -95,7 +99,12 @@ class ScriptGUI(QtGui.QWidget):
         
         self.main.setWindowTitle("Script Properties: "+ self.FileName)
         
+        self.textEdit.undoAvailable.connect(self.undoAction.setEnabled)
+        self.textEdit.redoAvailable.connect(self.redoAction.setEnabled)
+        
         self.show()
+        
+     
 
     def onChanged(self, text):
         self.main.setWindowTitle("Script Properties: "+ text)
@@ -110,6 +119,14 @@ class ScriptGUI(QtGui.QWidget):
         #rename file in tree widget
         self.parent.updatetree()
         self.FileName = text
+
+    def undo(self):
+        self.textEdit.undo()
+        self.textEdit.undoAvailable.connect(self.undoAction.setEnabled)
+        
+    def redo(self):
+        self.textEdit.redo()
+        self.textEdit.redoAvailable.connect(self.redoAction.setEnabled)
 	
     def exportScript(self):
         #print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
