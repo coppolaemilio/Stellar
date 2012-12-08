@@ -71,6 +71,9 @@ class SimplePythonEditor(QsciScintilla):
         # the current position
         #
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+        
+        #replacing tabs for 4 spaces
+        self.setIndentationWidth(4)
 
         # Current line visible with special background color
         self.setCaretLineVisible(True)
