@@ -29,6 +29,8 @@ from __future__ import unicode_literals
 
 
 import sys
+sys.path.append("src")
+
 import os
 import webbrowser
 import inspect
