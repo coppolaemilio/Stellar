@@ -29,12 +29,77 @@ import os
 import shutil
 import syntax
 
-import pygame.mixer
 from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4.Qsci import QsciScintilla, QsciLexerPython
 
 from autocomplete import CompletionTextEdit
 
+class SimplePythonEditor(QsciScintilla):
+    ARROW_MARKER_NUM = 8
 
+    def __init__(self, parent=None):
+        super(SimplePythonEditor, self).__init__(parent)
+
+        # Set the default font
+        font = QFont()
+        font.setFamily('Courier')
+        font.setFixedPitch(True)
+        font.setPointSize(10)
+        self.setFont(font)
+        self.setMarginsFont(font)
+
+        # Margin 0 is used for line numbers
+        fontmetrics = QFontMetrics(font)
+        self.setMarginsFont(font)
+        self.setMarginWidth(0, 40)
+        self.setMarginLineNumbers(0, True)
+        self.setMarginsBackgroundColor(QColor("#cccccc"))
+
+        # Clickable margin 1 for showing markers
+        self.setMarginSensitivity(1, True)
+        self.connect(self,
+            SIGNAL('marginClicked(int, int, Qt::KeyboardModifiers)'),
+            self.on_margin_clicked)
+        self.markerDefine(QsciScintilla.RightArrow,
+            self.ARROW_MARKER_NUM)
+        self.setMarkerBackgroundColor(QColor("#ee1111"),
+            self.ARROW_MARKER_NUM)
+
+        # Brace matching: enable for a brace immediately before or after
+        # the current position
+        #
+        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+
+        # Current line visible with special background color
+        self.setCaretLineVisible(True)
+        self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
+
+        # Set Python lexer
+        # Set style for Python comments (style number 1) to a fixed-width
+        # courier.
+        #
+        lexer = QsciLexerPython()
+        lexer.setDefaultFont(font)
+        self.setLexer(lexer)
+        self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
+
+        # Don't want to see the horizontal scrollbar at all
+        # Use raw message to Scintilla here (all messages are documented
+        # here: http://www.scintilla.org/ScintillaDoc.html)
+        #self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
+
+        # not too small
+        #self.setMinimumSize(600, 450)
+
+    def on_margin_clicked(self, nmargin, nline, modifiers):
+        # Toggle marker for the line the margin was clicked on
+        if self.markersAtLine(nline) != 0:
+            self.markerDelete(nline, self.ARROW_MARKER_NUM)
+        else:
+            self.markerAdd(nline, self.ARROW_MARKER_NUM)
+            
 class ScriptGUI(QtGui.QWidget):
   
     def __init__(self, main, FileName, dirname, parent):
@@ -50,11 +115,7 @@ class ScriptGUI(QtGui.QWidget):
         self.ContainerGrid = QtGui.QGridLayout(self.main)
         self.ContainerGrid.setMargin (0)
         
-        editor= self.textEdit = CompletionTextEdit()
-        highlight = syntax.PythonHighlighter(editor.document())
-        self.textEdit.setFont(QtGui.QFont("Courier"))
-        self.textEdit.zoomIn(+2)
-        self.textEdit.setLineWrapMode(0)
+        editor = self.textEdit = SimplePythonEditor()
         
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
@@ -75,6 +136,10 @@ class ScriptGUI(QtGui.QWidget):
         
         self.redoAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'redo.png')), 'Redo', self)
         self.redoAction.triggered.connect(self.redo)
+        
+        self.whitespacevisAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'font.png')), 'White Space', self)
+        self.whitespacevisAction.triggered.connect(self.whitespace)
+        self.visible= False
 		
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
@@ -85,6 +150,8 @@ class ScriptGUI(QtGui.QWidget):
         self.toolbar.addSeparator()
         self.toolbar.addAction(self.undoAction)
         self.toolbar.addAction(self.redoAction)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.whitespacevisAction)
         self.toolbar.addSeparator()
         self.toolbar.addWidget(self.LblName)
         self.toolbar.addWidget(self.nameEdit)
@@ -118,19 +185,21 @@ class ScriptGUI(QtGui.QWidget):
         self.parent.updatetree()
         self.FileName = text
 
+    def whitespace(self):
+        self.visible^= True
+        self.textEdit.setWhitespaceVisibility(self.visible)
+
     def undo(self):
         self.textEdit.undo()
-        self.textEdit.undoAvailable.connect(self.undoAction.setEnabled)
         
     def redo(self):
         self.textEdit.redo()
-        self.textEdit.redoAvailable.connect(self.redoAction.setEnabled)
 	
     def exportScript(self):
         #print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
         fname = os.path.join(self.dirname, "Scripts", str(self.FileName))+ ".py"
         with open(fname, 'w') as f:    
-            data = self.textEdit.toPlainText()
+            data = self.textEdit.text()
             f.write(data)
             f.close()
 
@@ -138,7 +207,7 @@ class ScriptGUI(QtGui.QWidget):
         #print str(self.dirname)+ ("/Scripts/") + str(self.FileName)+".py"
         fname = os.path.join(self.dirname, "Scripts", str(self.FileName)) + ".py"
         with open(fname, 'w') as f:    
-            data = self.textEdit.toPlainText()
+            data = self.textEdit.text()
             f.write(data)
             f.close()
         self.main.close()
