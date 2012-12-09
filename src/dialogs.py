@@ -70,22 +70,22 @@ class NewProjectDialog(QtGui.QDialog):
         self.show()
 
     def CreateProject(self):
-        if str(self.nameEdit.text()) == '':
+        if unicode(self.nameEdit.text()) == '':
             QtGui.QMessageBox.information(self, "Name not specified",
                                                 "You must specify name before creating.",
                                                 QtGui.QMessageBox.Ok)
             return
-        elif str(self.pathEdit.text()) == '':
+        elif unicode(self.pathEdit.text()) == '':
             QtGui.QMessageBox.information(self, "Project directory not specified",
                                                 "You must specify project directory before creating.",
                                                 QtGui.QMessageBox.Ok)
             return
         
-        self.name = str(self.nameEdit.text()).replace(".py", "") + '.py'
-        self.path = str(self.pathEdit.text())
+        self.name = unicode(self.nameEdit.text()).replace(".py", "") + '.py'
+        self.path = unicode(self.pathEdit.text())
 
 
-        self.dirname = os.path.join(self.path, str(self.nameEdit.text()))
+        self.dirname = os.path.join(self.path, unicode(self.nameEdit.text()))
         
 
         #Main Folder for Windows
@@ -108,7 +108,7 @@ class NewProjectDialog(QtGui.QDialog):
 
                 cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name))
                 cfg.recentproject = os.path.join(self.dirname, self.name)
-                with open('config.ini', 'wb') as configfile:
+                with open('config.ini', 'w') as configfile:
                     cfg.config.write(configfile)
 
                 d = os.path.basename(str(self.main.fname))
@@ -142,7 +142,7 @@ class NewProjectDialog(QtGui.QDialog):
             self.main.fname = name
             data = os.path.join(dirname, name)
         else:
-            self.project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+            self.project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                 '', self.tr("Python files (*.py *.pyw)")))
 
             if self.project == '':
@@ -170,7 +170,7 @@ class NewProjectDialog(QtGui.QDialog):
         
         cfg.config.set('stellar', 'recentproject', self.project)
         cfg.recentproject = self.project
-        with open('config.ini', 'wb') as configfile:
+        with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
         #-------------
 
@@ -191,7 +191,7 @@ class NewProjectDialog(QtGui.QDialog):
         self.main.show()
 
     def ChooseFolder(self):
-        dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
+        dir = unicode(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
         self.dirname = dir
         self.pathEdit.setText(dir)
         self.pathEdit.setCursorPosition(0)

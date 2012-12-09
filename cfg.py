@@ -28,6 +28,8 @@ import ConfigParser
 
 config = ConfigParser.RawConfigParser()
 config.read(os.getcwd() + '/config.ini')
-
+    
 recentproject = config.get('stellar', 'recentproject')
 __version__ = config.get('stellar', 'version')
+
+    

@@ -163,7 +163,7 @@ class Start(QtGui.QWidget):
         self.move(qr.topLeft())
 
     def ChooseFolder(self):
-        dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
+        dir = unicode(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
         self.dirname = dir
         self.pathEdit.setText(dir)
         self.pathEdit.setCursorPosition(0)
@@ -171,11 +171,11 @@ class Start(QtGui.QWidget):
     def CreateProject(self):
 
         self.tmp = self.main.fname
-        self.name = str(self.nameEdit.text()).replace(".py", "") + '.py'
-        self.path = str(self.pathEdit.text())
+        self.name = unicode(self.nameEdit.text()).replace(".py", "") + '.py'
+        self.path = unicode(self.pathEdit.text())
         self.main.fname =  "{0}.py".format(self.nameEdit.text())
 
-        self.dirname = os.path.join(self.path, str(self.nameEdit.text()))
+        self.dirname = os.path.join(self.path, unicode(self.nameEdit.text()))
         
         if self.main.fname == "":
             self.main.fname = self.main.tmp
@@ -196,10 +196,10 @@ class Start(QtGui.QWidget):
   
                     cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name))
                     cfg.recentproject = os.path.join(self.dirname, self.name)
-                    with open('config.ini', 'wb') as configfile:
+                    with open('config.ini', 'w') as configfile:
                         cfg.config.write(configfile)
                     p = self.main.fname
-                    d = os.path.basename(str(p))
+                    d = os.path.basename(unicode(p))
                     self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
                     #dirname, filename = os.path.split(os.path.abspath(self.main.fname))
@@ -230,7 +230,7 @@ class Start(QtGui.QWidget):
             
         self.main.tmp = self.main.fname
         #RECENT FILE--
-        self.recentp = cfg.recentproject
+        self.recentp = unicode(cfg.recentproject)
         self.dirname = os.path.dirname(self.recentp)
         self.main.fname = os.path.basename(self.recentp)
         self.main.dirname = self.dirname
@@ -263,7 +263,7 @@ class Start(QtGui.QWidget):
             self.main.fname = name
             data = os.path.join(dirname, name)
         else:
-            self.project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+            self.project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                 '', self.tr("Python files (*.py *.pyw)")))
 
             if self.project == '':
@@ -292,7 +292,7 @@ class Start(QtGui.QWidget):
         
         cfg.config.set('stellar', 'recentproject', data)
         cfg.recentproject = data
-        with open('config.ini', 'wb') as configfile:
+        with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
         #-------------
 

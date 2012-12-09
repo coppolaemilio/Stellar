@@ -407,7 +407,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             event.ignore()
             
     def openfile(self):
-        project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+        project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                             '', self.tr("Python files (*.py *.pyw)")))
 
         if project == '':
@@ -437,7 +437,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         cfg.config.set('stellar', 'recentproject', project)
         cfg.recentproject = project
-        with open('config.ini', 'wb') as configfile:
+        with open('config.ini', 'w') as configfile:
 
             cfg.config.write(configfile)
             
@@ -460,7 +460,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         webbrowser.open("http://www.pygame.org/news.html")
             
     def savefile(self):
-        project = str(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
+        project = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
 
                             self.dirname, self.tr("Python files (*.py *.pyw)")))
 
@@ -487,8 +487,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
             cfg.config.set('stellar', 'recentproject', project)
             cfg.recentproject = project
-            with open('config.ini', 'wb') as configfile:
-
+            with open('config.ini', 'w') as configfile:
                 cfg.config.write(configfile)
 
             self.setWindowTitle('%s - Stellar %s'% (os.path.basename(project), cfg.__version__))
