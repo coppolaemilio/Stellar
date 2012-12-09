@@ -30,4 +30,5 @@ Any feedback is welcome!
 ![stellar](https://dl.dropbox.com/u/31195548/Stellar/stellarpreview.png)
 
 Icon set by Fatcow Web Hosting (http://www.fatcow.com/free-icons)
+
 (c) 2012 - infinity, Emilio Coppola
