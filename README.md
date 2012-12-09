@@ -14,6 +14,7 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 * Pygame
 * PyQt 4
 * PIL
+* pyscintilla2
 
 ## Contributing
 1. Fork this repository
