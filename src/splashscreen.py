@@ -173,7 +173,7 @@ class Start(QtGui.QWidget):
         self.tmp = self.main.fname
         self.name = unicode(self.nameEdit.text()).replace(".py", "") + '.py'
         self.path = unicode(self.pathEdit.text())
-        self.main.fname =  "{0}.py".format(self.nameEdit.text())
+        self.main.fname = unicode(self.nameEdit.text()) + ".py"
 
         self.dirname = os.path.join(self.path, unicode(self.nameEdit.text()))
         

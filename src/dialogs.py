@@ -91,7 +91,7 @@ class NewProjectDialog(QtGui.QDialog):
         #Main Folder for Windows
         if self.name is not "" and self.path is not "":
             if not os.path.exists(self.dirname) and not os.path.isfile(os.path.join(self.dirname, self.name)):
-                self.main.fname = "{0}.py".format(self.nameEdit.text())
+                self.main.fname = unicode(self.nameEdit.text()) + ".py"
                 os.mkdir(self.dirname)
 
                 #Project Sub-Folders for Windows
