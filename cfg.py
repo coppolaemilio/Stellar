@@ -24,10 +24,12 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
-import ConfigParser
+import ConfigParser, codecs
 
-config = ConfigParser.RawConfigParser()
-config.read('config.ini')
+config = ConfigParser.SafeConfigParser()
+
+with codecs.open('config.ini', 'r', encoding='utf-8') as f:
+    config.readfp(f)
 
 recentproject = config.get('stellar', 'recentproject')
 __version__ = config.get('stellar', 'version')
