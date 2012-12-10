@@ -252,6 +252,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         buildAction = newAction('Build', 'build.png', self.Build, 'Build game.', '', False)
         playAction = newAction('Run', 'play.png', self.playgame, 'Test your game.', 'F5')
         playDebugAction = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game on debug mode.', 'F6', False)
+        terminalAction = newAction('Terminal', 'terminal.png', self.terminal, 'Open a terminal on your project folder.', 'F1')
         
         spriteAction = newAction('Add Sprite', 'sprite.png', self.addsprite, 'Add a sprite to the game.')
         animatedspriteAction = newAction('Add Animated Sprite', 'gif.png', self.addAnimatedSprite, 'Add an animated sprite to the game.')
@@ -311,7 +312,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.toolbar.setMovable (True)
         
         addBar('toolbar', [ None, projectAction, fsaveAction, loadAction, '|', buildAction, shareAction, '|',\
-                                playAction, '|', spriteAction, animatedspriteAction, soundAction,\
+                                playAction, terminalAction, '|', spriteAction, animatedspriteAction, soundAction,\
                                 scriptAction, objectAction, roomAction, '|', aboutAction, ] )
 
         #Qtree----------------------------------------
@@ -340,6 +341,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.splitter1.addWidget(self.qmdiarea)
         self.splitter1.setStretchFactor(1, 1)
         self.setCentralWidget(self.splitter1)
+
+    def terminal(self):
+        print ("To do")
 
     def updatetree(self):
         self.tree.clear()
