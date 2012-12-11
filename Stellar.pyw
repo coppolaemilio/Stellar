@@ -42,6 +42,7 @@ import shutil
 from PyQt4 import QtCore, QtGui
 
 import cfg
+from preferences import PreferencesDialog
 from splashscreen import Start
 from dialogs import NewProjectDialog
 from spritegui import SpriteGUI
@@ -264,7 +265,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
         exitAction = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
         aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
-        preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.', '', False)
+        preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.')
 
         cascadeAction = newAction('Cascade', 'cascade.png', self.cascadewindows, '', '', True)
         closeallwindowsAction = newAction('Close All', 'closeall.png', self.closeallwindows, '', '', True)
@@ -376,8 +377,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
 
     def preferencesopen(self):
-        print(self.pref)
-        execfile(self.pref, {})
+        prefs = PreferencesDialog(self)
         
     def newproject(self):
         newprojectdialog = NewProjectDialog(self)

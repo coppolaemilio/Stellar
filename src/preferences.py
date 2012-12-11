@@ -30,18 +30,17 @@ import inspect
 
 from PyQt4 import QtGui, QtCore
 
-direc = inspect.getfile(inspect.currentframe())
-dirname, filename = os.path.split(os.path.abspath(direc))
-os.chdir(dirname)
+#direc = inspect.getfile(inspect.currentframe())
+#dirname, filename = os.path.split(os.path.abspath(direc))
 
 
-class MainWindow(QtGui.QWidget): 
-    def __init__(self): 
-        QtGui.QWidget.__init__(self) 
+class PreferencesDialog(QtGui.QDialog): 
+    def __init__(self, main): 
+        super(PreferencesDialog, self).__init__(main) 
          
         self.setGeometry(0,0, 412,470) 
         self.setWindowTitle("Preferences") 
-        self.setWindowIcon(QtGui.QIcon("icon.png"))  
+        self.setWindowIcon(QtGui.QIcon("Data/icon.png"))  
         self.setMinimumSize(412,470)
         self.setMaximumSize(412,470) 
         self.center() 
@@ -128,36 +127,11 @@ class MainWindow(QtGui.QWidget):
         self.setLayout(vbox) 
 
         #Load Preferences-----------------------------
-        self.fname = os.path.join("Data", "editors.txt")
-        with open(self.fname, 'r') as f:
-            data = f.readline()
-            data1 = f.readline()
-            data2 = f.readline()
-            if data == "none\n" or data == "\n" or data =="":
-                self.usebuilt.toggle()
-                self.editor.setText("")
-            else:
-                self.useexternal.toggle()
-                self.editor.setText(data)
-
-            if data1 == "none\n" or data1 == "\n" or data1 =="":
-                self.usebuilt1.toggle()
-                self.editor1.setText("")
-            else:
-                self.useexternal1.toggle()
-                self.editor1.setText(data1)
-                
-            if data2 == "none\n" or data2 == "\n" or data2 =="":
-                self.usebuilt2.toggle()
-                self.editor2.setText("")
-            else:
-                self.useexternal2.toggle()
-                self.editor2.setText(data2)
-
-            f.close()
 
         #-----------------------------------------
 
+        self.show()
+        
     def codeeditor(self):
         if not self.editor.text():
             self.ename = QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
@@ -186,30 +160,7 @@ class MainWindow(QtGui.QWidget):
                 self.editor2.setText(data)
                 
     def okbutton(self):
-            self.fname = os.path.join("Data", "editors.txt")
-            #p = self.fname
-            #d = os.path.basename(p)
-            with open(self.fname, 'w') as f:
-                if self.editor.text():
-                    data = self.editor.text()
-                    f.write(data)
-                    f.write("\n")
-                else:
-                    data = "none\n"
-                if self.editor1.text():
-                    data1 = self.editor1.text()
-                    f.write(data1)
-                    f.write("\n")
-                else:
-                    data1 = "none\n"
-                if self.editor2.text():
-                    data2 = self.editor2.text()
-                    f.write(data2)
-                else:
-                    data2 = "none\n" 
-                
-                f.close()
-                self.close()
+        print("TO DO")
 
     def center(self): 
         screen = QtGui.QDesktopWidget().screenGeometry() 
@@ -217,7 +168,8 @@ class MainWindow(QtGui.QWidget):
         self.move((screen.width() - size.width()) // 2,
                   (screen.height() - size.height()) // 2) 
 
-app = QtGui.QApplication(sys.argv) 
-frame = MainWindow() 
-frame.show() 
-sys.exit(app.exec_())  
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv) 
+    frame = PreferencesDialog(None) 
+    sys.exit(app.exec_())
