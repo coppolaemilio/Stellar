@@ -74,7 +74,8 @@ class SpriteGUI(QtGui.QWidget):
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.spriteLbl)
         self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
-        self.scrollArea.mousePressEvent = self.pixelSelect
+        self.scrollArea.mouseMoveEvent = self.pixelSelect 
+        
         self.click_positions = []
         
         self.scrollArea.setWidgetResizable(True)
@@ -187,8 +188,6 @@ class SpriteGUI(QtGui.QWidget):
         self.yorig = lista[2]
         self.EdirXorig.setText(self.xorig)
         self.EdirYorig.setText(self.yorig)
-        for point in self.click_positions:
-            self.scene.addLine(point.x(), point.y(), 2, 2, pen)
         self.click_positions = []
 
         
