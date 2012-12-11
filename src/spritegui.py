@@ -107,7 +107,8 @@ class SpriteGUI(QtGui.QWidget):
 
         self.OriginBox = QtGui.QGroupBox("Origin")
         self.LblX = QtGui.QLabel('X:')
-        self.LblY = QtGui.QLabel('Y:') 
+        self.LblY = QtGui.QLabel('Y:')
+        self.LblY.setAlignment(QtCore.Qt.AlignRight)
         self.EdirXorig = QtGui.QLineEdit("0")
         self.EdirYorig = QtGui.QLineEdit("0")
 
