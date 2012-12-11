@@ -36,15 +36,20 @@ class SpriteGUI(QtGui.QWidget):
         self.main = main
         self.dirname = dirname
         self.icon = icon
+
+        self.xorig = 0
+        self.yorig = 0
+
+        self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
+        self.img = Image.open(self.image_file)
+        self.width, self.height = self.img.size
+        self.extension = os.path.splitext(self.image_file)[1][1:]
+        self.format = str(self.extension)
+        self.frames = 1
+        
         self.initUI()
                         
     def initUI(self):
-        self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
-        img = Image.open(self.image_file)
-        width, height = img.size
-        extension = os.path.splitext(self.image_file)[1][1:]
-        Format  = str(extension)
-        frames = 1
 
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self.main)
@@ -55,6 +60,7 @@ class SpriteGUI(QtGui.QWidget):
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
 
         self.BtnCenter = QtGui.QPushButton('Center')
+        self.BtnCenter.clicked.connect(self.CenterSprite)
         
 
         #Scroll Area------------------------------------------
@@ -126,13 +132,13 @@ class SpriteGUI(QtGui.QWidget):
 
 
 
-        self.LblWidth = QtGui.QLabel('Width:   %d Pixels'%(width)) 
+        self.LblWidth = QtGui.QLabel('Width:   %d Pixels'%(self.width)) 
  
-        self.LblHeight = QtGui.QLabel('Height:  %d Pixels'%(height))
+        self.LblHeight = QtGui.QLabel('Height:  %d Pixels'%(self.height))
         
-        self.LblSubimages = QtGui.QLabel('Number of subimages: %d'%(frames))
+        self.LblSubimages = QtGui.QLabel('Number of subimages: %d'%(self.frames))
 
-        self.LblFormat = QtGui.QLabel('File Format:  %s'%(Format)) 
+        self.LblFormat = QtGui.QLabel('File Format:  %s'%(self.format)) 
 
 
 	self.nameandlayout = QtGui.QGridLayout()
@@ -162,7 +168,11 @@ class SpriteGUI(QtGui.QWidget):
         self.spritesplitter.addWidget(self.GeneralBox)
         self.spritesplitter.addWidget(self.scrollArea)
         self.ContainerGrid.addWidget(self.spritesplitter)
-        
+
+    def CenterSprite(self, event):
+        self.EdirXorig.setText(str(self.img.size[0] / 2))
+        self.EdirYorig.setText(str(self.img.size[1] / 2))
+        #TO DO: create cross in sprite
 	
 	
     def pixelSelect(self, event):
@@ -192,13 +202,13 @@ class SpriteGUI(QtGui.QWidget):
                 self.sprite = QtGui.QPixmap(sprite)
                 self.spriteLbl.setPixmap(self.sprite)
                 self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
-                img = Image.open(self.image_file)
-                width, height = img.size
-                extension = os.path.splitext(self.image_file)[1][1:]
-                Format  = str(extension)
-                self.LblWidth.setText('Width:   %d Pixels'%(width))
-                self.LblHeight.setText('Height:  %d Pixels'%(height))
-                self.LblFormat.setText('File Format:  %s'%(Format))
+                self.img = Image.open(self.image_file)
+                self.width, self.height = self.img.size
+                self.extension = os.path.splitext(self.image_file)[1][1:]
+                self.format  = str(self.extension)
+                self.LblWidth.setText('Width:   %d Pixels'%(self.width))
+                self.LblHeight.setText('Height:  %d Pixels'%(self.height))
+                self.LblFormat.setText('File Format:  %s'%(self.format))
                 
 
     def SaveSprite(self):
