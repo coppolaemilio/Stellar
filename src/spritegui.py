@@ -28,6 +28,7 @@ from PIL import Image
 
 
 
+
 class SpriteGUI(QtGui.QWidget):
   
     def __init__(self, main, icon, dirname):
@@ -36,10 +37,7 @@ class SpriteGUI(QtGui.QWidget):
         self.dirname = dirname
         self.icon = icon
         self.initUI()
-        
-
-
-                
+                        
     def initUI(self):
         self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
         img = Image.open(self.image_file)
@@ -47,7 +45,6 @@ class SpriteGUI(QtGui.QWidget):
         extension = os.path.splitext(self.image_file)[1][1:]
         Format  = str(extension)
         frames = 1
-
 
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self.main)
@@ -57,14 +54,15 @@ class SpriteGUI(QtGui.QWidget):
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setGeometry (32,32,32,32)
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
-        self.BtnOK.clicked.connect(self.HideMe)
 
         #Scroll Area------------------------------------------
         self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites/%s.png"%(self.icon)))
                                     
+        
         self.spriteLbl = QtGui.QLabel(self.main)
         self.spriteLbl.setPixmap(self.sprite)
         self.spriteLbl.setAlignment(QtCore.Qt.AlignTop)
+        self.spriteLbl.setText("caca")
                                     
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.spriteLbl)
@@ -148,46 +146,21 @@ class SpriteGUI(QtGui.QWidget):
         self.NameAndThingsBox.setLayout(self.nameandlayout)
 
 		
-        self.layout.addWidget(self.NameAndThingsBox,0,0)
+        self.layout.addWidget(self.NameAndThingsBox)
         self.layout.addItem(spacerItem)
         self.layout.addWidget(self.BtnOK)
 		
-
-        self.GeneralBox.setLayout(self.layout)		
-		
-        #Groupbox Image Information---------------------------
-        #self.InformationBox = QtGui.QGroupBox()
-        #self.layout1 = QtGui.QGridLayout()	 
-		
-        #self.layout1.addWidget(self.LblWidth,0,0)	
-        #self.layout1.addWidget(self.LblHeight,1,0)
-        #self.layout1.addWidget(self.LblFormat,3,0)
-        #self.InformationBox.setLayout(self.layout1)	
-		
-        #Groupbox Collision Checking---------------------------
-        #self.CollisionBox = QtGui.QGroupBox()
-        #self.CollisionBox.setObjectName("groupBox")
-        #self.CollisionBox.setTitle("Collision Checking")
-
-        #self.BtnLoad = QtGui.QPushButton('Modify Mask', self.CollisionBox)
-      
-
-        #Main Window------------------------------------------
+        self.GeneralBox.setMaximumWidth (170)
+        self.GeneralBox.setLayout(self.layout)
 		
         self.ContainerGrid.setSpacing(0)
-
-
-
 		
         self.spritesplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
         self.spritesplitter.addWidget(self.GeneralBox)
-        self.spritesplitter.setCollapsible ( 0, False)
-        
-        #self.spritesplitter.addWidget(self.InformationBox)
         self.spritesplitter.addWidget(self.scrollArea)
-        self.spritesplitter.setMinimumSize(350,200)
-        self.spritesplitter.setStretchFactor(1, 2)
-        self.ContainerGrid.addWidget(self.spritesplitter, 0, 0)
+        self.ContainerGrid.addWidget(self.spritesplitter)
+        
+	
 	
     def pixelSelect(self, event):
         self.click_positions.append(event.pos())
@@ -197,11 +170,14 @@ class SpriteGUI(QtGui.QWidget):
         positions = positions.replace(',', '(')
         positions = positions.replace(' ', '')
         lista = positions.split('(')
-        xorig = lista[1]
-        yorig = lista[2]
-        self.EdirXorig.setText(xorig)
-        self.EdirYorig.setText(yorig)
+        self.xorig = lista[1]
+        self.yorig = lista[2]
+        self.EdirXorig.setText(self.xorig)
+        self.EdirYorig.setText(self.yorig)
+        for point in self.click_positions:
+            self.scene.addLine(point.x(), point.y(), 2, 2, pen)
         self.click_positions = []
+
         
     def LoadSprite(self):
         self.asprite = QtGui.QFileDialog.getOpenFileNames(self, 'Open Sprite(s)', 
@@ -232,11 +208,5 @@ class SpriteGUI(QtGui.QWidget):
 
     def EditSprite(self):
         os.startfile(self.image_file)#TO BE DONE :)
-    
-    def ShowMe(self):
-        self.ContainerBox.show()
-        
-    def HideMe(self):
-        self.ContainerBox.hide()
         
 
