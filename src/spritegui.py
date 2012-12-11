@@ -123,7 +123,7 @@ class SpriteGUI(QtGui.QWidget):
         self.originlayout.addWidget(self.EdirXorig,7,1)
         self.originlayout.addWidget(self.LblY,7,2)
         self.originlayout.addWidget(self.EdirYorig,7,3)
-        self.originlayout.addWidget(self.BtnCenter,8,2)
+        self.originlayout.addWidget(self.BtnCenter,8,1,2,2)
         
         self.OriginBox.setLayout(self.originlayout)
 
