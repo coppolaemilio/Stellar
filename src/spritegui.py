@@ -52,8 +52,10 @@ class SpriteGUI(QtGui.QWidget):
         
                 
         self.BtnOK = QtGui.QPushButton('OK')
-        self.BtnOK.setGeometry (32,32,32,32)
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
+
+        self.BtnCenter = QtGui.QPushButton('Center')
+        
 
         #Scroll Area------------------------------------------
         self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites/%s.png"%(self.icon)))
@@ -62,7 +64,6 @@ class SpriteGUI(QtGui.QWidget):
         self.spriteLbl = QtGui.QLabel(self.main)
         self.spriteLbl.setPixmap(self.sprite)
         self.spriteLbl.setAlignment(QtCore.Qt.AlignTop)
-        self.spriteLbl.setText("caca")
                                     
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.spriteLbl)
@@ -115,6 +116,7 @@ class SpriteGUI(QtGui.QWidget):
         self.originlayout.addWidget(self.EdirXorig,7,1)
         self.originlayout.addWidget(self.LblY,7,2)
         self.originlayout.addWidget(self.EdirYorig,7,3)
+        self.originlayout.addWidget(self.BtnCenter,8,2)
         
         self.OriginBox.setLayout(self.originlayout)
 
