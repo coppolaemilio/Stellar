@@ -27,6 +27,7 @@ from __future__ import unicode_literals
 import sys
 import os
 import inspect
+import cfg
 
 from PyQt4 import QtGui, QtCore
 
@@ -43,7 +44,11 @@ class PreferencesDialog(QtGui.QDialog):
         self.setWindowIcon(QtGui.QIcon("Data/icon.png"))  
         self.setMinimumSize(412,470)
         self.setMaximumSize(412,470) 
-        self.center() 
+        self.center()
+
+        self.soundeditor = ''
+        self.codeeditor = ''
+        self.imageeditor = ''
          
         #TABS ----------------
          
@@ -131,36 +136,51 @@ class PreferencesDialog(QtGui.QDialog):
         #-----------------------------------------
 
         self.show()
-        
+
+    
+    # editor -> codeeditor
+    # editor1 -> soundeditor
+    # editor2 -> imageeditor
+    
     def codeeditor(self):
         if not self.editor.text():
-            self.ename = QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
-                    '', self.tr("Programs (*.exe)"))
-            if not self.ename=="":
+            name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+                    '', self.tr("Programs (*.exe)")))
+            if name is not "":
                 self.useexternal.toggle()
-                data = self.ename
-                self.editor.setText(data)
+                self.editor.setText(name)
             
     def imageeditor(self):
         if not self.editor1.text():
-            self.ename = QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
-                    '', self.tr("Programs (*.exe)"))
-            if not self.ename=="":
+            name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+                    '', self.tr("Programs (*.exe)")))
+            if name is not "":
                 self.useexternal1.toggle()
-                data = self.ename
-                self.editor1.setText(data)
+                self.editor1.setText(name)
             
     def soundeditor(self):
         if not self.editor2.text():
-            self.ename = QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
-                    '', self.tr("Programs (*.exe)"))
-            if not self.ename=="":
+            name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+                    '', self.tr("Programs (*.exe)")))
+            if name is not "":
                 self.useexternal2.toggle()
-                data = self.ename
-                self.editor2.setText(data)
+                self.editor2.setText(name)
                 
     def okbutton(self):
-        print("TO DO")
+        if self.useexternal.isChecked():
+            cfg.config.set('stellar', 'codeeditor', unicode(self.editor.text()))
+            cfg.codeeditor = unicode(self.editor.text())
+        if self.useexternal2.isChecked():
+            cfg.config.set('stellar', 'soundeditor', unicode(self.editor1.text()))
+            cfg.soundeditor = unicode(self.editor1.text())
+        if self.useexternal3.isChecked():
+            cfg.config.set('stellar', 'imageeditor', unicode(self.editor2.text()))
+            cfg.imageeditor = unicode(self.editor2.text())
+
+        with open('config.ini', 'w') as configfile:
+            cfg.config.write(configfile)
+
+        self.close()
 
     def center(self): 
         screen = QtGui.QDesktopWidget().screenGeometry() 
