@@ -59,8 +59,24 @@ class SpriteGUI(QtGui.QWidget):
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
 
-        self.BtnCenter = QtGui.QPushButton('Center')
-        self.BtnCenter.clicked.connect(self.CenterSprite)
+
+        self.LblShow = QtGui.QLabel('Show:')
+        self.BtnNext = QtGui.QPushButton()
+        self.BtnNext.setIcon(QtGui.QIcon('Data/nextimg.png'))
+        self.ShowImage = QtGui.QLineEdit("0")
+        self.BtnPrev = QtGui.QPushButton()
+        self.BtnPrev.setIcon(QtGui.QIcon('Data/previmg.png'))
+
+        
+        self.ShowFrame = QtGui.QFrame()
+        self.showlayout = QtGui.QGridLayout()
+        self.showlayout.setMargin (0)
+        self.showlayout.addWidget(self.LblShow,1,0)
+        self.showlayout.addWidget(self.BtnNext,1,3)
+        self.showlayout.addWidget(self.ShowImage,1,2)
+        self.showlayout.addWidget(self.BtnPrev,1,1)
+        
+        self.ShowFrame.setLayout(self.showlayout)
         
 
         #Scroll Area------------------------------------------
@@ -74,7 +90,8 @@ class SpriteGUI(QtGui.QWidget):
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.spriteLbl)
         self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
-        self.scrollArea.mouseMoveEvent = self.pixelSelect 
+        self.scrollArea.mouseMoveEvent = self.pixelSelect
+        self.scrollArea.mousePressEvent = self.pixelSelect 
         
         self.click_positions = []
         
@@ -114,12 +131,17 @@ class SpriteGUI(QtGui.QWidget):
 
         self.OriginBox = QtGui.QGroupBox("Origin")
         self.LblX = QtGui.QLabel('X:')
+        self.LblX.setAlignment(QtCore.Qt.AlignRight)
         self.LblY = QtGui.QLabel('Y:')
         self.LblY.setAlignment(QtCore.Qt.AlignRight)
         self.EdirXorig = QtGui.QLineEdit("0")
         self.EdirYorig = QtGui.QLineEdit("0")
 
+        self.BtnCenter = QtGui.QPushButton('Center')
+        self.BtnCenter.clicked.connect(self.CenterSprite)
+
         self.originlayout = QtGui.QGridLayout()
+        self.originlayout.setMargin (3)
         self.originlayout.addWidget(self.LblX,7,0)
         self.originlayout.addWidget(self.EdirXorig,7,1)
         self.originlayout.addWidget(self.LblY,7,2)
@@ -139,10 +161,13 @@ class SpriteGUI(QtGui.QWidget):
         
         self.LblSubimages = QtGui.QLabel('Number of subimages: %d'%(self.frames))
 
+        
+
         self.LblFormat = QtGui.QLabel('File Format:  %s'%(self.format)) 
 
 
 	self.nameandlayout = QtGui.QGridLayout()
+        self.nameandlayout.setMargin (1)
         self.nameandlayout.addWidget(self.NameFrame,0,0)	
         self.nameandlayout.addWidget(self.Lblspacer,1,0)
         self.nameandlayout.addWidget(self.BtnLoad,1,0)
@@ -151,7 +176,10 @@ class SpriteGUI(QtGui.QWidget):
         self.nameandlayout.addWidget(self.LblWidth,4,0)
         self.nameandlayout.addWidget(self.LblHeight,5,0)
         self.nameandlayout.addWidget(self.LblSubimages,6,0)
-        self.nameandlayout.addWidget(self.OriginBox,8,0)
+        self.nameandlayout.addWidget(self.ShowFrame,7,0)
+        self.nameandlayout.addWidget(self.BtnNext,7,1)
+        
+        self.nameandlayout.addWidget(self.OriginBox,9,0)
         
         self.NameAndThingsBox.setLayout(self.nameandlayout)
 
