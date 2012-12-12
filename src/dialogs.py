@@ -85,13 +85,13 @@ class NewProjectDialog(QtGui.QDialog):
         self.path = unicode(self.pathEdit.text())
 
 
-        self.dirname = os.path.join(self.path, unicode(self.nameEdit.text()))
+        self.dirname = os.path.join(self.path, self.name)
         
 
         #Main Folder for Windows
         if self.name is not "" and self.path is not "":
             if not os.path.exists(self.dirname) and not os.path.isfile(os.path.join(self.dirname, self.name)):
-                self.main.fname = unicode(self.nameEdit.text()) + ".py"
+                self.main.fname = self.name
                 os.mkdir(self.dirname)
 
                 #Project Sub-Folders for Windows
@@ -106,12 +106,12 @@ class NewProjectDialog(QtGui.QDialog):
                 f.write('# This file was created with Stellar')
                 f.close() 
 
-                cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name))
+                cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name).encode('utf-8'))
                 cfg.recentproject = os.path.join(self.dirname, self.name)
                 with open('config.ini', 'w') as configfile:
                     cfg.config.write(configfile)
 
-                d = os.path.basename(str(self.main.fname))
+                d = os.path.basename(self.main.fname)
                 self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
                 self.close()
@@ -168,7 +168,7 @@ class NewProjectDialog(QtGui.QDialog):
             self.main.fname = os.path.basename(self.project)
 
         
-        cfg.config.set('stellar', 'recentproject', self.project)
+        cfg.config.set('stellar', 'recentproject', self.project.encode('utf-8'))
         cfg.recentproject = self.project
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)

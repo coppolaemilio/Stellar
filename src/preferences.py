@@ -168,13 +168,13 @@ class PreferencesDialog(QtGui.QDialog):
                 
     def okbutton(self):
         if self.useexternal.isChecked():
-            cfg.config.set('stellar', 'codeeditor', unicode(self.editor.text()))
+            cfg.config.set('stellar', 'codeeditor', unicode(self.editor.text()).encode('utf-8'))
             cfg.codeeditor = unicode(self.editor.text())
         if self.useexternal2.isChecked():
-            cfg.config.set('stellar', 'soundeditor', unicode(self.editor1.text()))
+            cfg.config.set('stellar', 'soundeditor', unicode(self.editor1.text()).encode('utf-8'))
             cfg.soundeditor = unicode(self.editor1.text())
         if self.useexternal3.isChecked():
-            cfg.config.set('stellar', 'imageeditor', unicode(self.editor2.text()))
+            cfg.config.set('stellar', 'imageeditor', unicode(self.editor2.text()).encode('utf-8'))
             cfg.imageeditor = unicode(self.editor2.text())
 
         with open('config.ini', 'w') as configfile:

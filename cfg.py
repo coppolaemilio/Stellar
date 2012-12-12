@@ -18,20 +18,21 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+#from __future__ import division
+#from __future__ import absolute_import
+#from __future__ import print_function
+#from __future__ import unicode_literals
 
 import os
 import ConfigParser, codecs
 
-config = ConfigParser.SafeConfigParser()
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
 
-with codecs.open('config.ini', 'r', encoding='utf-8') as f:
-    config.readfp(f)
-
-recentproject = config.get('stellar', 'recentproject')
 __version__ = config.get('stellar', 'version')
+recentproject = config.get('stellar', 'recentproject').decode('utf-8')
+codeeditor = config.get('stellar', 'codeeditor').decode('utf-8')
+soundeditor = config.get('stellar', 'soundeditor').decode('utf-8')
+imageeditor = config.get('stellar', 'imageeditor').decode('utf-8')
 
     

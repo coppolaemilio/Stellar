@@ -173,10 +173,10 @@ class Start(QtGui.QWidget):
         self.tmp = self.main.fname
         self.name = unicode(self.nameEdit.text()).replace(".py", "") + '.py'
         self.path = unicode(self.pathEdit.text())
-        self.main.fname = unicode(self.nameEdit.text()) + ".py"
+        self.main.fname = self.name
 
-        self.dirname = os.path.join(self.path, unicode(self.nameEdit.text()))
-        
+        self.dirname = os.path.join(self.path, unicode(self.nameEdit.text()).replace(".py", ""))
+
         if self.main.fname == "":
             self.main.fname = self.main.tmp
         else:
@@ -194,10 +194,11 @@ class Start(QtGui.QWidget):
                     f.write('# This file was created with Stellar')
                     f.close() 
   
-                    cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name))
+                    cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name).encode('utf-8'))
                     cfg.recentproject = os.path.join(self.dirname, self.name)
                     with open('config.ini', 'w') as configfile:
                         cfg.config.write(configfile)
+                        
                     p = self.main.fname
                     d = os.path.basename(unicode(p))
                     self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
@@ -230,28 +231,21 @@ class Start(QtGui.QWidget):
             
         self.main.tmp = self.main.fname
         #RECENT FILE--
-        self.recentp = unicode(cfg.recentproject)
+        self.recentp = cfg.recentproject
         self.dirname = os.path.dirname(self.recentp)
         self.main.fname = os.path.basename(self.recentp)
         self.main.dirname = self.dirname
         #-------------
 
-        if self.main.fname == "":
-            self.main.fname = self.main.tmp
-        else:
-            #f = open(self.main.fname, 'r')
-            p = self.main.fname
-            d = os.path.basename(str(p))
-            self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
-            
-            '''with f:        
-                data = f.read()
-                self.main.textEdit.setText(data)'''
+        #f = open(self.main.fname, 'r')
+        p = self.main.fname
+        d = os.path.basename(p)
+        self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
 
-            self.close()
-            self.main.tree.InitParent()
-            self.main.tree.InitChild(fillarrays = True)
-            self.main.show()
+        self.close()
+        self.main.tree.InitParent()
+        self.main.tree.InitChild(fillarrays = True)
+        self.main.show()
         
     def OpenFile(self, dirname = None, name = None):
         self.main.tmp = self.main.fname
@@ -290,7 +284,7 @@ class Start(QtGui.QWidget):
             data = self.project
 
         
-        cfg.config.set('stellar', 'recentproject', data)
+        cfg.config.set('stellar', 'recentproject', data.encode('utf-8'))
         cfg.recentproject = data
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)

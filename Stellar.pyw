@@ -439,7 +439,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
 
 
-        cfg.config.set('stellar', 'recentproject', project)
+        cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
         with open('config.ini', 'w') as configfile:
 
@@ -480,7 +480,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 
             for subfolder in self.subfolders:
                 if not os.path.exists(os.path.join(self.dirname, subfolder)):
-
                     os.mkdir(os.path.join(self.dirname, subfolder))
 
             f = open(os.path.join(self.dirname, self.fname), 'w+')
@@ -489,7 +488,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
             f.close()
 
-            cfg.config.set('stellar', 'recentproject', project)
+            cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
             cfg.recentproject = project
             with open('config.ini', 'w') as configfile:
                 cfg.config.write(configfile)
