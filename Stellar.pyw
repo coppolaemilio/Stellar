@@ -207,6 +207,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.Names = ('Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms')
         self.Sources = {}
         
+        self.subfolders = []
+        for i in self.Names:
+            self.subfolders.append(i)
+        self.subfolders.append('Build')
+        
+        
         for i in self.Names:
             self.Sources[i] = []
         
@@ -232,7 +238,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
         projectAction = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N')
         
-        loadAction = newAction('Open...', 'folder.png', self.openfile, 'Open Game.', 'Ctrl+O')
+        loadAction = newAction('Open...', 'folder.png', self.openFile, 'Open Game.', 'Ctrl+O')
         saveAction = newAction('Save Game As...', 'save.png', self.savefile, 'Save Game As...', 'Ctrl+Shift+S')
         fsaveAction = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S', False)
         
@@ -316,7 +322,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #WINDOW----------------------------------------
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
-        self.subfolders = ['Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms', 'Build']
+        
         self.expanded = {'Sprites' : False, 'Sound' : False, 'Fonts' : False, 'Scripts' : False,
                          'Objects' : False, 'Rooms' : False}
         self.fname = "<New game>"
@@ -397,55 +403,51 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         else:
             event.ignore()
             
-    def openfile(self):
-        project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
-                            '', self.tr("Python files (*.py *.pyw)")))
-
+    def openFile(self):
+        self.openProject()
+        self.closeallwindows()
+        
+    def openProject(this):
+        project = unicode(QtGui.QFileDialog.getOpenFileName(this, 'Open Existing Game', 
+                        '', this.tr("Python files (*.py *.pyw)")))
+            
         if project == '':
             return
         if not os.path.isfile(project):
             QtGui.QMessageBox.question(self, "Project doesn't exist",
                 "This project doesn't exist or has been removed",
-                QtGui.QMessageBox.Ok)
+            QtGui.QMessageBox.Ok)
             return
             
 
-        for subfolder in self.subfolders:
-
-            if not os.path.exists(os.path.join(os.path.dirname(project), subfolder)):
-
+        for folder in this.subfolders:
+            if not os.path.exists(os.path.join(os.path.dirname(project), folder)):
                 QtGui.QMessageBox.question(self, "Project is broken",
                     "Project is broken or doesn't contain important folders",
                     QtGui.QMessageBox.Ok)
                 return
 
-        self.dirname = os.path.dirname(project)
-
-        self.fname = os.path.basename(project)
-        self.closeallwindows()
-
-
+        this.dirname = os.path.dirname(project)
+        fname = os.path.basename(project).replace(".py", "")
+        
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
+            
         with open('config.ini', 'w') as configfile:
-
             cfg.config.write(configfile)
             
-        self.setWindowTitle('%s - Stellar %s'% (self.fname, cfg.__version__))
+        this.setWindowTitle('%s - Stellar %s'% (fname, cfg.__version__))
+            
+        for i in this.Names:
+            this.Sources[i] = []
 
-
-        self.Sprites=[]
-        self.Sound=[]
-        self.Fonts=[]
-        self.Scripts=[]
-        self.Objects=[]
-        self.Rooms=[]
-
-        self.tree.clear()
-        self.tree.InitParent()
-        self.tree.InitChild(fillarrays = True)
-        self.show()
+        this.tree.clear()
+        this.tree.InitParent()
+        this.tree.InitChild(fillarrays = True)
+        this.show()
+            
+      
 
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
