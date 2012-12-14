@@ -84,7 +84,7 @@ class NewProjectDialog(QtGui.QDialog):
                                                 QtGui.QMessageBox.Ok)
             return
         
-        self.name = unicode(self.nameEdit.text()).replace(".py", "")
+        self.name = unicode(self.nameEdit.text())
         self.path = unicode(self.pathEdit.text())
 
         self.dirname = os.path.join(self.path, self.name)
@@ -94,39 +94,25 @@ class NewProjectDialog(QtGui.QDialog):
         if self.name != "" and self.path != "":
             
             if not os.path.exists(self.dirname) and not os.path.isfile(os.path.join(self.dirname, self.name)):
-                self.main.fname = self.name
-                os.mkdir(self.dirname)
-                
-                
-                self.main.saveProject(self.dirname, self.name+".py")
-                
+                self.main.createProject(self.dirname, self.name)
+                self.main.clearSources()
                 self.close()
                 
-                
-                for i in self.main.Names:
-                    self.main.Sources[i] = []
-                
-                self.main.dirname = self.dirname
-                self.main.tree.clear()
-                self.main.tree.InitParent()
-                self.main.tree.InitChild(fillarrays = True)
-                self.main.show()
             else:
                 reply = QtGui.QMessageBox.question(self, "Already Exists",
                                                         "That Project already exists. Do you want to open it?",
                                                         QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
                 if reply == QtGui.QMessageBox.Yes:
-                    self.OpenFile(self.dirname, self.name)
+                    self.OpenFile(self.dirname, self.name+".py")
+                    
 
     def OpenFile(self, dirname = None, name = None):        
         # check if we opens existing file from CreateProject function
         if dirname != None and name != None:
-            self.dirname = dirname
-            self.main.dirname = self.dirname
-            self.main.fname = name
-            data = os.path.join(dirname, name)
+            path = os.path.join(dirname, name)
+            self.main.openProject(path)
         else:
-            self.main.openProject(self.main)
+            self.main.openProject()
             
         self.close()
         

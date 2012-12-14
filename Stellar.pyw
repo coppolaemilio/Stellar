@@ -403,8 +403,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.openProject()
         self.closeallwindows()
         
-    def openProject(self):
-        project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+    def openProject(self, project=None):
+        if project == None:
+            project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                         '', self.tr("Python files (*.py *.pyw)")))
             
         if project == '':
@@ -434,7 +435,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             cfg.config.write(configfile)
             
         self.setWindowTitle('%s - Stellar %s'% (self.fname.replace(".py", ""), cfg.__version__))
-            
+        self.clearSources()
+    
+    
+    def clearSources(self):
         for i in self.Names:
             self.Sources[i] = []
 
@@ -448,7 +452,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
             
-    def saveProject(self, dirname, file):
+    def createProject(self, dirname, file):
         project = os.path.join(dirname, file)
         
         if not os.path.exists(dirname):
@@ -469,7 +473,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             cfg.config.write(configfile)
 
         self.setWindowTitle('%s - Stellar %s'% (file.replace(".py", ""), cfg.__version__))
-
+        
         
     def savefile(self):
         project = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
@@ -480,13 +484,15 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         else:
             fromDir = self.dirname
             self.fname = os.path.basename(project)+".py"
-            self.dirname = os.path.dirname(project) + "/" + os.path.basename(project)
-            self.saveProject(self.dirname, self.fname)
+            self.dirname = project
+            self.createProject(self.dirname, self.fname)
             
             for source in self.Sources:
                 for file in self.Sources[source]:
                     if not os.path.isfile(os.path.join(self.dirname, source, file)):
-                        shutil.copy(os.path.join(fromDir, source, file), os.path.join(self.dirname, source, file))
+                        from_dir = os.path.join(fromDir, source, file)
+                        into_dir = os.path.join(self.dirname, source, file)
+                        shutil.copy(from_dir, into_dir)
 
             
     def fsavefile(self):
