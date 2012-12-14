@@ -142,7 +142,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
                 else:
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[unicode(directory + 's']))))
 
         
         
@@ -387,7 +387,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            p = self.fname
+            p = unicode(self.fname)
             d = os.path.basename(p)
             fname = os.path.join(self.dirname, d)
             self.setWindowTitle('{0} - Stellar {1}'.format(d, cfg.__version__))
