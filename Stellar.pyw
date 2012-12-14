@@ -82,10 +82,10 @@ class TreeWidget(QtGui.QTreeWidget):
             j+=1
 
     def itemCollapsed(self, obj):
-        self.main.expanded[unicode(obj.text(0))] = False
+        self.main.expanded[str(obj.text(0))] = False
 
     def itemExpanded(self, obj):
-        self.main.expanded[unicode(obj.text(0))] = True
+        self.main.expanded[str(obj.text(0))] = True
 
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
