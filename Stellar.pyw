@@ -479,9 +479,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             return
         else:
             fromDir = self.dirname
-            self.fname = os.path.basename(project)
-            self.dirname = os.path.dirname(project)
-            saveProject(self.dirname, self.fname)
+            self.fname = os.path.basename(project)+".py"
+            self.dirname = os.path.dirname(project) + "/" + os.path.basename(project)
+            self.saveProject(self.dirname, self.fname)
             
             for source in self.Sources:
                 for file in self.Sources[source]:
