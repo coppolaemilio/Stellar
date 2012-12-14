@@ -150,9 +150,7 @@ class TreeWidget(QtGui.QTreeWidget):
         if not item.parent() == None:
             for name in self.Names:
                 openWindow(name)
-                
-                
-
+    
     def InitParent(self):
         
         for name in self.Names:
@@ -161,8 +159,6 @@ class TreeWidget(QtGui.QTreeWidget):
             self.Parent[name] = QtGui.QTreeWidgetItem(self, QtCore.QStringList(name))
             self.Parent[name].setIcon(0,icon)
             
-
-
     def InitChild(self, fillarrays=False):
         dirname = self.main.dirname
         
@@ -407,28 +403,28 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.openProject()
         self.closeallwindows()
         
-    def openProject(this):
-        project = unicode(QtGui.QFileDialog.getOpenFileName(this, 'Open Existing Game', 
-                        '', this.tr("Python files (*.py *.pyw)")))
+    def openProject(self):
+        project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+                        '', self.tr("Python files (*.py *.pyw)")))
             
         if project == '':
             return
         if not os.path.isfile(project):
             QtGui.QMessageBox.question(self, "Project doesn't exist",
-                "This project doesn't exist or has been removed",
+                "this project doesn't exist or has been removed",
             QtGui.QMessageBox.Ok)
             return
             
 
-        for folder in this.subfolders:
+        for folder in self.subfolders:
             if not os.path.exists(os.path.join(os.path.dirname(project), folder)):
                 QtGui.QMessageBox.question(self, "Project is broken",
                     "Project is broken or doesn't contain important folders",
                     QtGui.QMessageBox.Ok)
                 return
 
-        this.dirname = os.path.dirname(project)
-        fname = os.path.basename(project).replace(".py", "")
+        self.dirname = os.path.dirname(project)
+        self.fname = os.path.basename(project).replace(".py", "")
         
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
@@ -437,24 +433,46 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
             
-        this.setWindowTitle('%s - Stellar %s'% (fname, cfg.__version__))
+        self.setWindowTitle('%s - Stellar %s'% (self.fname.replace(".py", ""), cfg.__version__))
             
-        for i in this.Names:
-            this.Sources[i] = []
+        for i in self.Names:
+            self.Sources[i] = []
 
-        this.tree.clear()
-        this.tree.InitParent()
-        this.tree.InitChild(fillarrays = True)
-        this.show()
+        self.tree.clear()
+        self.tree.InitParent()
+        self.tree.InitChild(fillarrays = True)
+        self.show()
             
       
 
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
             
+    def saveProject(self, dirname, file):
+        project = os.path.join(dirname, file)
+        
+        if not os.path.exists(dirname):
+            if not os.path.isfile(project):
+                os.mkdir(dirname)
+        
+        for subfolder in self.subfolders:
+            if not os.path.exists(os.path.join(dirname, subfolder)):
+                os.mkdir(os.path.join(dirname, subfolder))
+
+        f = open(project, 'w+')
+        f.write('# this file was created with Stellar')
+        f.close()
+
+        cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
+        cfg.recentproject = project
+        with open('config.ini', 'w') as configfile:
+            cfg.config.write(configfile)
+
+        self.setWindowTitle('%s - Stellar %s'% (file.replace(".py", ""), cfg.__version__))
+
+        
     def savefile(self):
         project = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
-
                             self.dirname, self.tr("Python files (*.py *.pyw)")))
 
         if project == "":
@@ -463,27 +481,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             fromDir = self.dirname
             self.fname = os.path.basename(project)
             self.dirname = os.path.dirname(project)
-
-            if not os.path.exists(self.dirname):
-                os.mkdir(self.dirname)
-                
-            for subfolder in self.subfolders:
-                if not os.path.exists(os.path.join(self.dirname, subfolder)):
-                    os.mkdir(os.path.join(self.dirname, subfolder))
-
-            f = open(os.path.join(self.dirname, self.fname), 'w+')
-
-            f.write('# This file was created with Stellar')
-
-            f.close()
-
-            cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
-            cfg.recentproject = project
-            with open('config.ini', 'w') as configfile:
-                cfg.config.write(configfile)
-
-            self.setWindowTitle('%s - Stellar %s'% (os.path.basename(project), cfg.__version__))
-
+            saveProject(self.dirname, self.fname)
             
             for source in self.Sources:
                 for file in self.Sources[source]:

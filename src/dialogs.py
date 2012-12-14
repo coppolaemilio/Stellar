@@ -87,10 +87,9 @@ class NewProjectDialog(QtGui.QDialog):
         self.name = unicode(self.nameEdit.text()).replace(".py", "")
         self.path = unicode(self.pathEdit.text())
 
-
         self.dirname = os.path.join(self.path, self.name)
         
-
+        
         #Main Folder for Windows
         if self.name != "" and self.path != "":
             
@@ -98,24 +97,9 @@ class NewProjectDialog(QtGui.QDialog):
                 self.main.fname = self.name
                 os.mkdir(self.dirname)
                 
-                for subfolder in self.subfolders:
-                    if not os.path.exists(os.path.join(self.dirname, subfolder)):
-                        os.mkdir(os.path.join(self.dirname, subfolder))
-
-                f = open(os.path.join(self.dirname, self.name+".py"), 'w+')
-                f.write('# This file was created with Stellar')
-                f.close() 
-
-                cfg.config.set('stellar', 'recentproject', os.path.join(self.dirname, self.name).encode('utf-8'))
-                cfg.recentproject = os.path.join(self.dirname, self.name)
-                with open('config.ini', 'w') as configfile:
-                    cfg.config.write(configfile)
-
-
-                d = os.path.basename(self.main.fname)
                 
-                self.main.setWindowTitle('%s - Stellar %s'% (d, cfg.__version__))
-
+                self.main.saveProject(self.dirname, self.name+".py")
+                
                 self.close()
                 
                 
