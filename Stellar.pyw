@@ -82,10 +82,10 @@ class TreeWidget(QtGui.QTreeWidget):
             j+=1
 
     def itemCollapsed(self, obj):
-        self.main.expanded[str(obj.text(0))] = False
+        self.main.expanded[unicode(obj.text(0))] = False
 
     def itemExpanded(self, obj):
-        self.main.expanded[str(obj.text(0))] = True
+        self.main.expanded[unicode(obj.text(0))] = True
 
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
@@ -142,7 +142,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
                 else:
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[str(directory + 's')])))
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))
 
         
         
@@ -387,7 +387,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            p = str(self.fname)
+            p = self.fname
             d = os.path.basename(p)
             fname = os.path.join(self.dirname, d)
             self.setWindowTitle('{0} - Stellar {1}'.format(d, cfg.__version__))
@@ -510,10 +510,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         def get_name(source, name):
             number = 0
             prefix = name
-            name = prefix + str(number)
+            name = prefix + unicode(number)
             while os.path.exists(os.path.join(self.dirname, source, name + ".py")):
                 number += 1 
-                name = prefix + str(number)
+                name = prefix + unicode(number)
             return name
             
         def include_into_project(source, name, path=None):
@@ -559,7 +559,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     '', self.tr(files))
                     
             if location !='':
-                name = os.path.basename(str(location[0]))
+                name = os.path.basename(unicode(location[0]))
                 include_into_project(source, name, location[0])
         
     
