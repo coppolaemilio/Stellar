@@ -1,5 +1,5 @@
 *.py[cod]
-*.ini
+*~
 
 # C extensions
 *.so
