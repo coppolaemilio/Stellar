@@ -323,7 +323,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                          'Objects' : False, 'Rooms' : False}
         self.fname = "<New game>"
         self.dirname = ''
-        self.setWindowTitle('{0} - Stellar {1}'.format(self.fname, cfg.__version__))
+        self.setTitle(self.fname)
         self.center()
         self.start = Start(self)
         self.splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
@@ -371,6 +371,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     def newproject(self):
         newprojectdialog = NewProjectDialog(self)
         
+    def setTitle(self, name):
+        self.setWindowTitle('%s - Stellar %s'% (name.replace(".py", ""), cfg.__version__))
 
     def Build(self):
         print("To do")
@@ -425,7 +427,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 return
 
         self.dirname = os.path.dirname(project)
-        self.fname = os.path.basename(project).replace(".py", "")
+        self.fname = os.path.basename(project)
         
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
@@ -434,7 +436,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
             
-        self.setWindowTitle('%s - Stellar %s'% (self.fname.replace(".py", ""), cfg.__version__))
+        self.setTitle(self.fname)
         self.clearSources()
     
     
@@ -453,7 +455,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         webbrowser.open("http://www.pygame.org/news.html")
             
     def createProject(self, dirname, file):
-        project = os.path.join(dirname, file)
+        
+        project = os.path.join(dirname, file+".py")
         
         if not os.path.exists(dirname):
             if not os.path.isfile(project):

@@ -103,7 +103,7 @@ class NewProjectDialog(QtGui.QDialog):
                                                         "That Project already exists. Do you want to open it?",
                                                         QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
                 if reply == QtGui.QMessageBox.Yes:
-                    self.OpenFile(self.dirname, self.name+".py")
+                    self.OpenFile(self.dirname, self.name)
                     
 
     def OpenFile(self, dirname = None, name = None):        
