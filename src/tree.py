@@ -40,6 +40,11 @@ import shutil
 from PyQt4 import QtCore, QtGui
 
 import cfg
+from spritegui import SpriteGUI
+from soundgui import SoundGUI
+from fontgui import FontGUI
+from scriptgui import ScriptGUI
+from objectgui import ObjectGUI
 
 class TreeWidget(QtGui.QTreeWidget):
     def __init__(self, main):

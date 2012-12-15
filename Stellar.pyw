@@ -45,11 +45,6 @@ import cfg
 from preferences import PreferencesDialog
 from splashscreen import Start
 from dialogs import NewProjectDialog
-from spritegui import SpriteGUI
-from soundgui import SoundGUI
-from fontgui import FontGUI
-from scriptgui import ScriptGUI
-from objectgui import ObjectGUI
 from tree import TreeWidget
 
 
@@ -203,6 +198,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                                 'play', 'terminal', '|', 'sprite', 'sound', 'background',\
                                 'font', 'script', 'object', 'room', '|', 'about' ] )
 
+
     def terminal(self):
         print ("To do")
 
@@ -258,13 +254,13 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            p = unicode(self.fname)
-            d = os.path.basename(p)
-            fname = os.path.join(self.dirname, d)
-            self.setWindowTitle('{0} - Stellar {1}'.format(d, cfg.__version__))
-
+            fname = unicode(self.fname)
+            self.setTitle(fname)
+            fname = os.path.join(self.dirname, fname)
+            
             with open(fname, 'w') as f:
                 data = self.textEdit.toPlainText()
+                print(data)
                 f.write(data)
             event.accept()
         elif reply == QtGui.QMessageBox.No:
