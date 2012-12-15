@@ -1,6 +1,10 @@
 *.py[cod]
+<<<<<<< HEAD
 *~
 *.ini
+=======
+config.ini
+>>>>>>> d21089c4a9e92c305a150bbc9b919276fb345b79
 
 # C extensions
 *.so

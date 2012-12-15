@@ -66,45 +66,45 @@ class PreferencesDialog(QtGui.QDialog):
         
         self.codeeditorbox = QtGui.QGroupBox('Code Editor',self.ContainerBox)
         self.codeeditorbox.setGeometry(16, 16, 330, 100)
-        self.usebuilt = QtGui.QRadioButton("Use built-in code editor", self.codeeditorbox)
-        self.usebuilt.move(16, 20)
-        self.usebuilt.toggle()
-        self.useexternal = QtGui.QRadioButton("Use external code editor", self.codeeditorbox)
-        self.useexternal.move(16, 40)
-        self.useexternal.clicked.connect(self.codeeditor)
-        self.editor = QtGui.QLineEdit('',self.codeeditorbox)
-        self.editor.setGeometry(20,65,255,21)
-        self.button = QtGui.QPushButton("...", self.codeeditorbox)
-        self.button.setGeometry(280,65,40,21)
-        self.button.clicked.connect(self.codeeditor)
+        self.usebuilt_code = QtGui.QRadioButton("Use built-in code editor", self.codeeditorbox)
+        self.usebuilt_code.move(16, 20)
+        self.usebuilt_code.toggle()
+        self.useexternal_code = QtGui.QRadioButton("Use external code editor", self.codeeditorbox)
+        self.useexternal_code.move(16, 40)
+        self.useexternal_code.clicked.connect(self.codeeditor)
+        self.inp_codeeditor = QtGui.QLineEdit('',self.codeeditorbox)
+        self.inp_codeeditor.setGeometry(20,65,255,21)
+        self.button_code = QtGui.QPushButton("...", self.codeeditorbox)
+        self.button_code.setGeometry(280,65,40,21)
+        self.button_code.clicked.connect(self.codeeditor)
         
         self.imageeditorbox = QtGui.QGroupBox('Image Editor',self.ContainerBox)
         self.imageeditorbox.setGeometry(16, 126, 330, 100)
-        self.usebuilt1 = QtGui.QRadioButton("Use built-in code editor", self.imageeditorbox)
-        self.usebuilt1.move(16, 20)
-        self.usebuilt1.toggle()
-        self.useexternal1 = QtGui.QRadioButton("Use external code editor", self.imageeditorbox)
-        self.useexternal1.move(16, 40)
-        self.useexternal1.clicked.connect(self.imageeditor)
-        self.editor1 = QtGui.QLineEdit('',self.imageeditorbox)
-        self.editor1.setGeometry(20,65,255,21)
-        self.button1 = QtGui.QPushButton("...", self.imageeditorbox)
-        self.button1.setGeometry(280,65,40,21)
-        self.button1.clicked.connect(self.imageeditor)
+        self.usebuilt_img = QtGui.QRadioButton("Use built-in image editor", self.imageeditorbox)
+        self.usebuilt_img.move(16, 20)
+        self.usebuilt_img.toggle()
+        self.useexternal_img = QtGui.QRadioButton("Use external image editor", self.imageeditorbox)
+        self.useexternal_img.move(16, 40)
+        self.useexternal_img.clicked.connect(self.imageeditor)
+        self.inp_imageeditor = QtGui.QLineEdit('',self.imageeditorbox)
+        self.inp_imageeditor.setGeometry(20,65,255,21)
+        self.button_img = QtGui.QPushButton("...", self.imageeditorbox)
+        self.button_img.setGeometry(280,65,40,21)
+        self.button_img.clicked.connect(self.imageeditor)
 
         self.soundeditorbox = QtGui.QGroupBox('Sound Editor',self.ContainerBox)
         self.soundeditorbox.setGeometry(16, 246, 330, 100)
-        self.usebuilt2 = QtGui.QRadioButton("Use built-in code editor", self.soundeditorbox)
-        self.usebuilt2.move(16, 20)
-        self.usebuilt2.toggle()
-        self.useexternal2 = QtGui.QRadioButton("Use external code editor", self.soundeditorbox)
-        self.useexternal2.move(16, 40)
-        self.useexternal2.clicked.connect(self.soundeditor)
-        self.editor2 = QtGui.QLineEdit('',self.soundeditorbox)
-        self.editor2.setGeometry(20,65,255,21)
-        self.button2 = QtGui.QPushButton("...", self.soundeditorbox)
-        self.button2.setGeometry(280,65,40,21)
-        self.button2.clicked.connect(self.soundeditor)
+        self.usebuilt_sound = QtGui.QRadioButton("Use built-in sound editor", self.soundeditorbox)
+        self.usebuilt_sound.move(16, 20)
+        self.usebuilt_sound.toggle()
+        self.useexternal_sound = QtGui.QRadioButton("Use external sound editor", self.soundeditorbox)
+        self.useexternal_sound.move(16, 40)
+        self.useexternal_sound.clicked.connect(self.soundeditor)
+        self.inp_soundeditor = QtGui.QLineEdit('',self.soundeditorbox)
+        self.inp_soundeditor.setGeometry(20,65,255,21)
+        self.button_sound = QtGui.QPushButton("...", self.soundeditorbox)
+        self.button_sound.setGeometry(280,65,40,21)
+        self.button_sound.clicked.connect(self.soundeditor)
         
         p1_vertical.addWidget(self.ContainerBox)
 
@@ -138,43 +138,37 @@ class PreferencesDialog(QtGui.QDialog):
         self.show()
 
     
-    # editor -> codeeditor
-    # editor1 -> soundeditor
-    # editor2 -> imageeditor
     
     def codeeditor(self):
-        if not self.editor.text():
-            name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
-                    '', self.tr("Programs (*.exe)")))
-            if name is not "":
-                self.useexternal.toggle()
-                self.editor.setText(name)
+        name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+                '', self.tr("Programs (*.exe)")))
+        if name is not "":
+            self.useexternal_code.toggle()
+            self.inp_codeeditor.setText(name)
             
     def imageeditor(self):
-        if not self.editor1.text():
-            name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
-                    '', self.tr("Programs (*.exe)")))
-            if name is not "":
-                self.useexternal1.toggle()
-                self.editor1.setText(name)
+        name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+                '', self.tr("Programs (*.exe)")))
+        if name is not "":
+            self.useexternal_image.toggle()
+            self.inp_imageeditor.setText(name)
             
     def soundeditor(self):
-        if not self.editor2.text():
-            name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
-                    '', self.tr("Programs (*.exe)")))
-            if name is not "":
-                self.useexternal2.toggle()
-                self.editor2.setText(name)
+        name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+                '', self.tr("Programs (*.exe)")))
+        if name is not "":
+            self.useexternal_sound.toggle()
+            self.inp_soundeditor.setText(name)
                 
     def okbutton(self):
-        if self.useexternal.isChecked():
-            cfg.config.set('stellar', 'codeeditor', unicode(self.editor.text()).encode('utf-8'))
+        if self.useexternal_code.isChecked():
+            cfg.config.set('stellar', 'codeeditor', unicode(self.inp_codeeditor.text()).encode('utf-8'))
             cfg.codeeditor = unicode(self.editor.text())
-        if self.useexternal2.isChecked():
-            cfg.config.set('stellar', 'soundeditor', unicode(self.editor1.text()).encode('utf-8'))
+        if self.useexternal_sound.isChecked():
+            cfg.config.set('stellar', 'soundeditor', unicode(self.inp_soundeditor.text()).encode('utf-8'))
             cfg.soundeditor = unicode(self.editor1.text())
-        if self.useexternal3.isChecked():
-            cfg.config.set('stellar', 'imageeditor', unicode(self.editor2.text()).encode('utf-8'))
+        if self.useexternal_img.isChecked():
+            cfg.config.set('stellar', 'imageeditor', unicode(self.inp_imageeditor.text()).encode('utf-8'))
             cfg.imageeditor = unicode(self.editor2.text())
 
         with open('config.ini', 'w') as configfile:

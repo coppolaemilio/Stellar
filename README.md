@@ -21,8 +21,10 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 2. Hack
 3. Send pull request
 
+Our contributors [here](https://github.com/Coppolaemilio/Stellar/graphs/contributors)
 
 
+<b>You can talk with us on freenode IRC [#stellar](http://webchat.freenode.net/?channels=stellar)<b>
 
 
 Any feedback is welcome!

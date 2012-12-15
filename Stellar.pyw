@@ -61,6 +61,7 @@ class QMdiAreaW(QtGui.QMdiArea):
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
 
 
+
 class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiArea):
     
     def __init__(self):
@@ -280,35 +281,35 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
                         '', self.tr("Python files (*.py *.pyw)")))
             
-        if project == '':
-            return
-        if not os.path.isfile(project):
-            QtGui.QMessageBox.question(self, "Project doesn't exist",
-                "this project doesn't exist or has been removed",
-            QtGui.QMessageBox.Ok)
-            return
+            if project == '':
+                return
+            elif not os.path.isfile(project):
+                QtGui.QMessageBox.question(self, "Project doesn't exist",
+                    "this project doesn't exist or has been removed",
+                QtGui.QMessageBox.Ok)
+                return
             
 
-        for folder in self.subfolders:
-            if not os.path.exists(os.path.join(os.path.dirname(project), folder)):
-                QtGui.QMessageBox.question(self, "Project is broken",
-                    "Project is broken or doesn't contain important folders",
-                    QtGui.QMessageBox.Ok)
-                return
-
+            for folder in self.subfolders:
+                if not os.path.exists(os.path.join(os.path.dirname(project), folder)):
+                    QtGui.QMessageBox.question(self, "Project is broken",
+                        "Project is broken or doesn't contain important folders",
+                        QtGui.QMessageBox.Ok)
+                    return
+        else:
+            project = project + ".py"
+            
         self.dirname = os.path.dirname(project)
         self.fname = os.path.basename(project)
         
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
-            
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
             
         self.setTitle(self.fname)
-        self.clearSources()
-    
+        self.clearSources()    
     
     def clearSources(self):
         for i in self.Names:
@@ -319,8 +320,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.tree.InitChild(fillarrays = True)
         self.show()
             
-      
-
     def sharegame(self):
         webbrowser.open("http://www.pygame.org/news.html")
             
@@ -366,6 +365,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                         from_dir = os.path.join(fromDir, source, file)
                         into_dir = os.path.join(self.dirname, source, file)
                         shutil.copy(from_dir, into_dir)
+
+            cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
+            cfg.recentproject = project
+            with open('config.ini', 'w') as configfile:
+                cfg.config.write(configfile)
 
             
     def fsavefile(self):

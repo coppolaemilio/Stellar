@@ -214,6 +214,8 @@ class Start(QtGui.QWidget):
         self.main.setTitle(name)
 
         self.main.clearSources()
+
+        self.close()
         
     def OpenFile(self, dirname = None, name = None):
         # check if we opens existing file from CreateProject function
