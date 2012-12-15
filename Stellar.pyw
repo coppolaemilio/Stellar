@@ -45,11 +45,6 @@ import cfg
 from preferences import PreferencesDialog
 from splashscreen import Start
 from dialogs import NewProjectDialog
-from spritegui import SpriteGUI
-from soundgui import SoundGUI
-from fontgui import FontGUI
-from scriptgui import ScriptGUI
-from objectgui import ObjectGUI
 from tree import TreeWidget
 
 
