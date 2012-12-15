@@ -31,9 +31,6 @@ import cfg
 
 from PyQt4 import QtGui, QtCore
 
-#direc = inspect.getfile(inspect.currentframe())
-#dirname, filename = os.path.split(os.path.abspath(direc))
-
 
 class PreferencesDialog(QtGui.QDialog): 
     def __init__(self, main): 
@@ -45,10 +42,6 @@ class PreferencesDialog(QtGui.QDialog):
         self.setMinimumSize(412,470)
         self.setMaximumSize(412,470) 
         self.center()
-
-        self.soundeditor = ''
-        self.codeeditor = ''
-        self.imageeditor = ''
          
         #TABS ----------------
          
@@ -63,7 +56,8 @@ class PreferencesDialog(QtGui.QDialog):
         tab_widget.addTab(tab2, "General")
 
         self.ContainerBox = QtGui.QGroupBox(self)
-        
+
+        #code editor
         self.codeeditorbox = QtGui.QGroupBox('Code Editor',self.ContainerBox)
         self.codeeditorbox.setGeometry(16, 16, 330, 100)
         self.usebuilt_code = QtGui.QRadioButton("Use built-in code editor", self.codeeditorbox)
@@ -77,7 +71,8 @@ class PreferencesDialog(QtGui.QDialog):
         self.button_code = QtGui.QPushButton("...", self.codeeditorbox)
         self.button_code.setGeometry(280,65,40,21)
         self.button_code.clicked.connect(self.codeeditor)
-        
+
+        #image editor
         self.imageeditorbox = QtGui.QGroupBox('Image Editor',self.ContainerBox)
         self.imageeditorbox.setGeometry(16, 126, 330, 100)
         self.usebuilt_img = QtGui.QRadioButton("Use built-in image editor", self.imageeditorbox)
@@ -92,6 +87,7 @@ class PreferencesDialog(QtGui.QDialog):
         self.button_img.setGeometry(280,65,40,21)
         self.button_img.clicked.connect(self.imageeditor)
 
+        #sound editor
         self.soundeditorbox = QtGui.QGroupBox('Sound Editor',self.ContainerBox)
         self.soundeditorbox.setGeometry(16, 246, 330, 100)
         self.usebuilt_sound = QtGui.QRadioButton("Use built-in sound editor", self.soundeditorbox)
@@ -145,13 +141,17 @@ class PreferencesDialog(QtGui.QDialog):
         if name is not "":
             self.useexternal_code.toggle()
             self.inp_codeeditor.setText(name)
+        else:
+            self.useexternal_code.toogle()
             
     def imageeditor(self):
         name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
                 '', self.tr("Programs (*.exe)")))
         if name is not "":
-            self.useexternal_image.toggle()
+            self.useexternal_img.toggle()
             self.inp_imageeditor.setText(name)
+        else:
+            self.usebuilt_img.toogle()
             
     def soundeditor(self):
         name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
@@ -159,17 +159,19 @@ class PreferencesDialog(QtGui.QDialog):
         if name is not "":
             self.useexternal_sound.toggle()
             self.inp_soundeditor.setText(name)
+        else:
+            self.usebuilt_sound.toogle()
                 
     def okbutton(self):
         if self.useexternal_code.isChecked():
             cfg.config.set('stellar', 'codeeditor', unicode(self.inp_codeeditor.text()).encode('utf-8'))
-            cfg.codeeditor = unicode(self.editor.text())
+            cfg.codeeditor = unicode(self.inp_codeeditor.text())
         if self.useexternal_sound.isChecked():
             cfg.config.set('stellar', 'soundeditor', unicode(self.inp_soundeditor.text()).encode('utf-8'))
-            cfg.soundeditor = unicode(self.editor1.text())
+            cfg.soundeditor = unicode(self.inp_soundeditor.text())
         if self.useexternal_img.isChecked():
             cfg.config.set('stellar', 'imageeditor', unicode(self.inp_imageeditor.text()).encode('utf-8'))
-            cfg.imageeditor = unicode(self.editor2.text())
+            cfg.imageeditor = unicode(self.inp_imageeditor.text())
 
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
