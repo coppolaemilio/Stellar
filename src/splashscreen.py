@@ -208,10 +208,7 @@ class Start(QtGui.QWidget):
         self.dirname = os.path.dirname(self.recentp)
         self.main.fname = os.path.basename(self.recentp)
         self.main.dirname = self.dirname
-        
-        
-        name = os.path.basename(self.main.fname)
-        self.main.setTitle(name)
+        self.main.setTitle(self.main.fname)
 
         self.main.clearSources()
 

@@ -97,17 +97,18 @@ class TreeWidget(QtGui.QTreeWidget):
         def openWindow(directory):
             if item.parent().text(0) == directory:
                 self.main.window = QtGui.QWidget()
-                
+                itemtext = unicode(item.text(0))
+
                 if directory == "Sprites":
-                    self.main.sprite = SpriteGUI(self.main.window,item.text(0), self.main.dirname)
+                    self.main.sprite = SpriteGUI(self.main.window,itemtext, self.main.dirname)
                 elif directory == "Sound":
-                    self.main.sound = SoundGUI(self.main.window,item.text(0), self.main.dirname)
+                    self.main.sound = SoundGUI(self.main.window,itemtext, self.main.dirname)
                 elif directory == "Fonts":
-                    self.main.font = FontGUI(self.main.window,item.text(0))
+                    self.main.font = FontGUI(self.main.window,itemtext)
                 elif directory == "Scripts":
-                    self.main.script = ScriptGUI(self.main.window,item.text(0), self.main.dirname, self.main)
+                    self.main.script = ScriptGUI(self.main.window,itemtext, self.main.dirname, self.main)
                 elif directory == "Objects":
-                    self.main.object = ObjectGUI(self.main.window,item.text(0), self.main.dirname)
+                    self.main.object = ObjectGUI(self.main.window,itemtext, self.main.dirname)
                 
                 if directory[-1:] == "s":
                     directory = directory[:-1]
@@ -115,7 +116,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 self.main.qmdiarea.addSubWindow(self.main.window)
                 
                 self.main.window.setVisible(True)
-                self.main.window.setWindowTitle( directory + " properties: " + item.text(0) )
+                self.main.window.setWindowTitle( directory + " properties: " + itemtext )
                 if directory == "Sprite":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
                 elif directory == "Sound":
@@ -143,7 +144,8 @@ class TreeWidget(QtGui.QTreeWidget):
         
         for name in self.Names:
             self.Path[name] = os.path.join(dirname, name)
-            for ChildSource in sorted(os.listdir(self.Path[name])):                
+            for ChildSource in sorted(os.listdir(self.Path[name])):
+                ChildSource = unicode(ChildSource)
                 icon = QtGui.QIcon()
                 if name == "Sprites":
                     icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
