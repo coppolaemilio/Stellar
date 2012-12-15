@@ -27,15 +27,8 @@ from __future__ import unicode_literals
 
 
 import sys
-sys.path.append("src")
 
 import os
-import webbrowser
-import inspect
-import syntax
-import platform
-import subprocess
-import shutil
 
 from PyQt4 import QtCore, QtGui
 
