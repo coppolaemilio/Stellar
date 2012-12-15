@@ -432,7 +432,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
-            
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
             
@@ -496,6 +495,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                         from_dir = os.path.join(fromDir, source, file)
                         into_dir = os.path.join(self.dirname, source, file)
                         shutil.copy(from_dir, into_dir)
+
+            cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
+            cfg.recentproject = project
+            with open('config.ini', 'w') as configfile:
+                cfg.config.write(configfile)
 
             
     def fsavefile(self):
