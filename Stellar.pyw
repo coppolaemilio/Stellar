@@ -87,89 +87,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.pref = "preferences.pyw"
         self.stellarnew = "Stellar.pyw"
         
-        #ACTIONS -------------------------------
-        
-        def newAction(name, image, trigger, statusTip, shortcut='', enabled=True):
-            action = QtGui.QAction(QtGui.QIcon(os.path.join('Data', image)), name, self)
-            action.setShortcut(shortcut)
-            action.setStatusTip(statusTip)
-            action.triggered.connect(trigger)
-            action.setEnabled(enabled)
-            return action
-        
-        projectAction = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N')
-        
-        loadAction = newAction('Open...', 'folder.png', self.openFile, 'Open Game.', 'Ctrl+O')
-        saveAction = newAction('Save Game As...', 'save.png', self.savefile, 'Save Game As...', 'Ctrl+Shift+S')
-        fsaveAction = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S', False)
-        
-        shareAction = newAction('Share', 'publish.png', self.sharegame, 'Share your creations with the community!')
-        buildAction = newAction('Build', 'build.png', self.Build, 'Build game.', '', False)
-        playAction = newAction('Run', 'play.png', self.playgame, 'Test your game.', 'F5')
-        playDebugAction = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game on debug mode.', 'F6', False)
-        terminalAction = newAction('Terminal', 'terminal.png', self.terminal, 'Open a terminal on your project folder.', 'F1')
-        
-        spriteAction = newAction('Add Sprite', 'sprite.png', self.addSprite, 'Add a sprite to the game.')
-        soundAction = newAction('Add Sound', 'sound.png', self.addSound, 'Add a sound to the game.')
-        backgroundAction = newAction('Add Background', 'gif.png', self.addBackground, 'Add a background to the game.')
-        fontAction = newAction('Add Font', 'font.png', self.addFont, 'Add a font to the game.')
-        objectAction = newAction('Add Object', 'object.png', self.addObject, 'Add an object to the game.')
-        roomAction = newAction('Add Room', 'room.png', self.addRoom, 'Add an room to the game.')
-        scriptAction = newAction('Add Script', 'addscript.png', self.addScript, 'Add A Script To The Game.')
-        
-        exitAction = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
-        aboutAction = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
-        preferencesAction = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.')
-
-        cascadeAction = newAction('Cascade', 'cascade.png', self.cascadewindows, '', '', True)
-        closeallwindowsAction = newAction('Close All', 'closeall.png', self.closeallwindows, '', '', True)
-        settabbedAction = newAction('Toggle Tabbed View', 'tabs.png', self.settabbedview, '', '', True)
-
-        expandAction = newAction('Expand Resource Tree', '', self.expandtree, '', '', True)
-        collapseAction = newAction('Collapse Resource Tree', '', self.collapsetree, '', '', True)
-        
+        actions = self.initActions()
         self.statusBar()
-
-        #MENU BAR --------------------------------------
-        menubar = self.menuBar()
+        self.initBars(actions)
         
-        def addBar(bar, action):
-            if bar == 'menubar':
-                self.fileMenu = menubar.addMenu(action[0])
-            
-            for i in range(1, len(action)):
-                if action[i] == '|':
-                    if bar == 'menubar':
-                        self.fileMenu.addSeparator()
-                    elif bar == 'toolbar':
-                        self.toolbar.addSeparator()
-                else:
-                    if bar == 'menubar':
-                        self.fileMenu.addAction(action[i])
-                    elif bar == 'toolbar': 
-                        self.toolbar.addAction(action[i])
-
-        addBar('menubar', ['&File', projectAction, loadAction, '|', fsaveAction, saveAction, '|',\
-                                buildAction, shareAction, '|', preferencesAction, '|', exitAction])
-
-        addBar('menubar', ['&Edit', expandAction, collapseAction])
-
-        addBar('menubar', ['&Resources', spriteAction, soundAction, backgroundAction, objectAction,\
-                                fontAction, roomAction])
-        
-        addBar('menubar', ['&Scripts', scriptAction])
-        addBar('menubar', ['&Run', playAction, playDebugAction])
-        addBar('menubar', ['&Windows', cascadeAction, closeallwindowsAction, '|', settabbedAction])
-        addBar('menubar', ['&Help', aboutAction])
-
-        #TOOL BAR --------------------------------------
-        self.toolbar = self.addToolBar('Toolbar')
-        self.toolbar.setMovable (True)
-        
-        addBar('toolbar', [ None, projectAction, fsaveAction, loadAction, '|', buildAction, shareAction, '|',\
-                                playAction, terminalAction, '|', spriteAction, soundAction, backgroundAction,\
-                                fontAction, scriptAction, objectAction, roomAction, '|', aboutAction, ] )
-
         #Qtree----------------------------------------
         self.tree = TreeWidget(self)
 
@@ -178,9 +99,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.qmdiareaview = False
         self.qmdiarea.setTabsClosable(True)
         self.qmdiarea.setTabsMovable(True)
-        #self.addScriptsubWindow("hola")
+        
+        self.initWindow()
 
-        #WINDOW----------------------------------------
+    def initWindow(self):
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         
@@ -196,6 +118,89 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.splitter1.addWidget(self.qmdiarea)
         self.splitter1.setStretchFactor(1, 1)
         self.setCentralWidget(self.splitter1)
+        
+    def initActions(self):
+        def newAction(name, image, trigger, statusTip, shortcut='', enabled=True):
+            action = QtGui.QAction(QtGui.QIcon(os.path.join('Data', image)), name, self)
+            action.setShortcut(shortcut)
+            action.setStatusTip(statusTip)
+            action.triggered.connect(trigger)
+            action.setEnabled(enabled)
+            return action
+            
+        action={}
+        action['project'] = newAction('New Project', 'new.png', self.newproject, 'New Project', 'Ctrl+N')
+        
+        action['load'] = newAction('Open...', 'folder.png', self.openFile, 'Open Game.', 'Ctrl+O')
+        action['save'] = newAction('Save Game As...', 'save.png', self.savefile, 'Save Game As...', 'Ctrl+Shift+S')
+        action['fsave'] = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S', False)
+        
+        action['share'] = newAction('Share', 'publish.png', self.sharegame, 'Share your creations with the community!')
+        action['build'] = newAction('Build', 'build.png', self.Build, 'Build game.', '', False)
+        action['play'] = newAction('Run', 'play.png', self.playgame, 'Test your game.', 'F5')
+        action['playDebug'] = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game on debug mode.', 'F6', False)
+        action['terminal'] = newAction('Terminal', 'terminal.png', self.terminal, 'Open a terminal on your project folder.', 'F1')
+        
+        action['sprite'] = newAction('Add Sprite', 'sprite.png', self.addSprite, 'Add a sprite to the game.')
+        action['sound'] = newAction('Add Sound', 'sound.png', self.addSound, 'Add a sound to the game.')
+        action['background'] = newAction('Add Background', 'gif.png', self.addBackground, 'Add a background to the game.')
+        action['font'] = newAction('Add Font', 'font.png', self.addFont, 'Add a font to the game.')
+        action['object'] = newAction('Add Object', 'object.png', self.addObject, 'Add an object to the game.')
+        action['room'] = newAction('Add Room', 'room.png', self.addRoom, 'Add an room to the game.')
+        action['script'] = newAction('Add Script', 'addscript.png', self.addScript, 'Add A Script To The Game.')
+        
+        action['exit'] = newAction('Exit', 'exit.png', self.close, 'Exit application.', 'Ctrl+Q')
+        action['about'] = newAction('About', 'info.png', self.aboutStellar, 'About Stellar.')
+        action['preferences'] = newAction('Preferences...', 'preferences.png', self.preferencesopen, 'Change Stellar preferences.')
+
+        action['cascade'] = newAction('Cascade', 'cascade.png', self.cascadewindows, '', '', True)
+        action['closeallwindows'] = newAction('Close All', 'closeall.png', self.closeallwindows, '', '', True)
+        action['settabbed'] = newAction('Toggle Tabbed View', 'tabs.png', self.settabbedview, '', '', True)
+
+        action['expand'] = newAction('Expand Resource Tree', '', self.expandtree, '', '', True)
+        action['collapse'] = newAction('Collapse Resource Tree', '', self.collapsetree, '', '', True)
+        
+        return action
+        
+    def initBars(self, dictActions):
+        
+        def getAction(dictActions, action):
+            for key in dictActions.keys():
+                if action == key:
+                    return dictActions[key]
+        
+        
+        def addBar(bar, action):
+            if action[0] != None:
+                bar = bar.addMenu(action[0])
+            for i in range(1, len(action)):
+                if action[i] == '|':
+                    bar.addSeparator()
+                else:
+                    action[i] = getAction(dictActions, action[i])
+                    bar.addAction(action[i])
+                    
+        
+        menubar = self.menuBar()
+        addBar(menubar, ['&File', 'project', 'load', '|', 'fsave', 'save', '|',\
+                                'build', 'share', '|', 'preferences', '|', 'exit'])
+
+        addBar(menubar, ['&Edit', 'expand', 'collapse'])
+
+        addBar(menubar, ['&Resources', 'sprite', 'sound', 'background', 'object',\
+                                'font', 'script', 'room'])
+        
+        addBar(menubar, ['&Run', 'play', 'playDebug'])
+        addBar(menubar, ['&Windows', 'cascade', 'closeallwindows', '|', 'settabbed'])
+        addBar(menubar, ['&Help', 'about'])
+
+        #TOOL BAR --------------------------------------
+        toolbar = self.addToolBar('Toolbar')
+        toolbar.setMovable (True)
+        
+        addBar(toolbar, [ None, 'project', 'fsave', 'load', '|', 'build', 'share', '|',\
+                                'play', 'terminal', '|', 'sprite', 'sound', 'background',\
+                                'font', 'script', 'object', 'room', '|', 'about' ] )
 
     def terminal(self):
         print ("To do")
