@@ -427,12 +427,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         if files != "":
             location = QtGui.QFileDialog.getOpenFileNames(self, 'Open' + source, 
                     '', self.tr(files))
-                    
+
             if location !='':
-                name = os.path.basename(unicode(location[0]))
-                include_into_project(source, name, location[0])
-        
-    
+                for loc in location:
+                    name = os.path.basename(unicode(loc))
+                    include_into_project(source, name, unicode(loc))
         
     def addSprite(self):
         self.addSource("Sprites")
