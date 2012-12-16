@@ -61,7 +61,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     
     def __init__(self):
         super(Stellar, self).__init__()
-        self.Names = ('Sprites', 'Sound', 'Fonts', 'Scripts', 'Objects', 'Rooms')
+        self.Names = ('Sprites', 'Sound', 'Backgrounds', 'Fonts', 'Scripts', 'Objects', 'Rooms')
         self.Sources = {}
         
         self.subfolders = []
@@ -102,7 +102,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         
-        self.expanded = {'Sprites' : False, 'Sound' : False, 'Fonts' : False, 'Scripts' : False,
+        self.expanded = {'Sprites' : False, 'Sound' : False, 'Backgrounds' : False, 'Fonts' : False, 'Scripts' : False,
                          'Objects' : False, 'Rooms' : False}
         self.fname = "<New game>"
         self.dirname = ''

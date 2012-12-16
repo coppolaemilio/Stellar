@@ -52,7 +52,7 @@ class TreeWidget(QtGui.QTreeWidget):
         self.Path = {}
         
         self.Names = self.main.Names
-        self.ImageNames = (None, 'sound.png', 'font.png', 'script.png', 'object.png', 'game.png')
+        self.ImageNames = (None, 'sound.png', None, 'font.png', 'script.png', 'object.png', 'game.png')
         self.Parent = {}
         self.ImageName = {}
         j=0
