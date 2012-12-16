@@ -21,7 +21,11 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 2. Hack
 3. Send pull request
 
-Our contributors [here](https://github.com/Coppolaemilio/Stellar/graphs/contributors)
+Along with pull request you can add your name to authors.txt
+
+Our contributors here:
+* [graphs](https://github.com/Coppolaemilio/Stellar/graphs/contributors)
+* [authors.txt](https://github.com/Coppolaemilio/Stellar/blob/master/AUTHORS.txt)
 
 
 <b>You can talk with us on freenode IRC [#stellar](http://webchat.freenode.net/?channels=stellar)<b>
