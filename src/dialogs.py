@@ -94,6 +94,8 @@ class NewProjectDialog(QtGui.QDialog):
         if self.name != "" and self.path != "":
             
             if not os.path.exists(self.dirname) and not os.path.isfile(os.path.join(self.dirname, self.name)):
+                self.main.dirname = self.dirname
+                self.main.fname = self.name
                 self.main.createProject(self.dirname, self.name)
                 self.main.clearSources()
                 self.close()

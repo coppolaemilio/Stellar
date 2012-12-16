@@ -146,6 +146,8 @@ class TreeWidget(QtGui.QTreeWidget):
             self.Path[name] = os.path.join(dirname, name)
             for ChildSource in sorted(os.listdir(self.Path[name])):
                 ChildSource = unicode(ChildSource)
+                if ChildSource.endswith(".ini"):
+                    continue
                 icon = QtGui.QIcon()
                 if name == "Sprites":
                     icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)

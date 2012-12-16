@@ -180,6 +180,7 @@ class Start(QtGui.QWidget):
                 os.mkdir(dirname)
                 
                 self.main.dirname = dirname
+                self.main.fname = name
                 self.main.createProject(dirname, name)
                 self.main.clearSources()
                 self.close()
