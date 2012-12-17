@@ -69,7 +69,6 @@ class TreeWidget(QtGui.QTreeWidget):
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
         insertAction = menu.addAction("Insert")
-        insertAction.triggered.connect(self.AddSprChild)
         
         duplicateAction = menu.addAction("Duplicate")
         duplicateAction.setShortcut('Alt+Ins')
