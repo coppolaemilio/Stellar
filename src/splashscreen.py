@@ -41,17 +41,20 @@ class Start(QtGui.QWidget):
         tab1 = QtGui.QWidget() 
         tab2 = QtGui.QWidget()
         tab3 = QtGui.QWidget()
-        tab4 = QtGui.QWidget() 
+        tab4 = QtGui.QWidget()
+        tab5 = QtGui.QWidget()
          
         p1_vertical = QtGui.QVBoxLayout(tab1)
         p2_vertical = QtGui.QVBoxLayout(tab2)
         p3_vertical = QtGui.QVBoxLayout(tab3)
         p4_vertical = QtGui.QVBoxLayout(tab4)
+        p5_vertical = QtGui.QVBoxLayout(tab5)
 
         self.tab_widget.addTab(tab4, "Welcome")
         self.tab_widget.addTab(tab1, "New Project") 
         self.tab_widget.addTab(tab2, "Open Project")
-        self.tab_widget.addTab(tab3, "Release Notes") 
+        self.tab_widget.addTab(tab3, "Release Notes")
+        self.tab_widget.addTab(tab5, "Authors")
 
         vbox = QtGui.QVBoxLayout()
         vbox.addStretch(1)
@@ -140,12 +143,15 @@ class Start(QtGui.QWidget):
         self.te.setMaximumSize(475,120)
         p3_vertical.addWidget(self.te)
 
-
-        #Project Path-----------
-        
-        #if not os.path.exists(self.dirname):
-        #    os.mkdir('Projects')
-        #os.chdir('Projects')
+        self.authorsLines = QtGui.QTextEdit()
+        f = open("AUTHORS.txt", 'r')
+        with f:        
+            data = f.read()
+            self.authorsLines.setText(data)
+            f.close()
+        self.authorsLines.setReadOnly (True)
+        self.authorsLines.setMaximumSize(475,120)
+        p5_vertical.addWidget(self.authorsLines)
 
         #Window-----------------
  
