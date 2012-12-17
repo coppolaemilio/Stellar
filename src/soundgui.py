@@ -34,75 +34,59 @@ class SoundGUI(QtGui.QWidget):
         pygame.mixer.init()
         self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound/%s.ogg"%(self.FileName)))
         
-        
-        
-
+                        
     def initUI(self):
 
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self.main)
-        self.ContainerBox = QtGui.QGroupBox(self.main)
-        self.ContainerBox.setObjectName("groupBox")
-        self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
-        self.ContainerBox.setGeometry(QtCore.QRect(0,0,350,400))
-        self.ContainerBox.setMinimumSize(350,400)
-
-        self.LblName = QtGui.QLabel('Name:', self.ContainerBox) 
-        self.LblName.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
-        self.LblName.setGeometry(15, 15, 100, 25)
-
-        self.qleSound = QtGui.QLineEdit(self.FileName, self.ContainerBox)
-        self.qleSound.setGeometry(50, 15, 290, 25)
-
-        self.BtnLoad = QtGui.QPushButton('Load Sound', self.ContainerBox)
-        self.BtnLoad.setIcon(QtGui.QIcon('Data/folder.png'))
-        self.BtnLoad.setGeometry(25, 55, 125, 25)
+        self.ContainerGrid.setMargin (0)
         
-        self.BtnPlay = QtGui.QPushButton(self.ContainerBox)
+        self.LblName = QtGui.QLabel('Name:') 
+        self.LblName.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter) 
+
+        self.qleSound = QtGui.QLineEdit(self.FileName)
+
+        self.BtnLoad = QtGui.QPushButton('Load Sound')
+        self.BtnLoad.setIcon(QtGui.QIcon('Data/folder.png'))
+        
+        self.BtnPlay = QtGui.QPushButton()
         self.BtnPlay.setIcon(QtGui.QIcon('Data/playsound.png'))
-        self.BtnPlay.setGeometry(160, 55, 35, 25)
         self.BtnPlay.clicked.connect(self.PlaySound)
 
-        self.BtnStop = QtGui.QPushButton(self.ContainerBox)
+        self.BtnStop = QtGui.QPushButton()
         self.BtnStop.setIcon(QtGui.QIcon('Data/stopsound.png'))
-        self.BtnStop.setGeometry(195, 55, 35, 25)
         self.BtnStop.clicked.connect(self.StopSound)
 
-        self.BtnSave = QtGui.QPushButton('Save Sound', self.ContainerBox)
+        self.BtnSave = QtGui.QPushButton('Save Sound')
         self.BtnSave.setIcon(QtGui.QIcon('Data/save.png'))
-        self.BtnSave.setGeometry(230, 55, 110, 25)
         self.BtnSave.clicked.connect(self.SaveSound)
 
-        self.BtnEdit = QtGui.QPushButton('Edit Sound', self.ContainerBox)
+        self.BtnEdit = QtGui.QPushButton('Edit Sound')
         self.BtnEdit.setIcon(QtGui.QIcon('Data/editbutton.png'))        
-        self.BtnEdit.setGeometry(25, 170, 125, 25)
         
-        self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
+        self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
-        self.BtnOK.setGeometry(25, 200, 125, 25)
 
-        #Groupbox Options---------------------------
-        self.OptionsBox = QtGui.QGroupBox(self.ContainerBox)
-        self.OptionsBox.setGeometry(QtCore.QRect(15,85,135,70))
+
+
+        #------------------------------------------------------------------------------------
+        self.OptionsBox = QtGui.QGroupBox()
         self.OptionsBox.setObjectName("groupBox")
         self.OptionsBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.OptionsBox.setTitle("Options")
 
-        self.RadioSound = QtGui.QRadioButton(self.OptionsBox)
-        self.RadioSound.setGeometry(QtCore.QRect(15, 15, 150, 25))
-        self.RadioSound.setText(" Normal Sound")
+        self.RadioSound = QtGui.QRadioButton("Normal Sound")
         self.RadioSound.toggle()
         
-        self.RadioMusic = QtGui.QRadioButton(self.OptionsBox)
-        self.RadioMusic.setGeometry(QtCore.QRect(15, 40, 150, 25))
-        self.RadioMusic.setText(" Background Music")
-
-        self.radioGroup = QtGui.QButtonGroup(self.OptionsBox)
-        self.radioGroup.addButton(self.RadioSound, 1)
-        self.radioGroup.addButton(self.RadioMusic, 2)
-
-        #Groupbox Pan---------------------------
-        self.PanBox = QtGui.QGroupBox(self.ContainerBox)
+        self.RadioMusic = QtGui.QRadioButton("Background Music")
+        
+        self.optionslayout = QtGui.QGridLayout()
+        self.optionslayout.setMargin(0)
+        self.optionslayout.addWidget(self.RadioSound,1,0)
+        self.optionslayout.addWidget(self.RadioMusic,2,0)
+        self.OptionsBox.setLayout(self.optionslayout)
+        #------------------------------------------------------------------------------------
+        """self.PanBox = QtGui.QGroupBox(self.ContainerBox)
         self.PanBox.setGeometry(QtCore.QRect(160,85,175,70))
         self.PanBox.setObjectName("groupBox")
         self.PanBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
@@ -117,10 +101,10 @@ class SoundGUI(QtGui.QWidget):
         self.LblPan = QtGui.QLabel(self.PanBox) 
         self.LblPan.setText('Music is Centered') 
         self.LblPan.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter) 
-        self.LblPan.setGeometry(10, 10, 150, 25)
+        self.LblPan.setGeometry(10, 10, 150, 25)"""
 
-        #Groupbox Music---------------------------
-        self.MusicBox = QtGui.QGroupBox(self.ContainerBox)
+        #------------------------------------------------------------------------------------
+        """self.MusicBox = QtGui.QGroupBox(self.ContainerBox)
         self.MusicBox.setGeometry(QtCore.QRect(160,165,175,70))
         self.MusicBox.setObjectName("groupBox")
         self.MusicBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
@@ -135,12 +119,35 @@ class SoundGUI(QtGui.QWidget):
         self.LblMusic = QtGui.QLabel(self.MusicBox) 
         self.LblMusic.setText('Volume is 0 percent muted') 
         self.LblMusic.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter) 
-        self.LblMusic.setGeometry(10, 10, 150, 25)
-      
+        self.LblMusic.setGeometry(10, 10, 150, 25)"""
+        #------------------------------------------------------------------------------------
+        
 
-        #Main Window------------------------------------------
-        #self.ContainerBox.show()
-        self.ContainerGrid.addWidget(self.ContainerBox, 0, 0)
+        spacerItem = QtGui.QSpacerItem(10, 10, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+
+        self.NameFrame = QtGui.QFrame()
+        self.namelayout = QtGui.QGridLayout()
+        self.namelayout.setMargin(0)
+        self.namelayout.addWidget(self.LblName,0,0)
+        self.namelayout.addWidget(self.qleSound,0,1)
+        self.NameFrame.setLayout(self.namelayout)
+
+        self.ShowFrame = QtGui.QFrame()
+        self.showlayout = QtGui.QGridLayout()
+        self.showlayout.setMargin (6)
+        self.showlayout.addWidget(self.NameFrame,1,0)
+        self.showlayout.addWidget(self.BtnLoad,2,0)
+        self.showlayout.addWidget(self.BtnSave,3,0)
+        self.showlayout.addWidget(self.BtnEdit,4,0)
+        self.showlayout.addWidget(self.OptionsBox,5,0)
+        
+        self.showlayout.addItem(spacerItem,6,0)
+        
+        self.showlayout.addWidget(self.BtnOK,7,0)
+        
+        self.ShowFrame.setLayout(self.showlayout)
+        self.ContainerGrid.addWidget(self.ShowFrame)
+        
  
     def changeValuePan(self, value):
 
