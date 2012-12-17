@@ -412,7 +412,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         if source == "Sprites" or source == "Sound" or source == "Fonts":
             if source == "Sprites":
                 files = "Image file (*.png *.gif *.jpg)"
-            elif source == "Sounds":
+            elif source == "Sound":
                 files = "Sound file (*.ogg *.wav)"
             elif source == "Fonts":
                 files = "Font file (*.ttf *.ttc *.fon)"
