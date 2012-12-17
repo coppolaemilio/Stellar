@@ -42,16 +42,25 @@ class Start(QtGui.QWidget):
         tab2 = QtGui.QWidget()
         tab3 = QtGui.QWidget()
         tab4 = QtGui.QWidget()
+<<<<<<< HEAD
+=======
+        tab5 = QtGui.QWidget()
+>>>>>>> 535696cb583f37979ebc7cf80c87d6ae3bf488d9
          
         p1_vertical = QtGui.QVBoxLayout(tab1)
         p2_vertical = QtGui.QVBoxLayout(tab2)
         p3_vertical = QtGui.QVBoxLayout(tab3)
         p4_vertical = QtGui.QVBoxLayout(tab4)
+        p5_vertical = QtGui.QVBoxLayout(tab5)
 
         self.tab_widget.addTab(tab4, "Welcome")
         self.tab_widget.addTab(tab1, "New Project") 
         self.tab_widget.addTab(tab2, "Open Project")
         self.tab_widget.addTab(tab3, "Release Notes")
+<<<<<<< HEAD
+=======
+        self.tab_widget.addTab(tab5, "Authors")
+>>>>>>> 535696cb583f37979ebc7cf80c87d6ae3bf488d9
 
         vbox = QtGui.QVBoxLayout()
         vbox.addStretch(1)
@@ -140,6 +149,19 @@ class Start(QtGui.QWidget):
         self.te.setMaximumSize(475,120)
         p3_vertical.addWidget(self.te)
 
+<<<<<<< HEAD
+=======
+        self.authorsLines = QtGui.QTextEdit()
+        f = open("AUTHORS.txt", 'r')
+        with f:        
+            data = f.read()
+            self.authorsLines.setText(data)
+            f.close()
+        self.authorsLines.setReadOnly (True)
+        self.authorsLines.setMaximumSize(475,120)
+        p5_vertical.addWidget(self.authorsLines)
+
+>>>>>>> 535696cb583f37979ebc7cf80c87d6ae3bf488d9
         #Window-----------------
  
         self.setWindowTitle('Stellar - %s' % cfg.__version__)
