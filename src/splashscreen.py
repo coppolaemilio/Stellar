@@ -47,7 +47,6 @@ class Start(QtGui.QWidget):
         p2_vertical = QtGui.QVBoxLayout(tab2)
         p3_vertical = QtGui.QVBoxLayout(tab3)
         p4_vertical = QtGui.QVBoxLayout(tab4)
-        p5_vertical = QtGui.QVBoxLayout(tab5)
 
         self.tab_widget.addTab(tab4, "Welcome")
         self.tab_widget.addTab(tab1, "New Project") 
