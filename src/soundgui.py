@@ -86,40 +86,46 @@ class SoundGUI(QtGui.QWidget):
         self.optionslayout.addWidget(self.RadioMusic,2,0)
         self.OptionsBox.setLayout(self.optionslayout)
         #------------------------------------------------------------------------------------
-        """self.PanBox = QtGui.QGroupBox(self.ContainerBox)
-        self.PanBox.setGeometry(QtCore.QRect(160,85,175,70))
+        self.PanBox = QtGui.QGroupBox()
         self.PanBox.setObjectName("groupBox")
         self.PanBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.PanBox.setTitle("Pan")
 
-        self.pan = QtGui.QSlider(QtCore.Qt.Horizontal, self.PanBox)
+        self.pan = QtGui.QSlider(QtCore.Qt.Horizontal)
         self.pan.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.pan.setGeometry(10, 40, 150, 25)
         self.pan.setRange(-50,51)
         self.pan.valueChanged[int].connect(self.changeValuePan)
 
-        self.LblPan = QtGui.QLabel(self.PanBox) 
+        self.LblPan = QtGui.QLabel() 
         self.LblPan.setText('Music is Centered') 
-        self.LblPan.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter) 
-        self.LblPan.setGeometry(10, 10, 150, 25)"""
+        self.LblPan.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+
+        self.panlayout = QtGui.QGridLayout()
+        self.panlayout.setMargin(0)
+        self.panlayout.addWidget(self.pan,1,0)
+        self.panlayout.addWidget(self.LblPan,2,0)
+        self.PanBox.setLayout(self.panlayout) 
 
         #------------------------------------------------------------------------------------
-        """self.MusicBox = QtGui.QGroupBox(self.ContainerBox)
-        self.MusicBox.setGeometry(QtCore.QRect(160,165,175,70))
+        self.MusicBox = QtGui.QGroupBox()
         self.MusicBox.setObjectName("groupBox")
         self.MusicBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
-        self.MusicBox.setTitle("Pan")
+        self.MusicBox.setTitle("Volume")
 
-        self.Music = QtGui.QSlider(QtCore.Qt.Horizontal, self.MusicBox)
+        self.Music = QtGui.QSlider(QtCore.Qt.Horizontal)
         self.Music.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.Music.setGeometry(10, 40, 150, 25)
         self.Music.setRange(-100,0)
         self.Music.valueChanged[int].connect(self.changeValueMusic)
 
-        self.LblMusic = QtGui.QLabel(self.MusicBox) 
-        self.LblMusic.setText('Volume is 0 percent muted') 
+        self.LblMusic = QtGui.QLabel() 
+        self.LblMusic.setText('Volume is set to 100 percent') 
         self.LblMusic.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter) 
-        self.LblMusic.setGeometry(10, 10, 150, 25)"""
+
+        self.musiclayout = QtGui.QGridLayout()
+        self.musiclayout.setMargin(0)
+        self.musiclayout.addWidget(self.Music,1,0)
+        self.musiclayout.addWidget(self.LblMusic,2,0)
+        self.MusicBox.setLayout(self.musiclayout) 
         #------------------------------------------------------------------------------------
         
 
@@ -142,11 +148,31 @@ class SoundGUI(QtGui.QWidget):
         self.showlayout.addWidget(self.OptionsBox,5,0)
         
         self.showlayout.addItem(spacerItem,6,0)
-        
         self.showlayout.addWidget(self.BtnOK,7,0)
-        
+                
         self.ShowFrame.setLayout(self.showlayout)
-        self.ContainerGrid.addWidget(self.ShowFrame)
+
+
+
+        self.RightFrame = QtGui.QFrame()
+        self.rightlayout = QtGui.QGridLayout()
+        self.rightlayout.setMargin(10)     
+        self.rightlayout.addWidget(self.BtnPlay,0,0)
+        self.rightlayout.addWidget(self.BtnStop,0,1)
+        self.rightlayout.addWidget(self.PanBox,1,0,1,2)
+        self.rightlayout.addWidget(self.MusicBox,2,0,2,2)
+        
+        self.RightFrame.setLayout(self.rightlayout)
+
+
+
+
+        self.spritesplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
+        self.spritesplitter.addWidget(self.ShowFrame)
+        self.spritesplitter.addWidget(self.RightFrame)
+        self.ContainerGrid.addWidget(self.spritesplitter)
+        
+    
         
  
     def changeValuePan(self, value):
@@ -162,7 +188,7 @@ class SoundGUI(QtGui.QWidget):
 
     def changeValueMusic(self, value):
 
-        self.LblMusic.setText("%s %d %s " %("Volume is ",abs(value), " percent muted"))
+        self.LblMusic.setText("%s %d %s " %("Volume is set to",value+100, "percent "))
 
     def PlaySound(self):
         pygame.mixer.music.play()
