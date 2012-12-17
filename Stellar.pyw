@@ -139,7 +139,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
         action['sprite'] = newAction('Add Sprite', 'sprite.png', self.addSprite, 'Add a sprite to the game.')
         action['sound'] = newAction('Add Sound', 'sound.png', self.addSound, 'Add a sound to the game.')
-        action['background'] = newAction('Add Background', 'gif.png', self.addBackground, 'Add a background to the game.')
+        action['background'] = newAction('Add Background', 'backgrounds.png', self.addBackground, 'Add a background to the game.')
         action['font'] = newAction('Add Font', 'font.png', self.addFont, 'Add a font to the game.')
         action['object'] = newAction('Add Object', 'object.png', self.addObject, 'Add an object to the game.')
         action['room'] = newAction('Add Room', 'room.png', self.addRoom, 'Add an room to the game.')
@@ -391,7 +391,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
         def include_into_project(source, name, path=None):
             
-            if source == "Sprites" or source == "Sound" or source == "Fonts":
+            if source == "Sprites" or source == "Sound" or source == "Backgrounds" or source == "Fonts":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(path, os.path.join(self.dirname, source, name))
                     
@@ -409,8 +409,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
             
         files = ""
-        if source == "Sprites" or source == "Sound" or source == "Fonts":
-            if source == "Sprites":
+        if source == "Sprites" or source == "Sound" or source == "Backgrounds" or source == "Fonts":
+            if source == "Sprites" or source == "Backgrounds":
                 files = "Image file (*.png *.gif *.jpg)"
             elif source == "Sound":
                 files = "Sound file (*.ogg *.wav)"
@@ -428,7 +428,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 pass
         
         if files != "":
-            location = QtGui.QFileDialog.getOpenFileNames(self, 'Open' + source, 
+            location = QtGui.QFileDialog.getOpenFileNames(self, 'Open ' + source, 
                     '', self.tr(files))
 
             if location !='':
