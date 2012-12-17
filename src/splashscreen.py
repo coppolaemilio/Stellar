@@ -41,7 +41,7 @@ class Start(QtGui.QWidget):
         tab1 = QtGui.QWidget() 
         tab2 = QtGui.QWidget()
         tab3 = QtGui.QWidget()
-        tab4 = QtGui.QWidget() 
+        tab4 = QtGui.QWidget()
          
         p1_vertical = QtGui.QVBoxLayout(tab1)
         p2_vertical = QtGui.QVBoxLayout(tab2)
@@ -51,7 +51,7 @@ class Start(QtGui.QWidget):
         self.tab_widget.addTab(tab4, "Welcome")
         self.tab_widget.addTab(tab1, "New Project") 
         self.tab_widget.addTab(tab2, "Open Project")
-        self.tab_widget.addTab(tab3, "Release Notes") 
+        self.tab_widget.addTab(tab3, "Release Notes")
 
         vbox = QtGui.QVBoxLayout()
         vbox.addStretch(1)
@@ -139,13 +139,6 @@ class Start(QtGui.QWidget):
         self.te.setReadOnly (True)
         self.te.setMaximumSize(475,120)
         p3_vertical.addWidget(self.te)
-
-
-        #Project Path-----------
-        
-        #if not os.path.exists(self.dirname):
-        #    os.mkdir('Projects')
-        #os.chdir('Projects')
 
         #Window-----------------
  
