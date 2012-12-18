@@ -166,11 +166,14 @@ class SoundGUI(QtGui.QWidget):
 
 
 
-
-        self.spritesplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
+        self.LastWidget = QtGui.QWidget()
+        self.spritesplitter = QtGui.QHBoxLayout()
+        self.rightlayout.setMargin(0)
         self.spritesplitter.addWidget(self.ShowFrame)
         self.spritesplitter.addWidget(self.RightFrame)
-        self.ContainerGrid.addWidget(self.spritesplitter)
+        
+        self.LastWidget.setLayout(self.spritesplitter)
+        self.ContainerGrid.addWidget(self.LastWidget)
         
     
         
