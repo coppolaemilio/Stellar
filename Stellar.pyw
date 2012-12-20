@@ -195,7 +195,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         toolbar.setMovable (True)
         
         addBar(toolbar, [ None, 'project', 'fsave', 'load', '|', 'build', 'share', '|',\
-                                'play', 'terminal', '|', 'sprite', 'sound', 'background',\
+                                'play', 'playDebug', 'terminal', '|', 'sprite', 'sound', 'background',\
                                 'font', 'script', 'object', 'room', '|', 'about' ] )
 
 
