@@ -134,8 +134,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         action['share'] = newAction('Share', 'publish.png', self.sharegame, 'Share your creations with the community!')
         action['build'] = newAction('Build', 'build.png', self.Build, 'Build game.', '', False)
         action['play'] = newAction('Run', 'play.png', self.playgame, 'Test your game.', 'F5')
-        action['playDebug'] = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game on debug mode.', 'F6', False)
-        action['terminal'] = newAction('Terminal', 'terminal.png', self.terminal, 'Open a terminal on your project folder.', 'F1')
+        action['playDebug'] = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game in debug mode.', 'F6', False)
+        action['terminal'] = newAction('Terminal', 'terminal.png', self.terminal, 'Open a terminal in your project folder.', 'F1')
         
         action['sprite'] = newAction('Add Sprite', 'sprite.png', self.addSprite, 'Add a sprite to the game.')
         action['sound'] = newAction('Add Sound', 'sound.png', self.addSound, 'Add a sound to the game.')
