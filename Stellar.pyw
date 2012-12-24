@@ -200,7 +200,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
 
     def terminal(self):
-        print ("To do")
+        if sys.platform.startswith('linux'):
+            os.system('(cd {0}; xterm&)'.format(self.dirname)) 
 
     def updatetree(self):
         self.tree.clear()
