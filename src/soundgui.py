@@ -24,15 +24,19 @@ from PyQt4 import QtGui, QtCore
 
 class SoundGUI(QtGui.QWidget):
   
-    def __init__(self, main, FileName, dirname):
+    def __init__(self, main, FileName, dirname, tree):
         super(SoundGUI, self).__init__(main)
         
         self.main = main
         self.dirname = dirname
         self.FileName = FileName
+        self.tree = tree
+
+        self.extension = self.tree.snd_parser.get(self.FileName, 'extension')
+        
         self.initUI()
         pygame.mixer.init()
-        self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound/%s.ogg"%(self.FileName)))
+        self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)))
         
                         
     def initUI(self):
@@ -66,7 +70,7 @@ class SoundGUI(QtGui.QWidget):
         
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
-
+        self.BtnStop.clicked.connect(self.ok)
 
 
         #------------------------------------------------------------------------------------
@@ -201,10 +205,13 @@ class SoundGUI(QtGui.QWidget):
 
     def SaveSound(self):
         self.fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Sound', 
-                '', self.tr("Sound (*.ogg)"))
+                '', self.tr("Sound (*.ogg *.wav)"))
 
         if self.fname !='':
-            shutil.copy(os.path.join(self.dirname, "Sound/%s.ogg"%(self.FileName)), self.fname)
+            shutil.copy(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)), self.fname)
+
+    def ok(self):
+        pass
             
     def ShowMe(self):
         self.ContainerBox.show()

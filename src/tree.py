@@ -103,7 +103,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 if directory == "Sprites":
                     self.main.sprite = SpriteGUI(self.main.window,itemtext, self.main.dirname, self)
                 elif directory == "Sound":
-                    self.main.sound = SoundGUI(self.main.window,itemtext, self.main.dirname)
+                    self.main.sound = SoundGUI(self.main.window,itemtext, self.main.dirname, self)
                 elif directory == "Fonts":
                     self.main.font = FontGUI(self.main.window,itemtext)
                 elif directory == "Scripts":
@@ -168,11 +168,18 @@ class TreeWidget(QtGui.QTreeWidget):
         self.spr_parser = ConfigParser.RawConfigParser()
         self.spr_parser.read(os.path.join(self.main.dirname, 'Sprites', 'spriteconfig.ini'))
 
+        self.snd_parser = ConfigParser.RawConfigParser()
+        self.snd_parser.read(os.path.join(self.main.dirname, 'Sound', 'soundconfig.ini'))
+
         #TODO: soundparser...etc
 
     def write_sprites(self):
         with open(os.path.join(self.main.dirname, 'Sprites', 'spriteconfig.ini'), 'w') as configfile:
             self.spr_parser.write(configfile)
+
+    def write_sound(self):
+        with open(os.path.join(self.main.dirname, 'Sound', 'soundconfig.ini'), 'w') as configfile:
+            self.snd_parser.write(configfile)
 
     def add_sprite_section(self, name):
         self.spr_parser.add_section(name[:-4])
@@ -183,7 +190,10 @@ class TreeWidget(QtGui.QTreeWidget):
         self.write_sprites()
 
     def add_sound_section(self, name):
-        pass
+        self.snd_parser.add_section(name[:-4])
+        self.snd_parser.set(name[:-4], 'extension', name[-3:])
+
+        self.write_sound()
         
     def addChild(self, directory, name):
         icon = QtGui.QIcon()
@@ -193,6 +203,8 @@ class TreeWidget(QtGui.QTreeWidget):
             self.add_sprite_section(name)
         else:
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[directory])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            if directory == 'Sound':
+                self.add_sound_section(name)
                 
                
         if directory == 'Scripts' or directory == 'Objects':

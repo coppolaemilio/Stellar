@@ -341,6 +341,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
         f.close()
 
+        f = open(os.path.join(self.dirname, u"Sound", u"soundconfig.ini"), 'w+')
+        f.close()
+
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
         with open('config.ini', 'w') as configfile:
