@@ -31,20 +31,21 @@ from PIL import Image
 
 class SpriteGUI(QtGui.QWidget):
   
-    def __init__(self, main, icon, dirname):
+    def __init__(self, main, icon, dirname, tree):
         super(SpriteGUI, self).__init__()
         self.main = main
         self.dirname = dirname
-        self.icon = icon
+        self.icon = str(icon)
+        self.tree = tree
 
-        self.xorig = 0
-        self.yorig = 0
-
-        self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
+        self.extension = self.tree.spr_parser.get(self.icon, 'extension')
+        self.image_file = os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension))
+        self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
+        self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
         self.img = Image.open(self.image_file)
         self.width, self.height = self.img.size
-        self.extension = os.path.splitext(self.image_file)[1][1:]
-        self.format = str(self.extension)
+
+        self.format = self.extension
         self.frames = 1
         
         self.initUI()
@@ -58,7 +59,7 @@ class SpriteGUI(QtGui.QWidget):
                 
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
-
+        self.BtnOK.clicked.connect(self.ok)
 
         self.LblShow = QtGui.QLabel('Show:')
         self.BtnNext = QtGui.QPushButton()
@@ -80,7 +81,7 @@ class SpriteGUI(QtGui.QWidget):
         
 
         #Scroll Area------------------------------------------
-        self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites/%s.png"%(self.icon)))
+        self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension)))
                                     
         
         self.spriteLbl = QtGui.QLabel(self.main)
@@ -134,8 +135,8 @@ class SpriteGUI(QtGui.QWidget):
         self.LblX.setAlignment(QtCore.Qt.AlignRight)
         self.LblY = QtGui.QLabel('Y:')
         self.LblY.setAlignment(QtCore.Qt.AlignRight)
-        self.EdirXorig = QtGui.QLineEdit("0")
-        self.EdirYorig = QtGui.QLineEdit("0")
+        self.EdirXorig = QtGui.QLineEdit(self.xorig)
+        self.EdirYorig = QtGui.QLineEdit(self.yorig)
 
         self.BtnCenter = QtGui.QPushButton('Center')
         self.BtnCenter.clicked.connect(self.CenterSprite)
@@ -248,5 +249,19 @@ class SpriteGUI(QtGui.QWidget):
 
     def EditSprite(self):
         os.startfile(self.image_file)#TO BE DONE :)
+
+    def ok(self):
+        self.close()
+        if self.icon is not str(self.qleSprite.text()):
+            self.tree.spr_parser.remove_section(self.icon)
+            self.tree.spr_parser.add_section(str(self.qleSprite.text()))
+            os.rename(os.path.join(self.dirname, 'Sprites', self.icon + '.' + self.extension),
+                      os.path.join(self.dirname, 'Sprites', str(self.qleSprite.text()) + '.' + self.extension))
+            self.icon = str(self.qleSprite.text())
         
+        self.tree.spr_parser.set(self.icon, 'xorig', str(self.EdirXorig.text()))
+        self.tree.spr_parser.set(self.icon, 'yorig', str(self.EdirYorig.text()))
+        self.tree.spr_parser.set(self.icon, 'extension', self.extension)
+
+        self.tree.write_sprites()
 

@@ -30,6 +30,8 @@ import sys
 
 import os
 
+import ConfigParser
+
 from PyQt4 import QtCore, QtGui
 
 import cfg
@@ -59,7 +61,7 @@ class TreeWidget(QtGui.QTreeWidget):
         for i in self.Names:
             self.ImageName[i] = self.ImageNames[j]
             j+=1
-
+        
     def itemCollapsed(self, obj):
         self.main.expanded[str(obj.text(0))] = False
 
@@ -99,7 +101,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 itemtext = unicode(item.text(0))
 
                 if directory == "Sprites":
-                    self.main.sprite = SpriteGUI(self.main.window,itemtext, self.main.dirname)
+                    self.main.sprite = SpriteGUI(self.main.window,itemtext, self.main.dirname, self)
                 elif directory == "Sound":
                     self.main.sound = SoundGUI(self.main.window,itemtext, self.main.dirname)
                 elif directory == "Fonts":
@@ -140,6 +142,7 @@ class TreeWidget(QtGui.QTreeWidget):
             
     def InitChild(self, fillarrays=False):
         dirname = self.main.dirname
+        self.InitParsers()
         
         for name in self.Names:
             self.Path[name] = os.path.join(dirname, name)
@@ -160,13 +163,34 @@ class TreeWidget(QtGui.QTreeWidget):
 
                 if fillarrays:
                     self.main.Sources[name].append(ChildSource)
-        
 
+    def InitParsers(self):
+        self.spr_parser = ConfigParser.RawConfigParser()
+        self.spr_parser.read(os.path.join(self.main.dirname, 'Sprites', 'spriteconfig.ini'))
+
+        #TODO: soundparser...etc
+
+    def write_sprites(self):
+        with open(os.path.join(self.main.dirname, 'Sprites', 'spriteconfig.ini'), 'w') as configfile:
+            self.spr_parser.write(configfile)
+
+    def add_sprite_section(self, name):
+        self.spr_parser.add_section(name[:-4])
+        self.spr_parser.set(name[:-4], 'extension', name[-3:])
+        self.spr_parser.set(name[:-4], 'xorig', 0)
+        self.spr_parser.set(name[:-4], 'yorig', 0)
+
+        self.write_sprites()
+
+    def add_sound_section(self, name):
+        pass
+        
     def addChild(self, directory, name):
         icon = QtGui.QIcon()
         
         if directory == 'Sprites':
             icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[directory], name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.add_sprite_section(name)
         else:
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[directory])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 
