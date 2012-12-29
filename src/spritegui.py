@@ -255,8 +255,13 @@ class SpriteGUI(QtGui.QWidget):
         if self.icon is not str(self.qleSprite.text()):
             self.tree.spr_parser.remove_section(self.icon)
             self.tree.spr_parser.add_section(str(self.qleSprite.text()))
-            os.rename(os.path.join(self.dirname, 'Sprites', self.icon + '.' + self.extension),
-                      os.path.join(self.dirname, 'Sprites', str(self.qleSprite.text()) + '.' + self.extension))
+
+            in_fname = os.path.join(self.dirname, 'Sprites', 
+                                    self.icon + '.' + self.extension)
+            out_fname = os.path.join(self.dirname, 'Sprites', 
+                                    str(self.qleSprite.text()) + '.' + self.extension) 
+
+            os.rename(in_fname, out_fname)
             self.icon = str(self.qleSprite.text())
         
         self.tree.spr_parser.set(self.icon, 'xorig', str(self.EdirXorig.text()))
