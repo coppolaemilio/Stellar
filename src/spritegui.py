@@ -135,8 +135,8 @@ class SpriteGUI(QtGui.QWidget):
         self.LblX.setAlignment(QtCore.Qt.AlignRight)
         self.LblY = QtGui.QLabel('Y:')
         self.LblY.setAlignment(QtCore.Qt.AlignRight)
-        self.EdirXorig = QtGui.QLineEdit(self.xorig)
-        self.EdirYorig = QtGui.QLineEdit(self.yorig)
+        self.EdirXorig = QtGui.QLineEdit(str(self.xorig))
+        self.EdirYorig = QtGui.QLineEdit(str(self.yorig))
 
         self.BtnCenter = QtGui.QPushButton('Center')
         self.BtnCenter.clicked.connect(self.CenterSprite)
