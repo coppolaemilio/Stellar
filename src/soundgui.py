@@ -34,11 +34,14 @@ class SoundGUI(QtGui.QWidget):
 
         self.extension = self.tree.snd_parser.get(self.FileName, 'extension')
         
-        self.initUI()
         pygame.mixer.init()
-        self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)))
+        self.sound_handle = open(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)), 'rb')
         
-                        
+        self.sound = pygame.mixer.music.load(self.sound_handle)
+        
+        self.initUI()
+        self.sound_handle.close()
+        
     def initUI(self):
 
         #Groupbox Container-----------------------------------

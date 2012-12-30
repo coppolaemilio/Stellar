@@ -200,7 +200,9 @@ class SpriteGUI(QtGui.QWidget):
         self.spritesplitter.addWidget(self.GeneralBox)
         self.spritesplitter.addWidget(self.scrollArea)
         self.ContainerGrid.addWidget(self.spritesplitter)
-
+        
+        self.image_handle.close()
+        
     def CenterSprite(self, event):
         self.EdirXorig.setText(str(self.img.size[0] / 2))
         self.EdirYorig.setText(str(self.img.size[1] / 2))
@@ -264,7 +266,7 @@ class SpriteGUI(QtGui.QWidget):
             out_fname = os.path.join(self.dirname, 'Sprites', "%s.%s" % 
                                         (icon, self.extension)) 
 
-            self.image_handle.close()
+            #self.image_handle.close()
             os.rename(in_fname, out_fname)
             self.icon = str(self.qleSprite.text())
 
