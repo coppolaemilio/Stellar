@@ -42,7 +42,10 @@ class SpriteGUI(QtGui.QWidget):
         self.image_file = os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension))
         self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
         self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
-        self.img = Image.open(self.image_file)
+        
+        self.image_handle = open(self.image_file, 'r')
+
+        self.img = Image.open(self.image_handle)
         self.width, self.height = self.img.size
 
         self.format = self.extension
@@ -135,8 +138,8 @@ class SpriteGUI(QtGui.QWidget):
         self.LblX.setAlignment(QtCore.Qt.AlignRight)
         self.LblY = QtGui.QLabel('Y:')
         self.LblY.setAlignment(QtCore.Qt.AlignRight)
-        self.EdirXorig = QtGui.QLineEdit(self.xorig)
-        self.EdirYorig = QtGui.QLineEdit(self.yorig)
+        self.EdirXorig = QtGui.QLineEdit(str(self.xorig))
+        self.EdirYorig = QtGui.QLineEdit(str(self.yorig))
 
         self.BtnCenter = QtGui.QPushButton('Center')
         self.BtnCenter.clicked.connect(self.CenterSprite)
@@ -230,7 +233,7 @@ class SpriteGUI(QtGui.QWidget):
                 self.sprite = QtGui.QPixmap(sprite)
                 self.spriteLbl.setPixmap(self.sprite)
                 self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
-                self.img = Image.open(self.image_file)
+                self.img = Image.open(self.image_handle)
                 self.width, self.height = self.img.size
                 self.extension = os.path.splitext(self.image_file)[1][1:]
                 self.format  = str(self.extension)
@@ -252,13 +255,20 @@ class SpriteGUI(QtGui.QWidget):
 
     def ok(self):
         self.close()
-        if self.icon is not str(self.qleSprite.text()):
+        icon = str(self.qleSprite.text())
+        if self.icon is not icon:
             self.tree.spr_parser.remove_section(self.icon)
-            self.tree.spr_parser.add_section(str(self.qleSprite.text()))
-            os.rename(os.path.join(self.dirname, 'Sprites', self.icon + '.' + self.extension),
-                      os.path.join(self.dirname, 'Sprites', str(self.qleSprite.text()) + '.' + self.extension))
+            self.tree.spr_parser.add_section(icon)
+
+            in_fname = os.path.join(self.dirname, 'Sprites', "%s.%s" %
+                                    (self.icon, self.extension))
+            out_fname = os.path.join(self.dirname, 'Sprites', "%s.%s" % 
+                                        (icon, self.extension)) 
+
+            self.image_handle.close()
+            os.rename(in_fname, out_fname)
             self.icon = str(self.qleSprite.text())
-        
+
         self.tree.spr_parser.set(self.icon, 'xorig', str(self.EdirXorig.text()))
         self.tree.spr_parser.set(self.icon, 'yorig', str(self.EdirYorig.text()))
         self.tree.spr_parser.set(self.icon, 'extension', self.extension)
