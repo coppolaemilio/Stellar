@@ -274,3 +274,5 @@ class SpriteGUI(QtGui.QWidget):
 
         self.tree.write_sprites()
 
+        self.tree.main.updatetree()
+
