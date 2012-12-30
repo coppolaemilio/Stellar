@@ -43,8 +43,7 @@ class SpriteGUI(QtGui.QWidget):
         self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
         self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
         
-        self.image_handle = open(self.image_file, 'r')
-
+        self.image_handle = open(self.image_file, 'rb')
         self.img = Image.open(self.image_handle)
         self.width, self.height = self.img.size
 
