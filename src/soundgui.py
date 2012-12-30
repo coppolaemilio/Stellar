@@ -70,7 +70,7 @@ class SoundGUI(QtGui.QWidget):
         
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
-        self.BtnStop.clicked.connect(self.ok)
+        self.BtnOK.clicked.connect(self.ok)
 
 
         #------------------------------------------------------------------------------------
@@ -211,7 +211,25 @@ class SoundGUI(QtGui.QWidget):
             shutil.copy(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)), self.fname)
 
     def ok(self):
-        pass
+        self.close()
+        snd = str(self.qleSound.text())
+        if self.FileName is not snd:
+            self.tree.snd_parser.remove_section(self.FileName)
+            self.tree.snd_parser.add_section(snd)
+
+            in_fname = os.path.join(self.dirname, 'Sound', "%s.%s" %
+                                    (self.FileName, self.extension))
+            out_fname = os.path.join(self.dirname, 'Sound', "%s.%s" % 
+                                        (snd, self.extension)) 
+
+            os.rename(in_fname, out_fname)
+            self.FileName = str(self.qleSound.text())
+
+        self.tree.snd_parser.set(self.FileName, 'extension', self.extension)
+
+        self.tree.write_sound()
+
+        self.tree.main.updatetree()
             
     def ShowMe(self):
         self.ContainerBox.show()
