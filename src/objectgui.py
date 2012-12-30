@@ -45,17 +45,29 @@ class ObjectGUI(QtGui.QWidget):
     def initUI(self):
         
         #Groupbox Container-----------------------------------
-        self.ContainerBox = QtGui.QGroupBox(self.main)
-        self.ContainerBox.setObjectName("groupBox")
-        self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
-        self.ContainerBox.setGeometry(QtCore.QRect(0,0,350,400))
-        self.ContainerBox.setMinimumSize(350,400)
-		
-        self.ContainerGrid = QtGui.QGridLayout(self.ContainerBox)
+
+        self.ContainerGrid = QtGui.QGridLayout(self.main)
 		
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
+
         self.LblSprite = QtGui.QLabel('Sprite:')
+        self.SpriteCombo = QtGui.QComboBox()
+
+
+        self.NameFrame = QtGui.QFrame()
+        self.namelayout = QtGui.QGridLayout()
+        self.namelayout.setMargin (0)
+        self.namelayout.addWidget(self.LblName,0,0)
+        self.namelayout.addWidget(self.nameEdit,0,1)
+        self.namelayout.addWidget(self.LblSprite,1,0)
+        self.namelayout.addWidget(self.SpriteCombo,1,1)
+        
+        self.NameFrame.setLayout(self.namelayout)
+
+
+        
+        
         self.cbvisible = QtGui.QCheckBox('Visible', self)
         self.cbsolid = QtGui.QCheckBox('Solid', self)
         self.cbpersis = QtGui.QCheckBox('Persistent', self)
@@ -75,10 +87,11 @@ class ObjectGUI(QtGui.QWidget):
         self.Btndelete = QtGui.QPushButton("Delete")
         self.Btnchange = QtGui.QPushButton("Change")
         
-        self.ContainerGrid.setSpacing(15)
-        self.ContainerGrid.addWidget(self.LblName, 0, 0)
-        self.ContainerGrid.addWidget(self.nameEdit, 0, 1)
-        self.ContainerGrid.addWidget(self.LblSprite, 1, 0)
+        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        
+        self.ContainerGrid.setSpacing(5)
+        self.ContainerGrid.addWidget(self.NameFrame, 0, 0, 1, 2)
+        #self.ContainerGrid.addWidget(self.SpriteFrame, 1, 0, 1, 2)
         self.ContainerGrid.addWidget(self.cbvisible, 2, 0)
         self.ContainerGrid.addWidget(self.cbsolid, 2, 1)
         self.ContainerGrid.addWidget(self.cbpersis, 3, 0)
@@ -88,21 +101,16 @@ class ObjectGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.ParentEdit, 5, 1)
         self.ContainerGrid.addWidget(self.LblMask, 6, 0)
         self.ContainerGrid.addWidget(self.MaskEdit, 6, 1)
-        self.ContainerGrid.addWidget(self.Btninfo, 7, 0, 7, 2)
-        self.ContainerGrid.addWidget(self.Btnok, 8, 0,8,2)
+        self.ContainerGrid.addItem(spacerItem)
+        self.ContainerGrid.addWidget(self.Btninfo, 7, 0, 1, 2)
+        self.ContainerGrid.addWidget(self.Btnok, 8, 0,1,2)
         #---
-        self.ContainerGrid.addWidget(self.temporarything, 0, 2,10,3)
-        self.ContainerGrid.addWidget(self.Btnaddevent, 2, 2,10,3)
+        self.ContainerGrid.addWidget(self.temporarything, 0, 2,2,7)
+        self.ContainerGrid.addWidget(self.Btnaddevent, 2, 2,2,3)
         self.ContainerGrid.addWidget(self.Btndelete, 11, 2)
         self.ContainerGrid.addWidget(self.Btnchange, 11, 3)
 
         #---
-        self.ContainerGrid.addWidget(self.temporarything1, 0, 4,12,7)
+        self.ContainerGrid.addWidget(self.temporarything1, 0, 4,2,7)
 
         #self.startopen()
-
-    def ShowMe(self):
-        self.ContainerBox.show()
-        
-    def HideMe(self):
-        self.ContainerBox.hide()
