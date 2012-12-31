@@ -31,7 +31,7 @@ from PyQt4 import QtGui, QtCore
 
 class Events(QtGui.QDialog):
     def __init__(self, parent):
-        super(Events, self).__init__(parent)
+        super(Events, self).__init__(parent.main)
         self.parent = parent
                 
                 
@@ -122,7 +122,7 @@ class Events(QtGui.QDialog):
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
-        super(ObjectGUI, self).__init__(main)
+        super(ObjectGUI, self).__init__(main.qmdiarea)
 
         self.main = main
         self.dirname = dirname

@@ -101,23 +101,23 @@ class TreeWidget(QtGui.QTreeWidget):
                 itemtext = unicode(item.text(0))
 
                 if directory == "Sprites":
-                    self.main.sprite = self.main.qmdiarea.addSubWindow(SpriteGUI(self.main,itemtext, self.main.dirname, self))
+                    window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Sound":
-                    self.main.sound = self.main.qmdiarea.addSubWindow(SoundGUI(self.main.window,itemtext, self.main.dirname, self))
+                    window = SoundGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Fonts":
-                    self.main.font = self.main.qmdiarea.addSubWindow(FontGUI(self.main.window,itemtext))
+                    window = FontGUI(self.main,itemtext)
                 elif directory == "Scripts":
-                   self.main.script = self.main.qmdiarea.addSubWindow(ScriptGUI(self.main.window,itemtext, self.main.dirname, self.main))
+                   window = ScriptGUI(self.main,itemtext, self.main.dirname, self.main)
                 elif directory == "Objects":
-                    self.main.object = self.main.qmdiarea.addSubWindow(ObjectGUI(self.main,itemtext, self.main.dirname, self))
+                    window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
                 
                 if directory[-1:] == "s":
                     directory = directory[:-1]
                 
-                self.main.qmdiarea.addSubWindow(self.main.window)
+                self.main.qmdiarea.addSubWindow(window)
+                window.setVisible(True)
+                window.setWindowTitle( directory + " properties: " + itemtext )
                 
-                self.main.window.setVisible(True)
-                self.main.window.setWindowTitle( directory + " properties: " + itemtext )
                 if directory == "Sprite":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
                 elif directory == "Sound":
