@@ -20,7 +20,6 @@
 
 import sys
 import os
-import os.path
 import shutil
 from PyQt4.Qt import Qt
 from PyQt4 import QtGui, QtCore
@@ -225,22 +224,32 @@ class SpriteGUI(QtGui.QWidget):
 
         
     def LoadSprite(self):
-        self.asprite = QtGui.QFileDialog.getOpenFileNames(self, 'Open Sprite(s)', 
-                '', self.tr("Image file (*.png *.gif *.jpg)"))
+        self.asprite = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Sprite(s)', 
+                '', self.tr("Image file (*.png *.gif *.jpg)")))
         
-        if self.asprite !='':
-            for sprite in self.asprite:
-                shutil.copy(sprite, self.image_file)
-                self.sprite = QtGui.QPixmap(sprite)
-                self.spriteLbl.setPixmap(self.sprite)
-                self.image_file = os.path.join(self.dirname, "Sprites/%s.png"%(self.icon))
-                self.img = Image.open(self.image_handle)
-                self.width, self.height = self.img.size
-                self.extension = os.path.splitext(self.image_file)[1][1:]
-                self.format  = str(self.extension)
-                self.LblWidth.setText('Width:   %d Pixels'%(self.width))
-                self.LblHeight.setText('Height:  %d Pixels'%(self.height))
-                self.LblFormat.setText('File Format:  %s'%(self.format))
+        if self.asprite is not '':
+            shutil.copy(self.asprite, self.image_file)
+
+            sprite = os.path.basename(self.asprite)
+            self.extension = sprite[-3:]
+            #os.rename(os.path.join(self.dirname, "Sprites", "%s.%s" % (sprite[:-4], self.extension)),
+            #          os.path.join(self.dirname, "Sprites", "%s.%s" % (self.icon, self.extension)))
+
+            self.image_file = os.path.join(self.dirname, 'Sprites', '%s.%s' %(self.icon, self.extension))
+            self.image_handle = open(self.image_file, 'rb')
+            
+            self.sprite = QtGui.QPixmap(self.image_file)
+            self.spriteLbl.setPixmap(self.sprite)
+
+            self.img = Image.open(self.image_handle)
+            self.width, self.height = self.img.size
+            self.format  = str(self.extension)
+            self.LblWidth.setText('Width:   %d Pixels'%(self.width))
+            self.LblHeight.setText('Height:  %d Pixels'%(self.height))
+            self.LblFormat.setText('File Format:  %s'%(self.format))
+            self.image_handle.close()
+
+            self.tree.main.updatetree()
                 
 
     def SaveSprite(self):
