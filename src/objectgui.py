@@ -122,7 +122,7 @@ class Events(QtGui.QDialog):
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
-        super(ObjectGUI, self).__init__(main.qmdiarea)
+        super(ObjectGUI, self).__init__()
 
         self.main = main
         self.dirname = dirname
