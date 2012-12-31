@@ -30,6 +30,70 @@ import shutil
 import pygame.mixer
 from PyQt4 import QtGui, QtCore
 
+class Events(QtGui.QDialog):
+    def __init__(self, main):
+        super(Events, self).__init__(main)
+        self.main = main
+                
+                
+        self.initUI()
+
+    def initUI(self):
+        self.ContainerGrid = QtGui.QGridLayout(self)
+        
+
+        self.btn_Create = QtGui.QPushButton('Create')
+        self.btn_Create.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
+        self.btn_Mouse = QtGui.QPushButton('Mouse')
+        self.btn_Mouse.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'mouse.png')))
+        self.btn_Destroy = QtGui.QPushButton('Destroy')
+        self.btn_Destroy.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
+        self.btn_Other = QtGui.QPushButton('Other')
+        self.btn_Alarm = QtGui.QPushButton('Alarm')
+        self.btn_Alarm.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'alarm.png')))
+        self.btn_Draw = QtGui.QPushButton('Draw')
+        self.btn_Step = QtGui.QPushButton('Step')
+        self.btn_KeyPress = QtGui.QPushButton('Key Press')
+        self.btn_Collision = QtGui.QPushButton('Collision')
+        self.btn_KeyReleased = QtGui.QPushButton('Key Released')
+        self.btn_Joystick = QtGui.QPushButton('Joystick')
+        self.btn_Joystick.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'joystick.png')))
+        self.btn_Keyboard = QtGui.QPushButton('Keyboard')
+        self.btn_Keyboard.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'keyboard.png')))
+        
+        self.btn_Cancel = QtGui.QPushButton('Cancel')
+        self.btn_Cancel.setIcon(QtGui.QIcon(os.path.join('Data', 'cancel.png')))
+        spacerItem = QtGui.QSpacerItem(50, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        
+        self.CancelFrame = QtGui.QFrame()
+        self.cancellayout = QtGui.QHBoxLayout()
+        self.cancellayout.addItem(spacerItem)
+        self.cancellayout.addWidget(self.btn_Cancel)
+        self.cancellayout.addItem(spacerItem)
+        self.CancelFrame.setLayout(self.cancellayout)     
+
+        
+
+        self.ContainerGrid.addWidget(self.btn_Create, 0, 0)
+        self.ContainerGrid.addWidget(self.btn_Mouse, 0, 1)
+        self.ContainerGrid.addWidget(self.btn_Destroy, 1, 0)
+        self.ContainerGrid.addWidget(self.btn_Other, 1, 1)
+        self.ContainerGrid.addWidget(self.btn_Alarm, 2, 0)
+        self.ContainerGrid.addWidget(self.btn_Draw, 2, 1)
+        self.ContainerGrid.addWidget(self.btn_Step, 3, 0)
+        self.ContainerGrid.addWidget(self.btn_KeyPress, 3, 1)
+        self.ContainerGrid.addWidget(self.btn_Collision, 4, 0)
+        self.ContainerGrid.addWidget(self.btn_KeyReleased, 4, 1)
+        self.ContainerGrid.addWidget(self.btn_Joystick, 5, 0)
+        self.ContainerGrid.addWidget(self.btn_Keyboard, 5, 1)
+        self.ContainerGrid.addWidget(self.CancelFrame, 7, 0,1,2)
+        
+
+        #self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
+        self.setWindowTitle("Choose the Event to add")
+        self.resize(240,100)
+
+        self.show()        
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
@@ -97,6 +161,7 @@ class ObjectGUI(QtGui.QWidget):
         self.actionstree = QtGui.QTreeWidget()
         self.actionstree.setHeaderLabel("Actions")
         self.Btnaddevent = QtGui.QPushButton("Add Event")
+        self.Btnaddevent.clicked.connect(self.AddEvent)
         self.Btndelete = QtGui.QPushButton("Delete")
         self.Btnchange = QtGui.QPushButton("Change")
 
@@ -150,6 +215,7 @@ class ObjectGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.objectsplitter)
 
 
-
+    def AddEvent(self):
+        eventdialog = Events(self)
 
         #self.startopen()
