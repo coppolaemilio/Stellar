@@ -27,7 +27,6 @@ from __future__ import unicode_literals
 import sys
 import os
 import shutil
-import pygame.mixer
 from PyQt4 import QtGui, QtCore
 
 class Events(QtGui.QDialog):

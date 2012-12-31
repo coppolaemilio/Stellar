@@ -97,19 +97,19 @@ class TreeWidget(QtGui.QTreeWidget):
        
         def openWindow(directory):
             if item.parent().text(0) == directory:
-                self.main.window = QtGui.QWidget()
+                #self.main.window = QtGui.QWidget()
                 itemtext = unicode(item.text(0))
 
                 if directory == "Sprites":
-                    self.main.sprite = SpriteGUI(self.main.window,itemtext, self.main.dirname, self)
+                    self.main.sprite = self.main.qmdiarea.addSubWindow(SpriteGUI(self.main,itemtext, self.main.dirname, self))
                 elif directory == "Sound":
-                    self.main.sound = SoundGUI(self.main.window,itemtext, self.main.dirname, self)
+                    self.main.sound = self.main.qmdiarea.addSubWindow(SoundGUI(self.main.window,itemtext, self.main.dirname, self))
                 elif directory == "Fonts":
-                    self.main.font = FontGUI(self.main.window,itemtext)
+                    self.main.font = self.main.qmdiarea.addSubWindow(FontGUI(self.main.window,itemtext))
                 elif directory == "Scripts":
-                    self.main.script = ScriptGUI(self.main.window,itemtext, self.main.dirname, self.main)
+                   self.main.script = self.main.qmdiarea.addSubWindow(ScriptGUI(self.main.window,itemtext, self.main.dirname, self.main))
                 elif directory == "Objects":
-                    self.main.object = ObjectGUI(self.main.window,itemtext, self.main.dirname, self)
+                    self.main.object = self.main.qmdiarea.addSubWindow(ObjectGUI(self.main,itemtext, self.main.dirname, self))
                 
                 if directory[-1:] == "s":
                     directory = directory[:-1]
