@@ -1,116 +1,61 @@
 #!/usr/bin/python
-
 # -*- coding: utf-8 -*-
 
-
-
 # Copyright (C) 2012 Emilio Coppola
-
 #
-
 # This file is part of Stellar.
-
-#
-
 # Stellar is free software: you can redistribute it and/or modify
-
 # it under the terms of the GNU General Public License as published by
-
 # the Free Software Foundation, either version 3 of the License, or
-
 # (at your option) any later version.
-
 #
-
 # Stellar is distributed in the hope that it will be useful,
-
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-
 # GNU General Public License for more details.
-
 #
-
 # You should have received a copy of the GNU General Public License
-
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
 from __future__ import division
-
 from __future__ import absolute_import
-
 from __future__ import print_function
-
 from __future__ import unicode_literals
 
-
-
-
-
 import sys
-
 import os
-
 import shutil
-
-
-
 import pygame.mixer
-
 from PyQt4 import QtGui, QtCore
 
 
-
-
-
 class ObjectGUI(QtGui.QWidget):
-
-  
-
-    def __init__(self, main, FileName, dirname):
-
+    def __init__(self, main, FileName, dirname, tree):
         super(ObjectGUI, self).__init__(main)
 
-        
-
         self.main = main
-
         self.dirname = dirname
-
         self.FileName = FileName
-
+        self.tree = tree
         self.initUI()
 
 
 
     def initUI(self):
-
-        
-
         #Groupbox Container-----------------------------------
-
-
-
         self.ContainerGrid = QtGui.QGridLayout(self.main)
         self.ContainerGrid.setMargin (0)
 
-		
-
         self.LblName = QtGui.QLabel('Name:')
-
         self.nameEdit = QtGui.QLineEdit(self.FileName)
-
-
-
-
-                
 
         self.BnewSprite = QtGui.QPushButton("New")
         self.BeditSprite = QtGui.QPushButton("Edit")
         self.SpriteCombo = QtGui.QComboBox()
+        self.SpriteCombo.addItem('<no sprite>')
+        self.SpriteCombo.addItems(self.tree.main.Sources["Sprites"])
         
         self.SpriteFrame = QtGui.QGroupBox("Sprite")
 
@@ -125,10 +70,6 @@ class ObjectGUI(QtGui.QWidget):
 
         self.SpriteFrame.setLayout(self.spritelayout)
 
-
-
-
-
         self.NameFrame = QtGui.QFrame()
 
         self.namelayout = QtGui.QGridLayout()
@@ -141,19 +82,7 @@ class ObjectGUI(QtGui.QWidget):
 
         self.namelayout.addWidget(self.SpriteFrame,1,0,1,2)
 
-
-
-        
-
         self.NameFrame.setLayout(self.namelayout)
-
-
-
-
-
-        
-
-        
 
         self.cbvisible = QtGui.QCheckBox('Visible', self)
 
@@ -251,11 +180,6 @@ class ObjectGUI(QtGui.QWidget):
 
         self.ThirdGrid.addWidget(self.actionstree, 0, 0, 9, 2)
         self.ThirdWidget.setLayout(self.ThirdGrid)
-
-
-
-
-
 
 
         self.objectsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)

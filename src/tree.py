@@ -109,7 +109,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Scripts":
                     self.main.script = ScriptGUI(self.main.window,itemtext, self.main.dirname, self.main)
                 elif directory == "Objects":
-                    self.main.object = ObjectGUI(self.main.window,itemtext, self.main.dirname)
+                    self.main.object = ObjectGUI(self.main.window,itemtext, self.main.dirname, self)
                 
                 if directory[-1:] == "s":
                     directory = directory[:-1]
