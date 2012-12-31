@@ -31,9 +31,9 @@ import pygame.mixer
 from PyQt4 import QtGui, QtCore
 
 class Events(QtGui.QDialog):
-    def __init__(self, main):
-        super(Events, self).__init__(main)
-        self.main = main
+    def __init__(self, parent):
+        super(Events, self).__init__(parent)
+        self.parent = parent
                 
                 
         self.initUI()
@@ -44,26 +44,37 @@ class Events(QtGui.QDialog):
 
         self.btn_Create = QtGui.QPushButton('Create')
         self.btn_Create.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
-        self.btn_Create.clicked.connect(self.CreateAdd)
+        self.btn_Create.clicked.connect(self.addEvent_Create)
         
         self.btn_Mouse = QtGui.QPushButton('Mouse')
         self.btn_Mouse.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'mouse.png')))
+
         self.btn_Destroy = QtGui.QPushButton('Destroy')
         self.btn_Destroy.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
+
         self.btn_Other = QtGui.QPushButton('Other')
         self.btn_Other.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'other.png')))
+
         self.btn_Alarm = QtGui.QPushButton('Alarm')
         self.btn_Alarm.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'alarm.png')))
+
         self.btn_Draw = QtGui.QPushButton('Draw')
         self.btn_Draw.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))
+
         self.btn_Step = QtGui.QPushButton('Step')
         self.btn_Step.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
+
         self.btn_KeyPress = QtGui.QPushButton('Key Press')
+
         self.btn_Collision = QtGui.QPushButton('Collision')
+
         self.btn_Collision.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))
+
         self.btn_KeyReleased = QtGui.QPushButton('Key Released')
+
         self.btn_Joystick = QtGui.QPushButton('Joystick')
         self.btn_Joystick.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'joystick.png')))
+
         self.btn_Keyboard = QtGui.QPushButton('Keyboard')
         self.btn_Keyboard.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'keyboard.png')))
         
@@ -103,10 +114,12 @@ class Events(QtGui.QDialog):
 
         self.show()  
            
-    def CreateAdd(self):
-        mainwidget = ObjectGUI()
-        mainwidget.AddCreateEvent(self)
+    def addEvent_Create(self):
+        self.parent.AddCreateEvent()
         self.close()
+
+    def addEvent_Step(self):
+        pass
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
