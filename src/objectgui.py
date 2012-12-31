@@ -237,7 +237,7 @@ class ObjectGUI(QtGui.QWidget):
         
 
         self.ContainerGrid.addWidget(self.objectsplitter)
-
+        self.setLayout(self.ContainerGrid)
 
     def AddEvent(self):
         eventdialog = Events(self)

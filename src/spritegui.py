@@ -167,8 +167,7 @@ class SpriteGUI(QtGui.QWidget):
 
         self.LblFormat = QtGui.QLabel('File Format:  %s'%(self.format)) 
 
-
-	self.nameandlayout = QtGui.QGridLayout()
+        self.nameandlayout = QtGui.QGridLayout()
         self.nameandlayout.setMargin (1)
         self.nameandlayout.addWidget(self.NameFrame,0,0,1,2)	
         self.nameandlayout.addWidget(self.Lblspacer,1,0)
@@ -199,6 +198,8 @@ class SpriteGUI(QtGui.QWidget):
         self.spritesplitter.addWidget(self.GeneralBox)
         self.spritesplitter.addWidget(self.scrollArea)
         self.ContainerGrid.addWidget(self.spritesplitter)
+
+        self.setLayout(self.ContainerGrid)
         
         self.image_handle.close()
         

@@ -182,7 +182,7 @@ class SoundGUI(QtGui.QWidget):
         self.LastWidget.setLayout(self.spritesplitter)
         self.ContainerGrid.addWidget(self.LastWidget)
         
-    
+        self.setLayout(self.ContainerGrid)
         
  
     def changeValuePan(self, value):
