@@ -90,7 +90,7 @@ class Events(QtGui.QDialog):
         
 
         #self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
-        self.setWindowTitle("Choose the Event yo add")
+        self.setWindowTitle("Choose the Event to add")
         self.resize(240,100)
 
         self.show()        
