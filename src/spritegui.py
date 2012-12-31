@@ -232,8 +232,6 @@ class SpriteGUI(QtGui.QWidget):
 
             sprite = os.path.basename(self.asprite)
             self.extension = sprite[-3:]
-            #os.rename(os.path.join(self.dirname, "Sprites", "%s.%s" % (sprite[:-4], self.extension)),
-            #          os.path.join(self.dirname, "Sprites", "%s.%s" % (self.icon, self.extension)))
 
             self.image_file = os.path.join(self.dirname, 'Sprites', '%s.%s' %(self.icon, self.extension))
             self.image_handle = open(self.image_file, 'rb')
