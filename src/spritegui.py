@@ -54,7 +54,7 @@ class SpriteGUI(QtGui.QWidget):
     def initUI(self):
 
         #Groupbox Container-----------------------------------
-        self.ContainerGrid = QtGui.QGridLayout(self.main)
+        self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
         
                 
