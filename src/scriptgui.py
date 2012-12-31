@@ -115,7 +115,7 @@ class ScriptGUI(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-        self.ContainerGrid = QtGui.QGridLayout(self.main)
+        self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
         
         editor = self.textEdit = SimplePythonEditor()

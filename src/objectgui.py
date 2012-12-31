@@ -32,10 +32,10 @@ from PyQt4 import QtGui, QtCore
 class Events(QtGui.QDialog):
     def __init__(self, parent):
         super(Events, self).__init__(parent.main)
-        self.parent = parent
-                
+        self.parent = parent       
                 
         self.initUI()
+        
 
     def initUI(self):
         self.ContainerGrid = QtGui.QGridLayout(self)
@@ -128,13 +128,14 @@ class ObjectGUI(QtGui.QWidget):
         self.dirname = dirname
         self.FileName = FileName
         self.tree = tree
+
         self.initUI()
 
 
 
     def initUI(self):
         #Groupbox Container-----------------------------------
-        self.ContainerGrid = QtGui.QGridLayout(self.main)
+        self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
 
         
