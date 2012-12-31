@@ -63,6 +63,8 @@ class Events(QtGui.QDialog):
         
         self.btn_Cancel = QtGui.QPushButton('Cancel')
         self.btn_Cancel.setIcon(QtGui.QIcon(os.path.join('Data', 'cancel.png')))
+        self.btn_Cancel.clicked.connect(self.close)
+
         spacerItem = QtGui.QSpacerItem(50, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         
         self.CancelFrame = QtGui.QFrame()
