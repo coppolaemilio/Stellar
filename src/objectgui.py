@@ -44,17 +44,23 @@ class Events(QtGui.QDialog):
 
         self.btn_Create = QtGui.QPushButton('Create')
         self.btn_Create.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
+        self.btn_Create.clicked.connect(self.CreateAdd)
+        
         self.btn_Mouse = QtGui.QPushButton('Mouse')
         self.btn_Mouse.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'mouse.png')))
         self.btn_Destroy = QtGui.QPushButton('Destroy')
         self.btn_Destroy.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
         self.btn_Other = QtGui.QPushButton('Other')
+        self.btn_Other.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'other.png')))
         self.btn_Alarm = QtGui.QPushButton('Alarm')
         self.btn_Alarm.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'alarm.png')))
         self.btn_Draw = QtGui.QPushButton('Draw')
+        self.btn_Draw.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))
         self.btn_Step = QtGui.QPushButton('Step')
+        self.btn_Step.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
         self.btn_KeyPress = QtGui.QPushButton('Key Press')
         self.btn_Collision = QtGui.QPushButton('Collision')
+        self.btn_Collision.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))
         self.btn_KeyReleased = QtGui.QPushButton('Key Released')
         self.btn_Joystick = QtGui.QPushButton('Joystick')
         self.btn_Joystick.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'joystick.png')))
@@ -95,7 +101,12 @@ class Events(QtGui.QDialog):
         self.setWindowTitle("Choose the Event to add")
         self.resize(240,100)
 
-        self.show()        
+        self.show()  
+           
+    def CreateAdd(self):
+        mainwidget = ObjectGUI()
+        mainwidget.AddCreateEvent(self)
+        self.close()
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
@@ -156,9 +167,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btnok.setIcon(QtGui.QIcon('Data/accept.png'))
         self.eventstree = QtGui.QTreeWidget()
         self.eventstree.setHeaderLabel("Events")
-        events = ["Create", "Destroy"]
-        create = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(events[0]))
-        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
+        self.events = ["Create", "Destroy"]
         
         self.actionstree = QtGui.QTreeWidget()
         self.actionstree.setHeaderLabel("Actions")
@@ -166,6 +175,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btnaddevent.clicked.connect(self.AddEvent)
         self.Btndelete = QtGui.QPushButton("Delete")
         self.Btnchange = QtGui.QPushButton("Change")
+        self.Btnchange.clicked.connect(self.AddEvent)
 
         
 
@@ -220,4 +230,8 @@ class ObjectGUI(QtGui.QWidget):
     def AddEvent(self):
         eventdialog = Events(self)
 
+    def AddCreateEvent(self):
+        create = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[0]))
+        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'create.png'))) 
+        
         #self.startopen()
