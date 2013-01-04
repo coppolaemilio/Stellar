@@ -33,6 +33,12 @@ class SoundGUI(QtGui.QWidget):
         self.tree = tree
 
         self.extension = self.tree.snd_parser.get(self.FileName, 'extension')
+
+        self.volume = int(self.tree.snd_parser.get(self.FileName, 'volume'))
+        self.pan = int(self.tree.snd_parser.get(self.FileName, 'pan'))
+
+        self.edit_pan = self.pan
+        self.edit_volume = self.volume
         
         pygame.mixer.init()
         #self.sound_handle = open(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)), 'rb')
@@ -186,7 +192,7 @@ class SoundGUI(QtGui.QWidget):
         
  
     def changeValuePan(self, value):
-
+        self.edit_pan = value
         if (value)<0:
             NewValue = abs(value)
             self.LblPan.setText("%d %s " %(NewValue*2, " percent to the left"))
@@ -197,7 +203,7 @@ class SoundGUI(QtGui.QWidget):
             self.LblPan.setText("%s " %("Music is Centered"))
 
     def changeValueMusic(self, value):
-
+        self.edit_volume = value + 100
         self.LblMusic.setText("%s %d %s " %("Volume is set to",value+100, "percent "))
 
     def PlaySound(self):
@@ -214,9 +220,8 @@ class SoundGUI(QtGui.QWidget):
             shutil.copy(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)), self.fname)
 
     def ok(self):
-        self.close()
         snd = str(self.qleSound.text())
-        if self.FileName is not snd:
+        if str(self.FileName) != snd:
             self.tree.snd_parser.remove_section(self.FileName)
             self.tree.snd_parser.add_section(snd)
 
@@ -226,13 +231,19 @@ class SoundGUI(QtGui.QWidget):
                                         (snd, self.extension)) 
 
             os.rename(in_fname, out_fname)
-            self.FileName = str(self.qleSound.text())
+            self.FileName = unicode(self.qleSound.text())
 
         self.tree.snd_parser.set(self.FileName, 'extension', self.extension)
 
+        self.pan = self.edit_pan
+        self.volume = self.edit_volume
+        self.tree.snd_parser.set(self.FileName, 'pan', self.pan)
+        self.tree.snd_parser.set(self.FileName, 'volume', self.volume)
+
         self.tree.write_sound()
 
-        self.tree.main.updatetree()
+        self.main.updatetree()
+        self.main.qmdiarea.activeSubWindow().close()
             
     def ShowMe(self):
         self.ContainerBox.show()

@@ -192,6 +192,8 @@ class TreeWidget(QtGui.QTreeWidget):
     def add_sound_section(self, name):
         self.snd_parser.add_section(name[:-4])
         self.snd_parser.set(name[:-4], 'extension', name[-3:])
+        self.snd_parser.set(name[:-4], 'volume', '0')
+        self.snd_parser.set(name[:-4], 'pan', '0')
 
         self.write_sound()
         

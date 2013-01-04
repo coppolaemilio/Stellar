@@ -178,6 +178,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btninfo.setIcon(QtGui.QIcon(os.path.join('Data', 'info.png')))
         self.Btnok = QtGui.QPushButton("OK")
         self.Btnok.setIcon(QtGui.QIcon('Data/accept.png'))
+        self.Btnok.clicked.connect(self.ok)
         self.eventstree = QtGui.QTreeWidget()
         self.eventstree.setHeaderLabel("Events")
         self.events = ["Create", "Destroy"]
@@ -248,3 +249,6 @@ class ObjectGUI(QtGui.QWidget):
         create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'create.png'))) 
         
         #self.startopen()
+
+    def ok(self):
+        self.main.qmdiarea.activeSubWindow().close()

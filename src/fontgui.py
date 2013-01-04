@@ -96,6 +96,7 @@ class FontGUI(QtGui.QWidget):
         self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
         self.BtnOK.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
         self.BtnOK.setGeometry(32, 240, 60, 25)
+        self.BtnOK.clicked.connect(self.ok)
 
         #Main Window------------------------------------------
         self.ContainerBox.show()
@@ -109,6 +110,9 @@ class FontGUI(QtGui.QWidget):
         
     def onChanged(self, text):
         self.previewtext.setText(text)
+
+    def ok(self):
+        self.main.qmdiarea.activeSubWindow().close()
 
     def ShowMe(self):
         self.ContainerBox.show()

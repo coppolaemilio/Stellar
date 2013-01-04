@@ -284,5 +284,6 @@ class SpriteGUI(QtGui.QWidget):
 
         self.tree.write_sprites()
 
-        self.tree.main.updatetree()
+        self.main.updatetree()
+        self.main.qmdiarea.activeSubWindow().close()
 
