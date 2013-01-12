@@ -62,6 +62,7 @@ class Events(QtGui.QDialog):
 
         self.btn_Step = QtGui.QPushButton('Step')
         self.btn_Step.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
+        self.btn_Step.clicked.connect(self.addEvent_Step)
 
         self.btn_KeyPress = QtGui.QPushButton('Key Press')
 
@@ -118,7 +119,8 @@ class Events(QtGui.QDialog):
         self.close()
 
     def addEvent_Step(self):
-        pass
+        self.parent.AddStepEvent()
+        self.close()
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
@@ -181,7 +183,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btnok.clicked.connect(self.ok)
         self.eventstree = QtGui.QTreeWidget()
         self.eventstree.setHeaderLabel("Events")
-        self.events = ["Create", "Destroy"]
+        self.events = ["Create", "Step", "Destroy"]
         
         self.actionstree = QtGui.QTreeWidget()
         self.actionstree.setHeaderLabel("Actions")
@@ -250,5 +252,9 @@ class ObjectGUI(QtGui.QWidget):
         
         #self.startopen()
 
+    def AddStepEvent(self):
+        step = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[1]))
+        step.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
+        
     def ok(self):
         self.main.qmdiarea.activeSubWindow().close()
