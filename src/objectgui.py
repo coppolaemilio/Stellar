@@ -50,6 +50,7 @@ class Events(QtGui.QDialog):
 
         self.btn_Destroy = QtGui.QPushButton('Destroy')
         self.btn_Destroy.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
+        self.btn_Destroy.clicked.connect(self.addEvent_Destroy)
 
         self.btn_Other = QtGui.QPushButton('Other')
         self.btn_Other.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'other.png')))
@@ -67,6 +68,7 @@ class Events(QtGui.QDialog):
         self.btn_KeyPress = QtGui.QPushButton('Key Press')
 
         self.btn_Collision = QtGui.QPushButton('Collision')
+        self.btn_Step.clicked.connect(self.addEvent_Collision)
 
         self.btn_Collision.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))
 
@@ -120,6 +122,14 @@ class Events(QtGui.QDialog):
 
     def addEvent_Step(self):
         self.parent.AddStepEvent()
+        self.close()
+
+    def addEvent_Destroy(self):
+        self.parent.AddDestroyEvent()
+        self.close()
+
+    def addEvent_Collision(self):
+        self.parent.AddCollisionEvent()
         self.close()
 
 class ObjectGUI(QtGui.QWidget):
@@ -183,7 +193,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btnok.clicked.connect(self.ok)
         self.eventstree = QtGui.QTreeWidget()
         self.eventstree.setHeaderLabel("Events")
-        self.events = ["Create", "Step", "Destroy"]
+        self.events = ["Create", "Step", "Destroy", "Collision"]
         
         self.actionstree = QtGui.QTreeWidget()
         self.actionstree.setHeaderLabel("Actions")
@@ -255,6 +265,14 @@ class ObjectGUI(QtGui.QWidget):
     def AddStepEvent(self):
         step = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[1]))
         step.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
+
+    def AddDestroyEvent(self):
+        destroy = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[2]))
+        destroy.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
+
+    def AddCollisionEvent(self):
+        collision = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[3]))
+        collision.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))
         
     def ok(self):
         self.main.qmdiarea.activeSubWindow().close()
