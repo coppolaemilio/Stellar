@@ -105,11 +105,11 @@ class SimplePythonEditor(QsciScintilla):
             
 class ScriptGUI(QtGui.QWidget):
   
-    def __init__(self, main, FileName, dirname, parent):
-        super(ScriptGUI, self).__init__(main)
+    def __init__(self, main, FileName, dirname, tree):
+        super(ScriptGUI, self).__init__()
         
         self.main = main
-        self.parent = parent
+        self.tree = tree
         self.dirname = dirname
         self.FileName = FileName
         self.initUI()
@@ -185,7 +185,7 @@ class ScriptGUI(QtGui.QWidget):
                   os.path.join(self.dirname, "Scripts", finalname))
         
         #rename file in tree widget
-        self.parent.updatetree()
+        self.main.updatetree()
         self.FileName = text
 
     def whitespace(self):
@@ -213,7 +213,7 @@ class ScriptGUI(QtGui.QWidget):
             data = self.textEdit.text()
             f.write(data)
             f.close()
-        self.main.close()
+        self.main.qmdiarea.activeSubWindow().close()
 			
     def startopen(self):
         fname = os.path.join(self.dirname, "Scripts", str(self.FileName)) + ".py"

@@ -107,7 +107,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Fonts":
                     window = FontGUI(self.main,itemtext)
                 elif directory == "Scripts":
-                   window = ScriptGUI(self.main,itemtext, self.main.dirname, self.main)
+                   window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Objects":
                     window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
                 
@@ -123,7 +123,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
                 else:
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[unicode(directory + 's')])))
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))
 
         
         
