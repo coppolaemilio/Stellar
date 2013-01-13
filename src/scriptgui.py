@@ -168,7 +168,7 @@ class ScriptGUI(QtGui.QWidget):
         
         self.main.setWindowTitle("Script Properties: "+ self.FileName)
         
-
+        self.setLayout(self.ContainerGrid)
         
         self.show()
         
