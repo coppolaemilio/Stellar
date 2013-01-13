@@ -40,6 +40,7 @@ from soundgui import SoundGUI
 from fontgui import FontGUI
 from scriptgui import ScriptGUI
 from objectgui import ObjectGUI
+from roomgui import RoomGUI
 
 class TreeWidget(QtGui.QTreeWidget):
     def __init__(self, main):
