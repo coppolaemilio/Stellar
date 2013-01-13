@@ -260,11 +260,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             fname = unicode(self.fname)
             self.setTitle(fname)
             fname = os.path.join(self.dirname, fname)
-            
-            with open(fname, 'w') as f:
-                data = self.textEdit.toPlainText()
-                print(data)
-                f.write(data)
+            # TODO: generate program
+
+            #with open(fname, 'w') as f:
+            #    data = self.textEdit.toPlainText()
+            #    print(data)
+            #    f.write(data)
             event.accept()
         elif reply == QtGui.QMessageBox.No:
             event.accept()
