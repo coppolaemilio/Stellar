@@ -398,11 +398,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
         def include_into_project(source, name, path=None):
             
-            if source == "Sprites" or source == "Sound" or source == "Backgrounds" or source == "Fonts":
+            if source == "Sprites" or source == "Sound" or source == "Backgrounds":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(path, os.path.join(self.dirname, source, name))
                     
-            elif source == "Scripts" or source == "Objects":
+            elif source == "Scripts" or source == "Objects" or source == "Fonts":
                 f = open(os.path.join(self.dirname, source, name+".py"), 'w')
                 f.close()
                 
@@ -416,17 +416,16 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
             
         files = ""
-        if source == "Sprites" or source == "Sound" or source == "Backgrounds" or source == "Fonts":
+        if source == "Sprites" or source == "Sound" or source == "Backgrounds":
             if source == "Sprites" or source == "Backgrounds":
                 files = "Image file (*.png *.gif *.jpg)"
             elif source == "Sound":
                 files = "Sound file (*.ogg *.wav)"
-            elif source == "Fonts":
-                files = "Font file (*.ttf *.ttc *.fon)"
         else:
             if source == "Scripts":
                 add_source(source, "script_")
-            
+            elif source == "Fonts":
+                add_source(source, "fnt_")
             elif source == "Objects":
                 add_source(source, "obj_")
             elif source == "Rooms":
