@@ -4,7 +4,6 @@
 # Copyright (C) 2012 Emilio Coppola
 #
 # This file is part of Stellar.
-#
 # Stellar is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -18,104 +17,103 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
 from __future__ import division
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-
 import sys
 import os
-
+import shutil
 from PyQt4 import QtGui, QtCore
 
-
 class FontGUI(QtGui.QWidget):
-  
     def __init__(self, main, dirname):
-        super(FontGUI, self).__init__(main)
-
+        super(FontGUI, self).__init__()
         self.main = main
         self.dirname = dirname
         self.initUI()
 
     def initUI(self):
-
         #Groupbox Container-----------------------------------
-        self.ContainerBox = QtGui.QGroupBox(self.main)
-        self.ContainerBox.setObjectName("groupBox")
-        self.ContainerBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
-        self.ContainerBox.setGeometry(QtCore.QRect(0,0,450,400))
-        self.ContainerBox.setMinimumSize(450,400)
-
-        self.basicwidg = QtGui.QWidget(self.ContainerBox)
-
-        self.name = QtGui.QLabel('Name:',self.basicwidg)
-        self.name.move(6,13)
-        self.nameEdit = QtGui.QLineEdit('',self.basicwidg)
-        self.nameEdit.setGeometry(45,10,145,21)
-
-        self.font = QtGui.QLabel('Font:',self.basicwidg)
-        self.font.move(6,40)
-        self.fontBox = QtGui.QFontComboBox(self.basicwidg)
-        self.fontBox.setGeometry(45,37,145,21)
+        self.ContainerGrid = QtGui.QGridLayout(self)
+        self.ContainerGrid.setMargin (0)
         
-        self.fontBox.activated.connect(self.onFontChanged)
-        
-        self.size = QtGui.QLabel('Size:',self.basicwidg)
-        self.size.move(6,67)
-        self.sizeEdit = QtGui.QLineEdit('12',self.basicwidg)
-        self.sizeEdit.setGeometry(45,64,145,21)
+        self.ContainerBox = QtGui.QFrame(self.main)
+        self.name = QtGui.QLabel('Name:')
+        self.nameEdit = QtGui.QLineEdit('')
+        self.font = QtGui.QLabel('Font:')
+        self.fontBox = QtGui.QFontComboBox()   
+        self.fontBox.activated.connect(self.onFontChanged)    
+        self.size = QtGui.QLabel('Size:')
+        self.sizeEdit = QtGui.QLineEdit('12')
         self.sizeEdit.textChanged.connect(self.onFontChanged)
-    
-        self.bold = QtGui.QCheckBox('Bold', self.ContainerBox)
-        self.bold.move(46, 94)
-        self.Italic = QtGui.QCheckBox('Italic', self.ContainerBox)
-        self.Italic.move(106, 94)
-        self.antiAli = QtGui.QCheckBox('Anti-Aliasing', self.ContainerBox)
-        self.antiAli.move(46, 124)
-
-        #self.CharacterBox = QtGui.QGroupBox('Character Range',self)
-        #self.CharacterBox.setGeometry(16,120,170,100)
-        
-        #self.fromc = QtGui.QLineEdit('32')
-        #self.till = QtGui.QLabel('till')
-        #self.toc = QtGui.QLineEdit('127')
-        #self.normalb = QtGui.QPushButton('Normal')
-        #self.digitsb = QtGui.QPushButton('Digits')
-        #self.allb = QtGui.QPushButton('All')
-        #self.lettersb = QtGui.QPushButton('Letters')
-
-        self.testtext = QtGui.QTextEdit('A text. 1234567890',self.ContainerBox)
-        self.testtext.setGeometry(200,9,240,100)
-
-        self.previewtext = QtGui.QTextEdit('A text. 1234567890',self.ContainerBox)
-        self.previewtext.setGeometry(200,119,240,100)
+        self.bold = QtGui.QCheckBox('Bold')
+        self.Italic = QtGui.QCheckBox('Italic')
+        self.antiAli = QtGui.QCheckBox('Anti-Aliasing')
+        self.testtext = QtGui.QTextEdit('A text. 1234567890')
+        self.previewtext = QtGui.QTextEdit('A text. 1234567890')
         self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), 10, True) )
-
-        self.BtnOK = QtGui.QPushButton('OK', self.ContainerBox)
+        self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
-        self.BtnOK.setGeometry(32, 240, 60, 25)
         self.BtnOK.clicked.connect(self.ok)
+        spacerItem = QtGui.QSpacerItem(10, 10, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
 
-        #Main Window------------------------------------------
-        self.ContainerBox.show()
-        self.setMinimumSize(350,400)
- 
-    def resizeEvent(self, event):
-        pass
 
+        self.OptionsBox = QtGui.QGroupBox("Options")
+        self.optionslayout = QtGui.QGridLayout()
+        self.optionslayout.setMargin(0)
+        self.optionslayout.addWidget(self.bold,0,0)
+        self.optionslayout.addWidget(self.Italic,0,1)
+        self.optionslayout.addWidget(self.antiAli,1,0)
+        self.OptionsBox.setLayout(self.optionslayout)
+        
+        self.NameFrame = QtGui.QFrame()
+        self.namelayout = QtGui.QGridLayout()
+        self.namelayout.setMargin(0)
+        self.namelayout.addWidget(self.name,0,0)
+        self.namelayout.addWidget(self.nameEdit,0,1)
+        self.namelayout.addWidget(self.font,1,0)
+        self.namelayout.addWidget(self.fontBox,1,1)
+        self.namelayout.addWidget(self.size,2,0)
+        self.namelayout.addWidget(self.sizeEdit,2,1)
+        self.NameFrame.setLayout(self.namelayout)
+  
+        self.ShowFrame = QtGui.QFrame()
+        self.showlayout = QtGui.QGridLayout()
+        self.showlayout.setMargin (6)
+        self.showlayout.addWidget(self.NameFrame,1,0)
+        self.showlayout.addWidget(self.OptionsBox,5,0)
+        self.showlayout.addItem(spacerItem,6,0)
+        self.showlayout.addWidget(self.BtnOK,7,0)
+        self.ShowFrame.setLayout(self.showlayout)
+        
+        self.RightFrame = QtGui.QFrame()
+        self.rightlayout = QtGui.QGridLayout()
+        self.rightlayout.setMargin(0)     
+        self.rightlayout.addWidget(self.testtext,0,0)
+        self.rightlayout.addWidget(self.previewtext,1,0)
+        self.RightFrame.setLayout(self.rightlayout)        
+        
+        self.LastWidget = QtGui.QWidget()
+        self.spritesplitter = QtGui.QHBoxLayout()
+        self.spritesplitter.addWidget(self.ShowFrame)
+        self.spritesplitter.addWidget(self.RightFrame)
+        
+        self.LastWidget.setLayout(self.spritesplitter)
+        self.ContainerGrid.addWidget(self.LastWidget)
+        self.setLayout(self.ContainerGrid)
+        
     def onFontChanged(self):
         self.previewtext.setFont(QtGui.QFont(self.fontBox.currentText(),float(self.sizeEdit.text())) )
         
     def onChanged(self, text):
         self.previewtext.setText(text)
-
+        
+    def AddEvent(self):
+        eventdialog = Events(self)
+        
     def ok(self):
         self.main.qmdiarea.activeSubWindow().close()
-
-    def ShowMe(self):
-        self.ContainerBox.show()
-        
-    def HideMe(self):
-        self.ContainerBox.hide()
