@@ -402,7 +402,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(path, os.path.join(self.dirname, source, name))
                     
-            elif source == "Scripts" or source == "Objects" or source == "Fonts":
+            elif source == "Scripts" or source == "Objects" or source == "Fonts" or source == "Rooms":
                 f = open(os.path.join(self.dirname, source, name+".py"), 'w')
                 f.close()
                 
@@ -429,9 +429,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             elif source == "Objects":
                 add_source(source, "obj_")
             elif source == "Rooms":
-                pass
-            elif source == "Backgrounds":
-                pass
+                add_source(source, "rm_")
+            #elif source == "Backgrounds":
+            #    pass
         
         if files != "":
             location = QtGui.QFileDialog.getOpenFileNames(self, 'Open ' + source, 

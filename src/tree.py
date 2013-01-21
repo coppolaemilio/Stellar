@@ -103,6 +103,8 @@ class TreeWidget(QtGui.QTreeWidget):
 
                 if directory == "Sprites":
                     window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
+                elif directory == "Backgrounds":
+                    window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Sound":
                     window = SoundGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Fonts":
@@ -111,6 +113,10 @@ class TreeWidget(QtGui.QTreeWidget):
                    window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Objects":
                     window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
+                elif directory == "Rooms":
+                    window = RoomGUI(self.main,itemtext)
+
+                    
                 
                 if directory[-1:] == "s":
                     directory = directory[:-1]
@@ -155,9 +161,9 @@ class TreeWidget(QtGui.QTreeWidget):
                 if name == "Sprites":
                     icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 else:
-                    icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                    
-                if name == "Sprites" or name == "Sound" or name == "Fonts" or name == "Rooms":
+                    icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
+
+                if name == "Sprites" or name == "Sound" or name == "Fonts" or name == "Rooms" or name == "Backgrounds":
                     QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-4])).setIcon(0,icon) 
                 elif name == "Objects" or name == "Scripts":
                     QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-3])).setIcon(0,icon)

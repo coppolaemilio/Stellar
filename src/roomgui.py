@@ -22,6 +22,9 @@ from PyQt4 import QtGui, QtCore
 
 
 class RoomGUI(QtGui.QWidget):
-    def __init__(self):
+    def __init__(self, main, dirname):
+        super(RoomGUI, self).__init__()
+        self.main = main
+        self.dirname = dirname
         pass
 
