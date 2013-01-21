@@ -98,7 +98,6 @@ class TreeWidget(QtGui.QTreeWidget):
        
         def openWindow(directory):
             if item.parent().text(0) == directory:
-                #self.main.window = QtGui.QWidget()
                 itemtext = unicode(item.text(0))
 
                 if directory == "Sprites":
@@ -129,6 +128,8 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
+                elif directory == "Sprite":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName['script.png'])))                
                 else:
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))
 
