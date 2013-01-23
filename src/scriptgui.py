@@ -27,14 +27,12 @@ from __future__ import unicode_literals
 import sys
 import os
 import shutil
-import syntax
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.Qsci import QsciScintilla, QsciLexerPython
 
-from autocomplete import CompletionTextEdit
 
 class SimplePythonEditor(QsciScintilla):
     ARROW_MARKER_NUM = 8

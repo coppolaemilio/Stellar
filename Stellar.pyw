@@ -34,7 +34,6 @@ sys.path.append("src")
 import os
 import webbrowser
 import inspect
-import syntax
 import platform
 import subprocess
 import shutil
