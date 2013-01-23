@@ -1,6 +1,6 @@
 Stellar
 =======
-![stellar](https://raw.github.com/Coppolaemilio/stellar/master/Data/stellarsplash.png)
+![stellar](https://dl.dropbox.com/s/zx80vzig7x12wrx/stellarsplash.png?dl=1)
 
 ## About
 An open-source program inspired in 'Game Maker' for <b>Pygame/Python</b> development.<br/> 
