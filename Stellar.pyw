@@ -180,7 +180,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         addBar(menubar, ['&File', 'project', 'load', '|', 'fsave', 'save', '|',\
                                 'build', 'share', '|', 'preferences', '|', 'exit'])
 
-        addBar(menubar, ['&Edit', 'expand', 'collapse'])
+        addBar(menubar, ['&Edit','terminal', 'expand', 'collapse'])
 
         addBar(menubar, ['&Resources', 'sprite', 'sound', 'background', 'object',\
                                 'font', 'script', 'room'])
