@@ -16,6 +16,9 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 * PIL
 * pyscintilla2
 
+## Running
+If you want to run stellar type this in terminal `$ python Stellar.pyw`
+
 ## Contributing
 1. Fork this repository
 2. Hack
