@@ -20,7 +20,7 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 If you want to run stellar type this in terminal `$ python Stellar.pyw`
 
 ## Contributing
-If you don't know how github contributing works see out [tutorial guide](http://stellarpygame.blogspot.com/p/we-need-your-help.html)
+If you don't know how github contributing works see our [tutorial guide](http://stellarpygame.blogspot.com/p/we-need-your-help.html)
 
 Along with pull request you can add your name to authors.txt
 
