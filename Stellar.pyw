@@ -472,6 +472,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
       
 def main():
     app = QtGui.QApplication(sys.argv)
+    #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
     st = Stellar()
     sys.exit(app.exec_())
 
