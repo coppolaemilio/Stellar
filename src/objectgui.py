@@ -57,7 +57,14 @@ class Events(QtGui.QDialog):
 
         self.btn_Alarm = QtGui.QPushButton('Alarm')
         self.btn_Alarm.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'alarm.png')))
-
+        self.btn_Alarm.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.btn_Alarm.clicked.connect(self.on_context_menu)
+        #self.btn_Alarm.clicked.connect(self.btn_Alarm, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), self.on_context_menu)
+       # create context menu
+        self.popMenu = QtGui.QMenu(self)
+        self.popMenu.addAction(QtGui.QAction('Alarm 0', self))
+        self.popMenu.addAction(QtGui.QAction('Alarm 1', self))       
+        
         self.btn_Draw = QtGui.QPushButton('Draw')
         self.btn_Draw.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))
 
@@ -132,6 +139,12 @@ class Events(QtGui.QDialog):
     def addEvent_Collision(self):
         self.parent.AddToEventList("Collision")
         self.close()
+
+    def on_context_menu(self):
+        # show context menu
+        self.pos = QtGui.QCursor.pos()
+        self.popMenu.exec_(self.btn_Alarm.mapToGlobal(QtCore.QPoint(self.pos)))
+        
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
