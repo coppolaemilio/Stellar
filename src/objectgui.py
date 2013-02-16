@@ -143,7 +143,7 @@ class Events(QtGui.QDialog):
     def on_context_menu(self):
         # show context menu
         self.pos = QtGui.QCursor.pos()
-        self.popMenu.exec_(self.btn_Alarm.mapToGlobal(QtCore.QPoint(self.pos)))
+        self.popMenu.exec_(self.pos)
         
 
 class ObjectGUI(QtGui.QWidget):
