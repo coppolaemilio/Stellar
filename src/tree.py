@@ -115,7 +115,6 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Rooms":
                     window = RoomGUI(self.main,itemtext)
 
-                    
                 
                 if directory[-1:] == "s":
                     directory = directory[:-1]
@@ -133,12 +132,14 @@ class TreeWidget(QtGui.QTreeWidget):
                 else:
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))
 
-        
+            def GameSettings():
+                print ("hola")
         
         item = self.currentItem()
         if not item.parent() == None:
             for name in self.Names:
                 openWindow(name)
+
     
     def InitParent(self):
         
@@ -148,6 +149,11 @@ class TreeWidget(QtGui.QTreeWidget):
             self.Parent[name] = QtGui.QTreeWidgetItem(self, QtCore.QStringList(name))
             self.Parent[name].setIcon(0,icon)
             
+        iconpref = QtGui.QIcon()
+        iconpref.addPixmap(QtGui.QPixmap(os.path.join("Data", "treepreferences.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.ggs = QtGui.QTreeWidgetItem(self, QtCore.QStringList("Global Game Settings"))
+        self.ggs.setIcon(0,iconpref)
+        
     def InitChild(self, fillarrays=False):
         dirname = self.main.dirname
         self.InitParsers()
