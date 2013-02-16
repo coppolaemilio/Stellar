@@ -61,6 +61,7 @@ class Events(QtGui.QDialog):
         self.btn_Draw = QtGui.QPushButton('Draw')
         self.btn_Draw.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))
 
+
         self.btn_Step = QtGui.QPushButton('Step')
         self.btn_Step.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
         self.btn_Step.clicked.connect(self.addEvent_Step)
@@ -68,7 +69,7 @@ class Events(QtGui.QDialog):
         self.btn_KeyPress = QtGui.QPushButton('Key Press')
 
         self.btn_Collision = QtGui.QPushButton('Collision')
-        self.btn_Step.clicked.connect(self.addEvent_Collision)
+        self.btn_Collision.clicked.connect(self.addEvent_Collision)
 
         self.btn_Collision.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))
 
@@ -117,19 +118,19 @@ class Events(QtGui.QDialog):
         self.show()  
            
     def addEvent_Create(self):
-        self.parent.AddCreateEvent()
+        self.parent.AddToEventList("Create")
         self.close()
 
     def addEvent_Step(self):
-        self.parent.AddStepEvent()
+        self.parent.AddToEventList("Step")
         self.close()
 
     def addEvent_Destroy(self):
-        self.parent.AddDestroyEvent()
+        self.parent.AddToEventList("Destroy")
         self.close()
 
     def addEvent_Collision(self):
-        self.parent.AddCollisionEvent()
+        self.parent.AddToEventList("Collision")
         self.close()
 
 class ObjectGUI(QtGui.QWidget):
@@ -200,6 +201,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btnaddevent = QtGui.QPushButton("Add Event")
         self.Btnaddevent.clicked.connect(self.AddEvent)
         self.Btndelete = QtGui.QPushButton("Delete")
+        self.Btndelete.clicked.connect(self.DeleteEvent)
         self.Btnchange = QtGui.QPushButton("Change")
         self.Btnchange.clicked.connect(self.AddEvent)
 
@@ -256,23 +258,33 @@ class ObjectGUI(QtGui.QWidget):
     def AddEvent(self):
         eventdialog = Events(self)
 
-    def AddCreateEvent(self):
-        create = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[0]))
-        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'create.png'))) 
-        
-        #self.startopen()
+    def DeleteEvent(self):
+        if not self.eventstree.currentItem() == None:
+            deletemsg = "Are you sure you want to remove the event with all its actions?"
+            reply = QtGui.QMessageBox.question(self, 'Confirm', deletemsg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.Cancel)
 
-    def AddStepEvent(self):
-        step = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[1]))
-        step.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
+            if reply == QtGui.QMessageBox.Yes:
+                root = self.eventstree.invisibleRootItem()
+                for item in self.eventstree.selectedItems():
+                    (item.parent() or root).removeChild(item)
+            else:
+                event.ignore()
+                
 
-    def AddDestroyEvent(self):
-        destroy = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[2]))
-        destroy.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
 
-    def AddCollisionEvent(self):
-        collision = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[3]))
-        collision.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))
+    def AddToEventList(self, name):
+        if name=="Create":
+            create = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[0]))
+            create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
+        elif name=="Step":
+            step = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[1]))
+            step.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))            
+        elif name=="Destroy":
+            destroy = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[2]))
+            destroy.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
+        elif name=="Collision":
+            collision = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[3]))
+            collision.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))            
         
     def ok(self):
         self.main.qmdiarea.activeSubWindow().close()
