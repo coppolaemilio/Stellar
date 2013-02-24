@@ -53,6 +53,7 @@ class QMdiAreaW(QtGui.QMdiArea):
         self.setBackground (QtGui.QBrush(QtGui.QPixmap(os.path.join("Data", "background.png"))))
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.setStyle(QtGui.QStyleFactory.create('Windows'))
 
 
 
@@ -112,6 +113,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.splitter1.addWidget(self.tree)
         self.splitter1.addWidget(self.qmdiarea)
         self.splitter1.setStretchFactor(1, 1)
+        self.splitter1.setStyle(QtGui.QStyleFactory.create('Windows'))
         self.setCentralWidget(self.splitter1)
         
     def initActions(self):
@@ -200,7 +202,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
     def terminal(self):
         if sys.platform.startswith('linux'):
-            os.system('(cd {0}; xterm&)'.format(self.dirname)) 
+            os.system('(cd {0};'+cfg.terminalcom+'&)'.format(self.dirname)) 
         elif sys.platform.startswith('win'):
             os.system('start /d {0} cmd'.format(os.path.normpath(self.dirname)))
 
