@@ -34,5 +34,6 @@ recentproject = config.get('stellar', 'recentproject').decode('utf-8')
 codeeditor = config.get('stellar', 'codeeditor').decode('utf-8')
 soundeditor = config.get('stellar', 'soundeditor').decode('utf-8')
 imageeditor = config.get('stellar', 'imageeditor').decode('utf-8')
+terminalcom = config.get('stellar', 'terminal').decode('utf-8')
 
     

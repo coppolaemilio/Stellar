@@ -72,7 +72,7 @@ class TreeWidget(QtGui.QTreeWidget):
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
         insertAction = menu.addAction("Insert")
-        
+        insertAction.triggered.connect(self.InsertItem)
         duplicateAction = menu.addAction("Duplicate")
         duplicateAction.setShortcut('Alt+Ins')
         duplicateAction.setDisabled (True)
@@ -127,10 +127,11 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
-                elif directory == "Sprite":
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName['script.png'])))                
+                elif directory == "Script":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))                
                 else:
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))           
+
 
             def GameSettings():
                 print ("hola")
@@ -140,7 +141,25 @@ class TreeWidget(QtGui.QTreeWidget):
             for name in self.Names:
                 openWindow(name)
 
-    
+    def InsertItem(self):
+        item = self.currentItem()    
+        itemtext = unicode(item.text(0))
+        print (str(itemtext)) 
+        if itemtext == "Sprites":
+            self.main.addSprite()
+        elif itemtext == "Sound":
+            self.main.addSound()
+        elif itemtext == "Backgrounds":
+            self.main.addBackground()
+        elif itemtext == "Fonts":
+            self.main.addFont()
+        elif itemtext == "Scripts":
+            self.main.addScript()
+        elif itemtext == "Objects":
+            self.main.addObject()
+        elif itemtext == "Rooms":
+            self.main.addRoom()
+        
     def InitParent(self):
         
         for name in self.Names:

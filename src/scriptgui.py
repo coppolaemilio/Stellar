@@ -33,25 +33,40 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.Qsci import QsciScintilla, QsciLexerPython
 
+import ConfigParser
+
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
+
+fontconfig = config.get('colors', 'font').decode('utf-8')
+sizeconfig = config.get('colors', 'size').decode('utf-8')
+backgroundcolor = config.get('colors', 'background').decode('utf-8')
+actualline = config.get('colors', 'actualline').decode('utf-8')
+fontcolor = config.get('colors', 'fontcolor').decode('utf-8')
+commentcol = config.get('colors', 'comment').decode('utf-8')
+numbercol = config.get('colors', 'number').decode('utf-8')
+
 
 class SimplePythonEditor(QsciScintilla):
     ARROW_MARKER_NUM = 8
 
+
     def __init__(self, parent=None):
         super(SimplePythonEditor, self).__init__(parent)
-
+        
         # Set the default font
         font = QFont()
-        font.setFamily('Courier')
-        font.setFixedPitch(True)
-        font.setPointSize(10)
+        font.setFamily(fontconfig)
+        font.setFixedPitch(False)
+        font.setPointSize(int(sizeconfig))
         self.setFont(font)
         self.setMarginsFont(font)
+        
 
         # Margin 0 is used for line numbers
         fontmetrics = QFontMetrics(font)
         self.setMarginsFont(font)
-        self.setMarginWidth(0, 40)
+        self.setMarginWidth(0, 30)
         self.setMarginLineNumbers(0, True)
         self.setMarginsBackgroundColor(QColor("#cccccc"))
 
@@ -72,10 +87,13 @@ class SimplePythonEditor(QsciScintilla):
         
         #replacing tabs for 4 spaces
         self.setIndentationWidth(4)
+        
+        #set autocomplete
+        self.autoCompleteFromAPIs()
 
         # Current line visible with special background color
         self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
+        self.setCaretLineBackgroundColor(QColor(str(actualline)))
 
         # Set Python lexer
         # Set style for Python comments (style number 1) to a fixed-width
@@ -83,8 +101,17 @@ class SimplePythonEditor(QsciScintilla):
         #
         lexer = QsciLexerPython()
         lexer.setDefaultFont(font)
+        lexer.setDefaultColor(QColor(str(fontcolor)))
+        lexer.setDefaultPaper(QColor(str(backgroundcolor)))
         self.setLexer(lexer)
-        self.SendScintilla(QsciScintilla.SCI_STYLESETFONT, 1, 'Courier')
+        """  Default = 0, Comment = 1, Number = 2, 
+        DoubleQuotedString = 3, SingleQuotedString = 4, Keyword = 5, 
+        TripleSingleQuotedString = 6, TripleDoubleQuotedString = 7, ClassName = 8, 
+        FunctionMethodName = 9, Operator = 10, Identifier = 11, 
+        CommentBlock = 12, UnclosedString = 13, HighlightedIdentifier = 14, 
+        Decorator = 15 """
+        self.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 1, QColor(str(commentcol)))
+        self.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 2, QColor(str(numbercol)))
 
         # Don't want to see the horizontal scrollbar at all
         # Use raw message to Scintilla here (all messages are documented
