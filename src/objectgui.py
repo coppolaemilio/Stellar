@@ -258,7 +258,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btninfo = QtGui.QPushButton("Show Information")
         self.Btninfo.setIcon(QtGui.QIcon(os.path.join('Data', 'info.png')))
         self.Btnok = QtGui.QPushButton("OK")
-        self.Btnok.setIcon(QtGui.QIcon('Data/accept.png'))
+        self.Btnok.setIcon(QtGui.QIcon(os.path.join('Data','accept.png')))
         self.Btnok.clicked.connect(self.ok)
         self.eventstree = QtGui.QTreeWidget()
         self.eventstree.setHeaderLabel("Events")
@@ -316,32 +316,51 @@ class ObjectGUI(QtGui.QWidget):
 
 
         self.ActionCombo = QtGui.QComboBox()
-        self.ActionCombo.addItem('Move')
-        self.ActionCombo.addItem('Main 1')
-        self.ActionCombo.addItem('Main 2')
-        self.ActionCombo.addItem('Control')
-        self.ActionCombo.addItem('Extra')
-        self.ActionCombo.addItem('Draw')
+        self.ActionCombo.addItem('Code')
+        
+        self.actions = ['Execute code', 'Execute script', 'Comment']
+        self.exCodeAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'Actions', 'executecode.png')), 'Execute Code', self)
+        self.exCodeAction.triggered.connect(self.AddActionCode)
+        self.exScriptAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'Actions', 'executescript.png')), 'Execute Script', self)
+        self.exScriptAction.triggered.connect(self.AddActionScript)
+        self.commentAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'Actions', 'comment.png')), 'Comment', self)
+        self.commentAction.triggered.connect(self.AddActionComment)
+        
+        self.actionToolbar = QtGui.QToolBar('Script Toolbar', orientation=QtCore.Qt.Vertical)
+        self.actionToolbar.addAction(self.exCodeAction)
+        self.actionToolbar.addAction(self.exScriptAction)
+        self.actionToolbar.addAction(self.commentAction)
+
         
         #---
-        self.FourthWidget = QtGui.QWidget()
-        self.FourthGrid = QtGui.QGridLayout()
-        self.FourthGrid.setMargin (0)
-        self.FourthGrid.addWidget(self.ActionCombo, 0, 0, 3, 1)
-        self.FourthWidget.setLayout(self.FourthGrid)
 
 
         self.objectsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
         self.objectsplitter.addWidget(self.FirstWidget)
         self.objectsplitter.addWidget(self.SecondWidget)
         self.objectsplitter.addWidget(self.ThirdWidget)
-        self.objectsplitter.addWidget(self.FourthWidget)
+        self.objectsplitter.addWidget(self.actionToolbar)
         self.objectsplitter.setStretchFactor(1, 1)
         
 
         self.ContainerGrid.addWidget(self.objectsplitter)
         self.setLayout(self.ContainerGrid)
 
+    def AddActionCode(self):
+        create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[0]))
+        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executecode.png')))        
+
+    def AddActionScript(self):
+        create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[1]))
+        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executescript.png')))   
+
+    def AddActionComment(self):
+        self.comment = QtGui.QInputDialog.getText(self, "Comment","Comment:", 0)
+        self.comment = list(self.comment)
+        
+        create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.comment[0]))
+        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'comment.png')))     
+              
     def AddEvent(self):
         eventdialog = Events(self)
 
