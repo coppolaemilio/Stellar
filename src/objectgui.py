@@ -29,6 +29,110 @@ import os
 import shutil
 from PyQt4 import QtGui, QtCore
 
+
+class ExecuteScriptD(QtGui.QDialog):
+    def __init__(self, parent, tree):
+        super(ExecuteScriptD, self).__init__(parent.main)
+        self.parent = parent       
+        self.tree = tree
+                
+        self.initUI()
+        
+    def initUI(self):
+        self.ContainerGrid = QtGui.QGridLayout(self)
+        self.image = QtGui.QLabel()
+        self.image.setPixmap(QtGui.QPixmap(os.path.join('Data', 'Actions', 'executescript.png')))
+
+        self.apptoself = QtGui.QRadioButton("self")
+        self.apptoself.toggle()
+        self.apptoself.clicked.connect(self.disable)
+        self.apptoother = QtGui.QRadioButton("other")
+        self.apptoother.clicked.connect(self.disable)
+        self.apptoobject = QtGui.QRadioButton("object:")
+        self.apptoobject.clicked.connect(self.enable)
+        self.objectcombo = QtGui.QComboBox()
+        self.objectcombo.setEnabled(False)
+        self.objectcombo.addItem('self')
+        self.objectcombo.addItems(self.tree.main.Sources["Objects"])
+        
+        self.AppliesFrame = QtGui.QGroupBox("Applies to")
+        self.Applieslayout = QtGui.QGridLayout()
+        self.Applieslayout.addWidget(self.apptoself,0,0)
+        self.Applieslayout.addWidget(self.apptoother,1,0)
+        self.Applieslayout.addWidget(self.apptoobject,2,0)
+        self.Applieslayout.addWidget(self.objectcombo,2,2)
+        self.AppliesFrame.setLayout(self.Applieslayout)
+
+        self.frame = QtGui.QGroupBox()
+        self.framelayout = QtGui.QGridLayout()
+        self.labelscript = QtGui.QLabel("Script:")
+        self.scriptcombobox = QtGui.QComboBox()
+        self.scriptcombobox.addItem("No Script")
+        self.scriptcombobox.addItems(self.tree.main.Sources["Scripts"])
+        self.labelarg0 = QtGui.QLabel("argument0")
+        self.labelarg1 = QtGui.QLabel("argument1")
+        self.labelarg2 = QtGui.QLabel("argument2")
+        self.labelarg3 = QtGui.QLabel("argument3")
+        self.labelarg4 = QtGui.QLabel("argument4")
+        self.lineedit0 = QtGui.QLineEdit()
+        self.lineedit1 = QtGui.QLineEdit()
+        self.lineedit2 = QtGui.QLineEdit()
+        self.lineedit3 = QtGui.QLineEdit()
+        self.lineedit4 = QtGui.QLineEdit()
+        
+        self.framelayout.addWidget(self.labelscript,0,0)
+        self.framelayout.addWidget(self.scriptcombobox,0,1)
+        self.framelayout.addWidget(self.labelarg0,1,0)
+        self.framelayout.addWidget(self.lineedit0,1,1)
+        self.framelayout.addWidget(self.labelarg1,2,0)
+        self.framelayout.addWidget(self.lineedit1,2,1)
+        self.framelayout.addWidget(self.labelarg2,3,0)
+        self.framelayout.addWidget(self.lineedit2,3,1)
+        self.framelayout.addWidget(self.labelarg3,4,0)
+        self.framelayout.addWidget(self.lineedit3,4,1)
+        self.framelayout.addWidget(self.labelarg4,5,0)
+        self.framelayout.addWidget(self.lineedit4,5,1)
+        self.frame.setLayout(self.framelayout)
+        
+
+        self.okcancel = QtGui.QFrame()
+        self.okcancelly = QtGui.QHBoxLayout()
+        self.Btnok = QtGui.QPushButton("OK")
+        self.Btnok.setIcon(QtGui.QIcon(os.path.join('Data','accept.png')))
+        self.Btnok.clicked.connect(self.ok)
+        self.Btncancel = QtGui.QPushButton("Cancel")
+        self.Btncancel.setIcon(QtGui.QIcon(os.path.join('Data','cancel.png')))
+        self.Btncancel.clicked.connect(self.cancel)
+        self.okcancelly.addWidget(self.Btnok)
+        self.okcancelly.addWidget(self.Btncancel)
+        self.okcancel.setLayout(self.okcancelly)
+         
+        
+        self.ContainerGrid.addWidget(self.image, 0, 0,1,1)
+        self.ContainerGrid.addWidget(self.AppliesFrame, 0, 1,2,6)
+        self.ContainerGrid.addWidget(self.frame,2,0,6,7)
+        self.ContainerGrid.addWidget(self.okcancel,8,0,1,7)
+
+        #self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
+        self.setWindowTitle("Execute Script")
+        self.resize(316,347)
+
+        self.show()  
+
+    def ok(self):
+        print ("ok")
+
+    def cancel(self):
+        self.close()
+
+    def enable(self):
+        self.objectcombo.setEnabled(True)
+
+        
+    def disable(self):
+        self.objectcombo.setEnabled(False)
+
+        
 class Events(QtGui.QDialog):
     def __init__(self, parent):
         super(Events, self).__init__(parent.main)
@@ -351,15 +455,17 @@ class ObjectGUI(QtGui.QWidget):
         create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executecode.png')))        
 
     def AddActionScript(self):
+        scriptdialog = ExecuteScriptD(self, self.tree)
+        
         create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[1]))
         create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executescript.png')))   
 
     def AddActionComment(self):
         self.comment = QtGui.QInputDialog.getText(self, "Comment","Comment:", 0)
         self.comment = list(self.comment)
-        
-        create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.comment[0]))
-        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'comment.png')))     
+        if not self.comment[0]=="":
+            create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.comment[0]))
+            create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'comment.png')))     
               
     def AddEvent(self):
         eventdialog = Events(self)
