@@ -47,6 +47,43 @@ class Events(QtGui.QDialog):
         
         self.btn_Mouse = QtGui.QPushButton('Mouse')
         self.btn_Mouse.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'mouse.png')))
+        self.btn_Mouse.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.btn_Mouse.clicked.connect(self.on_mouse_menu)
+        # create context menu
+        self.popMenuMouse = QtGui.QMenu(self)
+        self.popMenuMouse.addAction(QtGui.QAction('Left button', self))
+        self.popMenuMouse.addAction(QtGui.QAction('Right button', self))    
+        self.popMenuMouse.addAction(QtGui.QAction('Middle button', self))  
+        self.popMenuMouse.addSeparator()
+        self.popMenuMouse.addAction(QtGui.QAction('No button', self))  
+        self.popMenuMouse.addSeparator()
+        self.popMenuMouse.addAction(QtGui.QAction('Left pressed', self))
+        self.popMenuMouse.addAction(QtGui.QAction('Right pressed', self))
+        self.popMenuMouse.addAction(QtGui.QAction('Middle pressed', self))
+        self.popMenuMouse.addSeparator()    
+        self.popMenuMouse.addAction(QtGui.QAction('Left released', self))
+        self.popMenuMouse.addAction(QtGui.QAction('Right released', self))
+        self.popMenuMouse.addAction(QtGui.QAction('Middle released', self))
+        self.popMenuMouse.addSeparator()
+        self.popMenuMouse.addAction(QtGui.QAction('Mouse enter', self))
+        self.popMenuMouse.addAction(QtGui.QAction('Mouse leave', self))
+        self.popMenuMouse.addSeparator()
+        self.popMenuMouse.addAction(QtGui.QAction('Mouse wheel up', self))
+        self.popMenuMouse.addAction(QtGui.QAction('Mouse wheel down', self))
+        self.popMenuMouse.addSeparator()
+        self.globalMenuMouse = self.popMenuMouse.addMenu("&Global mouse")
+        self.globalMenuMouse.addAction(QtGui.QAction('Global left button', self))
+        self.globalMenuMouse.addAction(QtGui.QAction('Global right button', self))
+        self.globalMenuMouse.addAction(QtGui.QAction('Global middle button', self))
+        self.globalMenuMouse.addSeparator()
+        self.globalMenuMouse.addAction(QtGui.QAction('Global left pressed', self))
+        self.globalMenuMouse.addAction(QtGui.QAction('Global right pressed', self))
+        self.globalMenuMouse.addAction(QtGui.QAction('Global middle pressed', self))
+        self.globalMenuMouse.addSeparator()
+        self.globalMenuMouse.addAction(QtGui.QAction('Global left released', self))
+        self.globalMenuMouse.addAction(QtGui.QAction('Global right released', self))
+        self.globalMenuMouse.addAction(QtGui.QAction('Global middle released', self))      
+
 
         self.btn_Destroy = QtGui.QPushButton('Destroy')
         self.btn_Destroy.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
@@ -59,14 +96,24 @@ class Events(QtGui.QDialog):
         self.btn_Alarm.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'alarm.png')))
         self.btn_Alarm.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.btn_Alarm.clicked.connect(self.on_context_menu)
-        #self.btn_Alarm.clicked.connect(self.btn_Alarm, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), self.on_context_menu)
-       # create context menu
+        # create context menu
         self.popMenu = QtGui.QMenu(self)
         self.popMenu.addAction(QtGui.QAction('Alarm 0', self))
-        self.popMenu.addAction(QtGui.QAction('Alarm 1', self))       
+        self.popMenu.addAction(QtGui.QAction('Alarm 1', self))    
+        self.popMenu.addAction(QtGui.QAction('Alarm 2', self))    
+        self.popMenu.addAction(QtGui.QAction('Alarm 3', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 4', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 5', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 6', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 7', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 8', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 9', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 10', self)) 
+        self.popMenu.addAction(QtGui.QAction('Alarm 11', self)) 
         
         self.btn_Draw = QtGui.QPushButton('Draw')
         self.btn_Draw.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))
+        self.btn_Draw.clicked.connect(self.addEvent_Draw)
 
 
         self.btn_Step = QtGui.QPushButton('Step')
@@ -140,11 +187,19 @@ class Events(QtGui.QDialog):
         self.parent.AddToEventList("Collision")
         self.close()
 
+    def addEvent_Draw(self):
+        self.parent.AddToEventList("Draw")
+        self.close()
+        
     def on_context_menu(self):
         # show context menu
         self.pos = QtGui.QCursor.pos()
         self.popMenu.exec_(self.pos)
         
+    def on_mouse_menu(self):
+        # show context menu
+        self.pos = QtGui.QCursor.pos()
+        self.popMenuMouse.exec_(self.pos)        
 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
@@ -207,7 +262,7 @@ class ObjectGUI(QtGui.QWidget):
         self.Btnok.clicked.connect(self.ok)
         self.eventstree = QtGui.QTreeWidget()
         self.eventstree.setHeaderLabel("Events")
-        self.events = ["Create", "Step", "Destroy", "Collision"]
+        self.events = ["Create", "Step", "Destroy", "Collision", "Draw"]
         
         self.actionstree = QtGui.QTreeWidget()
         self.actionstree.setHeaderLabel("Actions")
@@ -245,6 +300,7 @@ class ObjectGUI(QtGui.QWidget):
         #---
         self.SecondWidget = QtGui.QWidget()
         self.SecondGrid = QtGui.QGridLayout()
+        self.SecondGrid.setHorizontalSpacing(0)
         self.SecondGrid.addWidget(self.eventstree, 0, 0, 7, 2)
         self.SecondGrid.addWidget(self.Btnaddevent,    7, 0, 1, 2)
         self.SecondGrid.addWidget(self.Btndelete,      8, 0)
@@ -254,14 +310,32 @@ class ObjectGUI(QtGui.QWidget):
         #---
         self.ThirdWidget = QtGui.QWidget()
         self.ThirdGrid = QtGui.QGridLayout()
+        self.ThirdGrid.setHorizontalSpacing(0)
         self.ThirdGrid.addWidget(self.actionstree, 0, 0, 9, 2)
         self.ThirdWidget.setLayout(self.ThirdGrid)
+
+
+        self.ActionCombo = QtGui.QComboBox()
+        self.ActionCombo.addItem('Move')
+        self.ActionCombo.addItem('Main 1')
+        self.ActionCombo.addItem('Main 2')
+        self.ActionCombo.addItem('Control')
+        self.ActionCombo.addItem('Extra')
+        self.ActionCombo.addItem('Draw')
+        
+        #---
+        self.FourthWidget = QtGui.QWidget()
+        self.FourthGrid = QtGui.QGridLayout()
+        self.FourthGrid.setMargin (0)
+        self.FourthGrid.addWidget(self.ActionCombo, 0, 0, 3, 1)
+        self.FourthWidget.setLayout(self.FourthGrid)
 
 
         self.objectsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
         self.objectsplitter.addWidget(self.FirstWidget)
         self.objectsplitter.addWidget(self.SecondWidget)
         self.objectsplitter.addWidget(self.ThirdWidget)
+        self.objectsplitter.addWidget(self.FourthWidget)
         self.objectsplitter.setStretchFactor(1, 1)
         
 
@@ -297,7 +371,10 @@ class ObjectGUI(QtGui.QWidget):
             destroy.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
         elif name=="Collision":
             collision = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[3]))
-            collision.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))            
+            collision.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))      
+        elif name=="Draw":
+            draw = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[4]))
+            draw.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))         
         
     def ok(self):
         self.main.qmdiarea.activeSubWindow().close()
