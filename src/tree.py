@@ -41,6 +41,7 @@ from fontgui import FontGUI
 from scriptgui import ScriptGUI
 from objectgui import ObjectGUI
 from roomgui import RoomGUI
+from backgroundgui import BackgroundGUI
 
 class TreeWidget(QtGui.QTreeWidget):
     def __init__(self, main):
@@ -83,7 +84,8 @@ class TreeWidget(QtGui.QTreeWidget):
         menu.addSeparator()
         deleteAction = menu.addAction("Delete")
         deleteAction.setShortcut('Shift+Del')
-        deleteAction.setDisabled (True)
+        deleteAction.triggered.connect(self.DeleteEvent)
+        deleteAction.setDisabled (False)
         menu.addSeparator()
         renameAction = menu.addAction("Rename")
         renameAction.setShortcut('F2')
@@ -93,7 +95,49 @@ class TreeWidget(QtGui.QTreeWidget):
         propertiesAction.setShortcut('Alt+Enter')
         propertiesAction.triggered.connect(self.DoEvent)
         action = menu.exec_(self.mapToGlobal(event.pos()))
+        
+    def DeleteEvent(self):
+       
+        def openWindow(directory):
+            if item.parent().text(0) == directory:
+                itemtext = unicode(item.text(0))
 
+                if directory == "Sprites":
+                    print ("TODO")
+                elif directory == "Backgrounds":
+                    reply = QtGui.QMessageBox.question(self, "Confirm", 'You are about to delete "'+itemtext+'". This will be permanent. Continue?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                    if reply == QtGui.QMessageBox.Yes:
+                        os.remove(os.path.join(self.main.dirname, directory, itemtext+".png"))
+                elif directory == "Sound":
+                    print ("TODO")
+                elif directory == "Fonts":
+                    print ("TODO")
+                elif directory == "Scripts":
+                    reply = QtGui.QMessageBox.question(self, "Confirm", 'You are about to delete "'+itemtext+'". This will be permanent. Continue?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                    if reply == QtGui.QMessageBox.Yes:
+                        os.remove(os.path.join(self.main.dirname, directory, itemtext+".py"))
+                elif directory == "Objects":
+                    reply = QtGui.QMessageBox.question(self, "Confirm", 'You are about to delete "'+itemtext+'". This will be permanent. Continue?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                    if reply == QtGui.QMessageBox.Yes:
+                        os.remove(os.path.join(self.main.dirname, directory, itemtext+".py"))
+                elif directory == "Rooms":
+                    reply = QtGui.QMessageBox.question(self, "Confirm", 'You are about to delete "'+itemtext+'". This will be permanent. Continue?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                    if reply == QtGui.QMessageBox.Yes:
+                        os.remove(os.path.join(self.main.dirname, directory, itemtext+".py"))
+
+                if directory[-1:] == "s":
+                    directory = directory[:-1]
+
+                self.main.updatetree()
+
+            def GameSettings():
+                print ("hola")
+        
+        item = self.currentItem()
+        if not item.parent() == None:
+            for name in self.Names:
+                openWindow(name)
+                
     def DoEvent(self):
        
         def openWindow(directory):
@@ -103,17 +147,17 @@ class TreeWidget(QtGui.QTreeWidget):
                 if directory == "Sprites":
                     window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Backgrounds":
-                    window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
+                    window = BackgroundGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Sound":
                     window = SoundGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Fonts":
                     window = FontGUI(self.main,itemtext)
                 elif directory == "Scripts":
-                   window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
+                    window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Objects":
                     window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Rooms":
-                    window = RoomGUI(self.main,itemtext)
+                    window = RoomGUI(self.main,itemtext, self.main.dirname, self)
 
                 
                 if directory[-1:] == "s":
@@ -127,8 +171,9 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
-                elif directory == "Script":
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))                
+                elif directory == "Script" or directory == "Room":
+                    print("FIXME")
+                    #self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))                
                 else:
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))           
 
@@ -184,14 +229,14 @@ class TreeWidget(QtGui.QTreeWidget):
                 if ChildSource.endswith(".ini"):
                     continue
                 icon = QtGui.QIcon()
-                if name == "Sprites":
+                if name == "Sprites" or name == "Backgrounds":
                     icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 else:
                     icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
 
-                if name == "Sprites" or name == "Sound" or name == "Fonts" or name == "Rooms" or name == "Backgrounds":
+                if name == "Sprites" or name == "Sound" or name == "Fonts" or name == "Backgrounds": 
                     QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-4])).setIcon(0,icon) 
-                elif name == "Objects" or name == "Scripts":
+                elif name == "Objects" or name == "Scripts" or name == "Rooms":
                     QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-3])).setIcon(0,icon)
 
                 if fillarrays:
@@ -242,7 +287,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 self.add_sound_section(name)
                 
                
-        if directory == 'Scripts' or directory == 'Objects':
+        if directory == 'Scripts' or directory == 'Objects' or directory =='Rooms':
             QtGui.QTreeWidgetItem(self.Parent[directory], QtCore.QStringList(name)).setIcon(0,icon)
         else:
             QtGui.QTreeWidgetItem(self.Parent[directory], QtCore.QStringList(name[:-4])).setIcon(0,icon) 
