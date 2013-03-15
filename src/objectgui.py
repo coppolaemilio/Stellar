@@ -120,7 +120,8 @@ class ExecuteScriptD(QtGui.QDialog):
         self.show()  
 
     def ok(self):
-        print ("ok")
+        self.parent.OkActionScript()
+        self.close()
 
     def cancel(self):
         self.close()
@@ -450,13 +451,33 @@ class ObjectGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.objectsplitter)
         self.setLayout(self.ContainerGrid)
 
+        #Opens and read the object information           
+        objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
+        lines = objectfile.readlines()
+        objectfile.close()
+        for line in lines:
+            #Events
+            if ('def event_create' in line ):
+                self.AddToEventList("Create")
+                
+            elif('def event_step' in line):
+                self.AddToEventList("Step")
+
+            elif('def event_destroy' in line):
+                self.AddToEventList("Destroy")
+            #Actions
+            elif('<AddActionScript>' in line):
+                self.OkActionScript()
+        
+        
     def AddActionCode(self):
         create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[0]))
         create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executecode.png')))        
 
     def AddActionScript(self):
         scriptdialog = ExecuteScriptD(self, self.tree)
-        
+
+    def OkActionScript(self):
         create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[1]))
         create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executescript.png')))   
 

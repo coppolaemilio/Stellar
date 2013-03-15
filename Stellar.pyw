@@ -82,6 +82,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         dirname, filename = os.path.split(os.path.abspath(self.stellardir))
         self.pref = "preferences.pyw"
         self.stellarnew = "Stellar.pyw"
+
+        self.sge_file = os.path.join(dirname, "Data","SGE", "sge.py")
+        self.template_file = os.path.join(dirname, "Data","SGE", "gametemplate.py")
         
         actions = self.initActions()
         self.statusBar()
@@ -134,8 +137,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
         action['share'] = newAction('Share', 'publish.png', self.sharegame, 'Share your creations with the community!')
         action['build'] = newAction('Build', 'build.png', self.Build, 'Build game.', '', False)
-        action['play'] = newAction('Run', 'play.png', self.playgame, 'Test your game.', 'F5')
-        action['playDebug'] = newAction('Run in debug mode', 'playdebug.png', self.playgame, 'Test your game in debug mode.', 'F6', False)
+        action['play'] = newAction('Run', 'play.png', self.rungame, 'Test your game.', 'F5')
+        action['playDebug'] = newAction('Run in debug mode', 'playdebug.png', self.rungame, 'Test your game in debug mode.', 'F6', False)
         action['terminal'] = newAction('Terminal', 'terminal.png', self.terminal, 'Open a terminal in your project folder.', 'F1')
         
         action['sprite'] = newAction('Add Sprite', 'sprite.png', self.addSprite, 'Add a sprite to the game.')
@@ -326,6 +329,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
     def createProject(self, dirname, file):
         
+        
         project = os.path.join(dirname, file+".py")
         
         if not os.path.exists(dirname):
@@ -339,7 +343,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         f = open(project, 'w+')
         f.write('# this file was created with Stellar')
         f.close()
-
+        shutil.copy(self.sge_file, dirname)
+        #shutil.copy(self.template_file, project)
+        
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
         f.close()
 
@@ -383,8 +389,103 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         print("To do")
  
         
-    def playgame(self):
-        execfile(os.path.join(self.dirname, self.fname), {})
+    def rungame(self):
+        if not len(os.listdir(os.path.join(self.dirname,"Rooms"))) > 0:
+            QtGui.QMessageBox.warning(self, "Error", "A game must have at least one room to run.",QtGui.QMessageBox.Ok)
+            return
+        #Writes the information needed on the main file
+        sgesprites=[]
+        sgeobjects=[]
+        sgescripts=[]
+        sgerooms=[]
+        if len(os.listdir(os.path.join(self.dirname,"Sprites"))) > 0:
+            src=os.path.join(self.dirname,"Sprites")
+            src_files = os.listdir(src)
+            for file_name in src_files:
+                full_file_name = os.path.join(src, file_name)
+                if (os.path.isfile(full_file_name)):
+                    if not ('.ini' in full_file_name):
+                        full_file_name = os.path.splitext(os.path.basename(full_file_name))
+                        print (str(full_file_name[0]))
+                        sgesprites.append(full_file_name[0])
+        if len(os.listdir(os.path.join(self.dirname,"Backgrounds"))) > 0:
+            src=os.path.join(self.dirname,"Backgrounds")
+            src_files = os.listdir(src)
+            for file_name in src_files:
+                full_file_name = os.path.join(src, file_name)
+                if (os.path.isfile(full_file_name)):
+                    if not ('.ini' in full_file_name):
+                        full_file_name = os.path.splitext(os.path.basename(full_file_name))
+                        print (str(full_file_name[0]))
+                        sgesprites.append(full_file_name[0])
+        if len(os.listdir(os.path.join(self.dirname,"Scripts"))) > 0:
+            src=os.path.join(self.dirname,"Scripts")
+            src_files = os.listdir(src)
+            for file_name in src_files:
+                full_file_name = os.path.join(src, file_name)
+                if (os.path.isfile(full_file_name)):
+                    scriptinfo = open(full_file_name, "r")
+                    scriptinfolines = scriptinfo.read()
+                    scriptinfolines = scriptinfolines.replace("\n","\n        ")
+                    sgescripts.append(scriptinfolines)
+        if len(os.listdir(os.path.join(self.dirname,"Objects"))) > 0:
+            src=os.path.join(self.dirname,"Objects")
+            src_files = os.listdir(src)
+            for file_name in src_files:
+                full_file_name = os.path.join(src, file_name)
+                if (os.path.isfile(full_file_name)):
+                    objinfo = open(full_file_name, "r")
+                    objinfolines = objinfo.read()
+                    print (scriptinfolines)
+                    for script in sgescripts:
+                        objinfolines = objinfolines.replace('<AddActionScript>creating_script', script)
+                    sgeobjects.append(objinfolines)
+        if len(os.listdir(os.path.join(self.dirname,"Rooms"))) > 0:
+            src=os.path.join(self.dirname,"Rooms")
+            src_files = os.listdir(src)
+            for file_name in src_files:
+                full_file_name = os.path.join(src, file_name)
+                if (os.path.isfile(full_file_name)):
+                    roominfo = open(full_file_name, "r")
+                    roominfolines = roominfo.read()
+                    #roominfolines = roominfolines.replace("\n","\n        ")
+                    sgerooms.append(roominfolines)
+
+
+        objinfo.close()
+        scriptinfo.close()
+        roominfo.close()
+        #Opens and read the template           
+        template = open(self.template_file, "r")
+        lines = template.readlines()
+        template.close()
+
+        #Add the information collected to the template
+        f = open(os.path.join(self.dirname,self.fname), 'w')
+        for line in lines:  
+            if ('# Load sprites' in line ):
+                f.write('# Load sprites\n')
+                for sprite in sgesprites:
+                    f.write(""+sprite+"_sprite = sge.Sprite('"+sprite+"', transparent=True)\n")
+                
+            elif('# Add Stellar objects' in line):
+                for sobject in sgeobjects:
+                    f.write("\n"+sobject)
+            elif('# Rooms' in line):
+                for sroom in sgerooms:
+                    f.write("\n"+sroom)
+                    
+            else:
+                f.write(line)
+
+                
+        f.close()
+        
+        #FIXME I'm using subprocess.Popen since I need to test it quick on windwos.
+        tmpdir = os.getcwd()
+        os.chdir(self.dirname)
+        subprocess.Popen(["C:\Python27\python.exe", self.fname]).communicate()
+        os.chdir(tmpdir)
 
     def addSource(self, source):
         
