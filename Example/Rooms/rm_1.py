@@ -1,7 +1,7 @@
-layers = (sge.BackgroundLayer(fence_sprite, 0, 380, 0, yrepeat=False),)
+layers = (sge.BackgroundLayer(fence_sprite, 0, 380, 0, yrepeat=True),)
 background = sge.Background(layers, 0xffffff)
 
-circle = Circle(game.width // 2, game.height // 2)
+circle = obj_ball(game.width // 2, game.height // 2)
 objects = [circle]
 
 views = (sge.View(0, 0),)

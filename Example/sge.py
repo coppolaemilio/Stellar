@@ -3994,6 +3994,7 @@ class Room(object):
             sprite.kill()
 
         game.current_room = self
+        game._background_changed = True
 
         for obj in self.objects:
             game._pygame_sprites.add(obj._pygame_sprite, layer=obj.z)

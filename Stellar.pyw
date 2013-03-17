@@ -86,6 +86,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
         self.sge_file = os.path.join(dirname, "Data","SGE", "sge.py")
         self.template_file = os.path.join(dirname, "Data","SGE", "gametemplate.py")
+        self.obj_template_file = os.path.join(dirname, "Data","SGE", "objecttemplate.py")
         
         actions = self.initActions()
         self.statusBar()
@@ -397,7 +398,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #Writes the information needed on the main file
         sgesprites=[]
         sgeobjects=[]
-        sgescripts=[]
         sgerooms=[]
         if len(os.listdir(os.path.join(self.dirname,"Sprites"))) > 0:
             src=os.path.join(self.dirname,"Sprites")
@@ -419,16 +419,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                         full_file_name = os.path.splitext(os.path.basename(full_file_name))
                         print (str(full_file_name[0]))
                         sgesprites.append(full_file_name[0])
-        if len(os.listdir(os.path.join(self.dirname,"Scripts"))) > 0:
-            src=os.path.join(self.dirname,"Scripts")
-            src_files = os.listdir(src)
-            for file_name in src_files:
-                full_file_name = os.path.join(src, file_name)
-                if (os.path.isfile(full_file_name)):
-                    scriptinfo = open(full_file_name, "r")
-                    scriptinfolines = scriptinfo.read()
-                    scriptinfolines = scriptinfolines.replace("\n","\n        ")
-                    sgescripts.append(scriptinfolines)
         if len(os.listdir(os.path.join(self.dirname,"Objects"))) > 0:
             src=os.path.join(self.dirname,"Objects")
             src_files = os.listdir(src)
@@ -436,10 +426,19 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 full_file_name = os.path.join(src, file_name)
                 if (os.path.isfile(full_file_name)):
                     objinfo = open(full_file_name, "r")
-                    objinfolines = objinfo.read()
-                    print (scriptinfolines)
-                    for script in sgescripts:
-                        objinfolines = objinfolines.replace('<AddActionScript>creating_script', script)
+                    objinfolines = objinfo.readlines()
+                    for line in objinfolines:
+                        if ('<AddActionScript>' in line ):
+                            line = line.replace("\n","")
+                            line = line.split(">")
+                            if (os.path.isfile(os.path.join(self.dirname,"Scripts",line[1]+".py"))):
+                                scriptinfo = open(os.path.join(self.dirname,"Scripts",line[1]+".py"), "r")
+                                scriptinfolines = scriptinfo.read()
+                                scriptinfolines = scriptinfolines.replace("\n","\n        ")
+                                objinfolines = [w.replace('<AddActionScript>'+line[1], scriptinfolines) for w in objinfolines]
+                            else:
+                                QtGui.QMessageBox.warning(self, "Error on object "+file_name+" Action.", 'The script named "'+line[1]+'" does not exist.',QtGui.QMessageBox.Ok)
+                                return
                     sgeobjects.append(objinfolines)
         if len(os.listdir(os.path.join(self.dirname,"Rooms"))) > 0:
             src=os.path.join(self.dirname,"Rooms")
@@ -454,7 +453,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
 
         objinfo.close()
-        scriptinfo.close()
         roominfo.close()
         #Opens and read the template           
         template = open(self.template_file, "r")
@@ -471,7 +469,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 
             elif('# Add Stellar objects' in line):
                 for sobject in sgeobjects:
-                    f.write("\n"+sobject)
+                    for dobject in sobject:
+                        f.write("\n"+dobject)
             elif('# Rooms' in line):
                 for sroom in sgerooms:
                     f.write("\n"+sroom)
@@ -504,8 +503,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             if source == "Sprites" or source == "Sound" or source == "Backgrounds":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(path, os.path.join(self.dirname, source, name))
+            elif source== "Objects":
+                if path != os.path.join(self.dirname, source, name):
+                    shutil.copy(self.obj_template_file, os.path.join(self.dirname, source, name+".py"))
+                
                     
-            elif source == "Scripts" or source == "Objects" or source == "Fonts" or source == "Rooms":
+            elif source == "Scripts" or source == "Fonts" or source == "Rooms":
                 f = open(os.path.join(self.dirname, source, name+".py"), 'w')
                 f.close()
                 
