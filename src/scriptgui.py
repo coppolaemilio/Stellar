@@ -36,14 +36,13 @@ if sys.version_info.major == 2:
 
 import cfg
 
-fontconfig = cfg.get('colors', 'font')
-sizeconfig = cfg.get('colors', 'size')
-backgroundcolor = cfg.get('colors', 'background')
-actualline = cfg.get('colors', 'actualline')
-fontcolor = cfg.get('colors', 'fontcolor')
-commentcol = cfg.get('colors', 'comment')
-numbercol = cfg.get('colors', 'number')
-
+fontconfig = cfg.get('colors', 'font', 'Monospace')
+sizeconfig = cfg.get('colors', 'size', 10)
+backgroundcolor = cfg.get('colors', 'background', 0xFFFFFF)
+actualline = cfg.get('colors', 'actualline', 0xFFE4E4)
+fontcolor = cfg.get('colors', 'fontcolor', 0x000000)
+commentcol = cfg.get('colors', 'comment', 0x9FBE52)
+numbercol = cfg.get('colors', 'number', 0x000000)
 
 class SimplePythonEditor(QsciScintilla):
     ARROW_MARKER_NUM = 8

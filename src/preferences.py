@@ -190,21 +190,21 @@ class PreferencesDialog(QtGui.QDialog):
                 
     def okbutton(self):
         if self.useexternal_code.isChecked():
-            cfg.set('stellar', 'codeeditor', str(self.inp_codeeditor.text()).encode('utf-8'))
+            cfg.set('stellar', 'codeeditor', str(self.inp_codeeditor.text()))
             cfg.codeeditor = str(self.inp_codeeditor.text())
         else:
             cfg.set('stellar', 'codeeditor', '')
             cfg.codeeditor = ''
             
         if self.useexternal_sound.isChecked():
-            cfg.set('stellar', 'soundeditor', str(self.inp_soundeditor.text()).encode('utf-8'))
+            cfg.set('stellar', 'soundeditor', str(self.inp_soundeditor.text()))
             cfg.soundeditor = str(self.inp_soundeditor.text())
         else:
             cfg.set('stellar', 'soundeditor', '')
             cfg.codeeditor = ''
             
         if self.useexternal_img.isChecked():
-            cfg.set('stellar', 'imageeditor', str(self.inp_imageeditor.text()).encode('utf-8'))
+            cfg.set('stellar', 'imageeditor', str(self.inp_imageeditor.text()))
             cfg.imageeditor = str(self.inp_imageeditor.text())
         else:
             cfg.set('stellar', 'imageeditor', '')
