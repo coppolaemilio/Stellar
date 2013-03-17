@@ -16,6 +16,9 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 * PIL
 * pyscintilla2
 
+On Ubuntu based:<br/>
+`sudo apt-get install python-qscintilla2 python-imaging python2.7 python-pygame 	python-qt4`
+
 ## Running
 If you want to run stellar type this in terminal `$ python Stellar.pyw`
 
