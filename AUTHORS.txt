@@ -5,3 +5,4 @@ Adrian Matejov (Adman on GitHub, @adman_X on twitter)
 Other contributors:
 Martin Jablecnik (Applemann on GitHub)
 Marek Suppa (mrshu on GitHub, @mr__shu on twitter)
+Christopher Weigle (avarisclari on GitHub, @avarisclari on Twitter)

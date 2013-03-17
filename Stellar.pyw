@@ -206,8 +206,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
     def terminal(self):
         if sys.platform.startswith('linux'):
-            os.system('(cd {0};'+cfg.terminalcom+'&)'.format(self.dirname)) 
-        elif sys.platform.startswith('win'):
+            os.system('(cd .;$TERM; )'.format(self.dirname))
+	elif sys.platform.startswith('win'):
             os.system('start /d {0} cmd'.format(os.path.normpath(self.dirname)))
 
     def updatetree(self):
@@ -254,7 +254,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
     def aboutStellar(self):
         about = QtGui.QMessageBox.information(self, 'About Stellar',
-            "<center><b>Stellar</b> is an open-source program inspired in 'Game Maker' for <b>Pygame/Python</b> development.<br/><br/>    The goal is to have a program to design your own games using easy-to-learn drag-and-drop actions and different easy tools for begginers.<br/>    When you become more experienced, you will have the possibility of writing and editing your game with the full flexibility given by <b>Python/Pygame</b>.<br/><br/>    This is an incomplete version. Currently, it has almost nothing, but I would love to be helped by anyone interested in the project.<br/><br/>    You are free to distribute the games you create with <b>Stellar</b> in any way you like. You can even sell them.<br/>     This of course assumes that the sprites, images, and sounds you use can be distributed or sold as well.<br/><HR><br/>  You can contribute to the project on our Github:<br/><a href=\'https://github.com/Coppolaemilio/stellar'>Stellar on Git</a></center>", QtGui.QMessageBox.Ok)
+            "<center><b>Stellar</b> is an open-source program inspired in 'Game Maker' for <b>Pygame/Python</b> development.<br/><br/>    The goal is to have a program to design your own games using easy-to-learn drag-and-drop actions and different easy tools for begginers.<br/>    When you become more experienced, you will have the possibility of writing and editing your game with the full flexibility given by <b>Python/Pygame</b>.<br/><br/>    This is an incomplete version. Currently, it has almost nothing, but I would love to be helped by anyone interested in the project.<br/><br/>    You are free to distribute the games you create with <b>Stellar</b> in any way you like. You can even sell them.<br/>     This of course assumes that the sprites, images, and sounds you use can be distributed or sold as well.<br/><HR><br/>  You can contribute to the project on our Github:<br/><a href=\'https://github.com/Coppolaemilio/stellar'>Stellar on Git</a></center><br/><br/><center>	<b>Stellar is distributed under the GNU General Public License</b><br/> (c)2012-2013 Emilio Coppola", QtGui.QMessageBox.Ok)
             
     def closeEvent(self, event):
         
