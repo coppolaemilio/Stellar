@@ -34,7 +34,6 @@ sys.path.append("src")
 import os
 import webbrowser
 import inspect
-import platform
 import subprocess
 import shutil
 
@@ -46,6 +45,8 @@ from splashscreen import Start
 from dialogs import NewProjectDialog
 from tree import TreeWidget
 
+if sys.version_info.major == 2:
+    str = unicode
 
 class QMdiAreaW(QtGui.QMdiArea):
     def __init__(self, main):
@@ -261,7 +262,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            fname = unicode(self.fname)
+            fname = str(self.fname)
             self.setTitle(fname)
             fname = os.path.join(self.dirname, fname)
             # TODO: generate program
@@ -282,7 +283,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
     def openProject(self, project=None):
         if project == None:
-            project = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game', 
+            project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game',
                         '', self.tr("Python files (*.py *.pyw)")))
             
             if project == '':
@@ -361,7 +362,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
         
     def savefile(self):
-        project = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...', 
+        project = str(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...',
                             self.dirname, self.tr("Python files (*.py *.pyw)")))
 
         if project == "":
@@ -492,10 +493,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         def get_name(source, name):
             number = 0
             prefix = name
-            name = prefix + unicode(number)
+            name = prefix + str(number)
             while os.path.exists(os.path.join(self.dirname, source, name + ".py")):
                 number += 1 
-                name = prefix + unicode(number)
+                name = prefix + str(number)
             return name
             
         def include_into_project(source, name, path=None):
@@ -541,8 +542,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
 
             if location !='':
                 for loc in location:
-                    name = os.path.basename(unicode(loc))
-                    include_into_project(source, name, unicode(loc))
+                    name = os.path.basename(str(loc))
+                    include_into_project(source, name, str(loc))
         
     def addSprite(self):
         self.addSource("Sprites")

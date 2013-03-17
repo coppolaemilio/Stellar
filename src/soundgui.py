@@ -21,6 +21,8 @@
 import sys, pygame.mixer, shutil, os
 from PyQt4 import QtGui, QtCore
 
+if sys.version_info.major == 2:
+    str = unicode
 
 class SoundGUI(QtGui.QWidget):
   
@@ -231,7 +233,7 @@ class SoundGUI(QtGui.QWidget):
                                         (snd, self.extension)) 
 
             os.rename(in_fname, out_fname)
-            self.FileName = unicode(self.qleSound.text())
+            self.FileName = str(self.qleSound.text())
 
         self.tree.snd_parser.set(self.FileName, 'extension', self.extension)
 

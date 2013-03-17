@@ -28,6 +28,10 @@ from PyQt4 import QtCore, QtGui
 import os, sys
 import cfg
 
+if sys.version_info.major == 2:
+    str = unicode
+
+
 class NewProjectDialog(QtGui.QDialog):
     def __init__(self, main):
         super(NewProjectDialog, self).__init__(main)
@@ -73,19 +77,19 @@ class NewProjectDialog(QtGui.QDialog):
         self.show()
 
     def CreateProject(self):
-        if unicode(self.nameEdit.text()) == '':
+        if str(self.nameEdit.text()) == '':
             QtGui.QMessageBox.information(self, "Name not specified",
                                                 "You must specify name before creating.",
                                                 QtGui.QMessageBox.Ok)
             return
-        elif unicode(self.pathEdit.text()) == '':
+        elif str(self.pathEdit.text()) == '':
             QtGui.QMessageBox.information(self, "Project directory not specified",
                                                 "You must specify project directory before creating.",
                                                 QtGui.QMessageBox.Ok)
             return
         
-        self.name = unicode(self.nameEdit.text())
-        self.path = unicode(self.pathEdit.text())
+        self.name = str(self.nameEdit.text())
+        self.path = str(self.pathEdit.text())
 
         self.dirname = os.path.join(self.path, self.name)
         
@@ -120,7 +124,7 @@ class NewProjectDialog(QtGui.QDialog):
         
 
     def ChooseFolder(self):
-        dir = unicode(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
+        dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
         self.dirname = dir
         self.pathEdit.setText(dir)
         self.pathEdit.setCursorPosition(0)

@@ -17,16 +17,12 @@
 #
 # You should have received a copy of the GNU General Public License
 
+from __future__ import print_function
 
-import sys
 import os
 import shutil
-from PyQt4.Qt import Qt
 from PyQt4 import QtGui, QtCore
 from PIL import Image
-
-
-
 
 class BackgroundGUI(QtGui.QWidget):
   
@@ -40,7 +36,7 @@ class BackgroundGUI(QtGui.QWidget):
         #self.extension = self.tree.spr_parser.get(self.icon, 'extension')
         self.extension = "png"
         self.image_file = os.path.join(self.dirname, "Backgrounds", "%s.%s"%(self.icon, self.extension))
-        print (str(os.path.join(self.dirname, "Backgrounds", "%s.%s"%(self.icon, self.extension))))
+        print((str(os.path.join(self.dirname, "Backgrounds", "%s.%s"%(self.icon, self.extension)))))
         #self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
         #self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
         self.xorig=0
