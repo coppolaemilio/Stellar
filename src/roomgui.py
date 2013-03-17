@@ -23,28 +23,21 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-
-import sys
 import os
-import shutil
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 from PyQt4.Qsci import QsciScintilla, QsciLexerPython
 
-import ConfigParser
+import cfg
 
-config = ConfigParser.RawConfigParser()
-config.read('config.ini')
-
-fontconfig = config.get('colors', 'font').decode('utf-8')
-sizeconfig = config.get('colors', 'size').decode('utf-8')
-backgroundcolor = config.get('colors', 'background').decode('utf-8')
-actualline = config.get('colors', 'actualline').decode('utf-8')
-fontcolor = config.get('colors', 'fontcolor').decode('utf-8')
-commentcol = config.get('colors', 'comment').decode('utf-8')
-numbercol = config.get('colors', 'number').decode('utf-8')
+fontconfig = cfg.get('colors', 'font', 'Monospace')
+sizeconfig = cfg.get('colors', 'size', 10)
+backgroundcolor = cfg.get('colors', 'background', 0xFFFFFF)
+actualline = cfg.get('colors', 'actualline', 0xFFE4E4)
+fontcolor = cfg.get('colors', 'fontcolor', 0x000000)
+commentcol = cfg.get('colors', 'comment', 0x9FBE52)
+numbercol = cfg.get('colors', 'number', 0x000000)
 
 
 class SimplePythonEditor(QsciScintilla):

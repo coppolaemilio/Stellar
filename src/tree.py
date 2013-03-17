@@ -27,14 +27,17 @@ from __future__ import unicode_literals
 
 
 import sys
-
 import os
-
-import ConfigParser
-
 from PyQt4 import QtCore, QtGui
 
-import cfg
+if sys.version_info.major > 2:
+    import configparser
+    StringList = type([])
+else:
+    str = unicode
+    import ConfigParser as configparser
+    StringList = QtCore.QStringList
+
 from spritegui import SpriteGUI
 from soundgui import SoundGUI
 from fontgui import FontGUI
@@ -100,7 +103,7 @@ class TreeWidget(QtGui.QTreeWidget):
        
         def openWindow(directory):
             if item.parent().text(0) == directory:
-                itemtext = unicode(item.text(0))
+                itemtext = str(item.text(0))
 
                 if directory == "Sprites":
                     print ("TODO")
@@ -142,7 +145,7 @@ class TreeWidget(QtGui.QTreeWidget):
        
         def openWindow(directory):
             if item.parent().text(0) == directory:
-                itemtext = unicode(item.text(0))
+                itemtext = str(item.text(0))
 
                 if directory == "Sprites":
                     window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
@@ -188,7 +191,7 @@ class TreeWidget(QtGui.QTreeWidget):
 
     def InsertItem(self):
         item = self.currentItem()    
-        itemtext = unicode(item.text(0))
+        itemtext = str(item.text(0))
         print (str(itemtext)) 
         if itemtext == "Sprites":
             self.main.addSprite()
@@ -210,12 +213,12 @@ class TreeWidget(QtGui.QTreeWidget):
         for name in self.Names:
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", "folder.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            self.Parent[name] = QtGui.QTreeWidgetItem(self, QtCore.QStringList(name))
+            self.Parent[name] = QtGui.QTreeWidgetItem(self, StringList([name]))
             self.Parent[name].setIcon(0,icon)
             
         iconpref = QtGui.QIcon()
         iconpref.addPixmap(QtGui.QPixmap(os.path.join("Data", "treepreferences.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ggs = QtGui.QTreeWidgetItem(self, QtCore.QStringList("Global Game Settings"))
+        self.ggs = QtGui.QTreeWidgetItem(self, StringList(["Global Game Settings"]))
         self.ggs.setIcon(0,iconpref)
         
     def InitChild(self, fillarrays=False):
@@ -225,7 +228,7 @@ class TreeWidget(QtGui.QTreeWidget):
         for name in self.Names:
             self.Path[name] = os.path.join(dirname, name)
             for ChildSource in sorted(os.listdir(self.Path[name])):
-                ChildSource = unicode(ChildSource)
+                ChildSource = str(ChildSource)
                 if ChildSource.endswith(".ini"):
                     continue
                 icon = QtGui.QIcon()
@@ -235,18 +238,18 @@ class TreeWidget(QtGui.QTreeWidget):
                     icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
 
                 if name == "Sprites" or name == "Sound" or name == "Fonts" or name == "Backgrounds": 
-                    QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-4])).setIcon(0,icon) 
+                    QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
                 elif name == "Objects" or name == "Scripts" or name == "Rooms":
-                    QtGui.QTreeWidgetItem(self.Parent[name], QtCore.QStringList(ChildSource[:-3])).setIcon(0,icon)
+                    QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-3]])).setIcon(0,icon)
 
                 if fillarrays:
                     self.main.Sources[name].append(ChildSource)
 
     def InitParsers(self):
-        self.spr_parser = ConfigParser.RawConfigParser()
+        self.spr_parser = configparser.RawConfigParser()
         self.spr_parser.read(os.path.join(self.main.dirname, 'Sprites', 'spriteconfig.ini'))
 
-        self.snd_parser = ConfigParser.RawConfigParser()
+        self.snd_parser = configparser.RawConfigParser()
         self.snd_parser.read(os.path.join(self.main.dirname, 'Sound', 'soundconfig.ini'))
 
         #TODO: soundparser...etc
@@ -288,6 +291,6 @@ class TreeWidget(QtGui.QTreeWidget):
                 
                
         if directory == 'Scripts' or directory == 'Objects' or directory =='Rooms':
-            QtGui.QTreeWidgetItem(self.Parent[directory], QtCore.QStringList(name)).setIcon(0,icon)
+            QtGui.QTreeWidgetItem(self.Parent[directory], StringList([name])).setIcon(0,icon)
         else:
-            QtGui.QTreeWidgetItem(self.Parent[directory], QtCore.QStringList(name[:-4])).setIcon(0,icon) 
+            QtGui.QTreeWidgetItem(self.Parent[directory], StringList([name[:-4]])).setIcon(0,icon)

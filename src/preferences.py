@@ -23,14 +23,14 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-
 import sys
 import os
-import inspect
 import cfg
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
+if sys.version_info.major == 2:
+    str = unicode
 
 class PreferencesDialog(QtGui.QDialog): 
     def __init__(self, main): 
@@ -162,7 +162,7 @@ class PreferencesDialog(QtGui.QDialog):
         self.inp_soundeditor.clear()
             
     def codeeditor(self):
-        name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+        name = str(QtGui.QFileDialog.getOpenFileName(self, 'Select Program',
                 '', self.tr("Programs (*.exe)")))
         if name is not "":
             self.useexternal_code.setChecked(True)
@@ -171,7 +171,7 @@ class PreferencesDialog(QtGui.QDialog):
             self.usebuilt_code.setChecked(True)
             
     def imageeditor(self):
-        name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+        name = str(QtGui.QFileDialog.getOpenFileName(self, 'Select Program',
                 '', self.tr("Programs (*.exe)")))
         if name is not "":
             self.useexternal_img.setChecked(True)
@@ -180,7 +180,7 @@ class PreferencesDialog(QtGui.QDialog):
             self.usebuilt_img.setChecked(True)
             
     def soundeditor(self):
-        name = unicode(QtGui.QFileDialog.getOpenFileName(self, 'Select Program', 
+        name = str(QtGui.QFileDialog.getOpenFileName(self, 'Select Program',
                 '', self.tr("Programs (*.exe)")))
         if name is not "":
             self.useexternal_sound.setChecked(True)
@@ -190,28 +190,27 @@ class PreferencesDialog(QtGui.QDialog):
                 
     def okbutton(self):
         if self.useexternal_code.isChecked():
-            cfg.config.set('stellar', 'codeeditor', unicode(self.inp_codeeditor.text()).encode('utf-8'))
-            cfg.codeeditor = unicode(self.inp_codeeditor.text())
+            cfg.set('stellar', 'codeeditor', str(self.inp_codeeditor.text()))
+            cfg.codeeditor = str(self.inp_codeeditor.text())
         else:
-            cfg.config.set('stellar', 'codeeditor', '')
+            cfg.set('stellar', 'codeeditor', '')
             cfg.codeeditor = ''
             
         if self.useexternal_sound.isChecked():
-            cfg.config.set('stellar', 'soundeditor', unicode(self.inp_soundeditor.text()).encode('utf-8'))
-            cfg.soundeditor = unicode(self.inp_soundeditor.text())
+            cfg.set('stellar', 'soundeditor', str(self.inp_soundeditor.text()))
+            cfg.soundeditor = str(self.inp_soundeditor.text())
         else:
-            cfg.config.set('stellar', 'soundeditor', '')
+            cfg.set('stellar', 'soundeditor', '')
             cfg.codeeditor = ''
             
         if self.useexternal_img.isChecked():
-            cfg.config.set('stellar', 'imageeditor', unicode(self.inp_imageeditor.text()).encode('utf-8'))
-            cfg.imageeditor = unicode(self.inp_imageeditor.text())
+            cfg.set('stellar', 'imageeditor', str(self.inp_imageeditor.text()))
+            cfg.imageeditor = str(self.inp_imageeditor.text())
         else:
-            cfg.config.set('stellar', 'imageeditor', '')
+            cfg.set('stellar', 'imageeditor', '')
             cfg.codeeditor = ''
 
-        with open('config.ini', 'w') as configfile:
-            cfg.config.write(configfile)
+        cfg.save()
 
         self.close()
 

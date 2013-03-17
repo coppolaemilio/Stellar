@@ -22,6 +22,10 @@ import os, webbrowser
 import cfg
 from dialogs import NewProjectDialog
 
+import sys
+if sys.version_info.major == 2:
+    str = unicode
+
 class Start(QtGui.QWidget):
   
     def __init__(self, main,parent=None):
@@ -156,14 +160,14 @@ class Start(QtGui.QWidget):
         self.move(qr.topLeft())
 
     def ChooseFolder(self):
-        dir = unicode(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
+        dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory of project"))
         self.dirname = dir
         self.pathEdit.setText(dir)
         self.pathEdit.setCursorPosition(0)
 
     def CreateProject(self):
-        name = unicode(self.nameEdit.text())
-        path = unicode(self.pathEdit.text())
+        name = str(self.nameEdit.text())
+        path = str(self.pathEdit.text())
 
         dirname = os.path.join(path, name)
 

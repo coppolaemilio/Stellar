@@ -23,17 +23,42 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import os
-import ConfigParser
+VERSION = '0.0.3'
 
-config = ConfigParser.RawConfigParser()
+import sys
+if sys.version_info.major > 2:
+    import configparser
+    def get(section, option, default_value = None):
+        try:
+            return config.get(section, option)
+        except configparser.NoOptionError:
+            return default_value
+        except configparser.NoSectionError:
+            return default_value
+    def set(section, option, value):
+        return config.set(section, option, value)
+else:
+    import ConfigParser as configparser
+    def get(section, option, default_value = None):
+        try:
+            return config.get(section, option).decode('utf-8')
+        except configparser.NoOptionError:
+            return default_value
+        except configparser.NoSectionError:
+            return default_value
+    def set(section, option, value):
+        return config.get(section, option, value.encode('utf-8'))
+
+config = configparser.RawConfigParser()
 config.read('config.ini')
 
-__version__ = config.get('stellar', 'version')
-recentproject = config.get('stellar', 'recentproject').decode('utf-8')
-codeeditor = config.get('stellar', 'codeeditor').decode('utf-8')
-soundeditor = config.get('stellar', 'soundeditor').decode('utf-8')
-imageeditor = config.get('stellar', 'imageeditor').decode('utf-8')
-terminalcom = config.get('stellar', 'terminal').decode('utf-8')
+def save():
+    with open('config.ini', 'w') as configfile:
+        config.write(configfile)
 
-    
+__version__ = get('stellar', 'version', VERSION)
+recentproject = get('stellar', 'recentproject', '')
+codeeditor = get('stellar', 'codeeditor', '')
+soundeditor = get('stellar', 'soundeditor', '')
+imageeditor = get('stellar', 'imageeditor', '')
+terminalcom = get('stellar', 'terminal', 'xterm')
