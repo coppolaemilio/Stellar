@@ -428,7 +428,15 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     objinfo = open(full_file_name, "r")
                     objinfolines = objinfo.readlines()
                     for line in objinfolines:
-                        if ('<AddActionScript>' in line ):
+                        if ('<Actions>' in line ):
+                            objinfolines = [w.replace('<Actions>', "") for w in objinfolines]
+                        elif ('<AddActionComment>' in line):
+                            objinfolines = [w.replace('<AddActionComment>', "#") for w in objinfolines]
+                        elif ('#__init__' in line):
+                            objinfolines = [w.replace('#__init__', "    def __init__(self, x, y, player=0):\n        super(obj_ball, self).__init__(x, y, 5, 'circle', collision_precise=True)\n        self.player = player") for w in objinfolines]
+                        elif ('#class' in line):
+                            objinfolines = [w.replace('#class', "class "+file_name[:-3]+"(sge.StellarClass):") for w in objinfolines]
+                        elif ('<AddActionScript>' in line ):
                             line = line.replace("\n","")
                             line = line.split(">")
                             if (os.path.isfile(os.path.join(self.dirname,"Scripts",line[1]+".py"))):

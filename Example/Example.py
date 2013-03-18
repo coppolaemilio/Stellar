@@ -25,26 +25,28 @@ class Game(sge.Game):
 class obj_ball(sge.StellarClass):
 
     def __init__(self, x, y, player=0):
-
         super(obj_ball, self).__init__(x, y, 5, 'circle', collision_precise=True)
-
-        #self.player = player
+        self.player = player
 
 
 
     def event_create(self):
 
+        
+
+        #"This is the creation event"
+
         self.image_alpha = 200
         self.image_blend = 'white'
 
-
-
     def event_step(self, time_passed):
 
-        left_key = ['left', 'a', 'j', 'kp_4'][self]
-        right_key = ['right', 'd', 'l', 'kp_6'][self]
-        up_key = ['up', 'w', 'i', 'kp_8'][self]
-        down_key = ['down', 's', 'k', 'kp_5'][self]
+        
+
+        left_key = ['left', 'a', 'j', 'kp_4'][self.player]
+        right_key = ['right', 'd', 'l', 'kp_6'][self.player]
+        up_key = ['up', 'w', 'i', 'kp_8'][self.player]
+        down_key = ['down', 's', 'k', 'kp_5'][self.player]
         
         self.xvelocity = (sge.game.get_key_pressed(right_key) -
                                   sge.game.get_key_pressed(left_key))
@@ -68,6 +70,7 @@ class obj_ball(sge.StellarClass):
 
 game = Game()
 # Load sprites
+cancel_sprite = sge.Sprite('cancel', transparent=True)
 circle_sprite = sge.Sprite('circle', transparent=True)
 fence_sprite = sge.Sprite('fence', transparent=True)
 
