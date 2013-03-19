@@ -1,3 +1,4 @@
+<Sprite>spr_circle
 #class
 #__init__
 

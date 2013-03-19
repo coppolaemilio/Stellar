@@ -22,10 +22,22 @@ class Game(sge.Game):
         self.end()
         
 
+#cancel
+
+class obj_0(sge.StellarClass):
+
+    def __init__(self, x, y, player=0):
+        super(obj_0, self).__init__(x, y, 5, 'cancel', collision_precise=True)
+        self.player = player
+
+#events
+
+#spr_circle
+
 class obj_ball(sge.StellarClass):
 
     def __init__(self, x, y, player=0):
-        super(obj_ball, self).__init__(x, y, 5, 'circle', collision_precise=True)
+        super(obj_ball, self).__init__(x, y, 5, 'spr_circle', collision_precise=True)
         self.player = player
 
 
@@ -71,21 +83,16 @@ class obj_ball(sge.StellarClass):
 game = Game()
 # Load sprites
 cancel_sprite = sge.Sprite('cancel', transparent=True)
-circle_sprite = sge.Sprite('circle', transparent=True)
+spr_circle_sprite = sge.Sprite('spr_circle', transparent=True)
 fence_sprite = sge.Sprite('fence', transparent=True)
 
-
-#testeandocosaslocas
-#testeandocosaslocas
-#testeandocosaslocas
-#testeandocosaslocas
-#testeandocosaslocas
 
 layers = (sge.BackgroundLayer(fence_sprite, 0, 380, 0, yrepeat=True),)
 background = sge.Background(layers, 0xffffff)
 
 circle = obj_ball(game.width // 2, game.height // 2)
-objects = [circle]
+circle1= obj_0(20,20)
+objects = [circle,circle1]
 
 views = (sge.View(0, 0),)
 

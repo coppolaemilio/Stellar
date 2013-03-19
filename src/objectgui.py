@@ -339,7 +339,10 @@ class ObjectGUI(QtGui.QWidget):
         self.BeditSprite = QtGui.QPushButton("Edit")
         self.SpriteCombo = QtGui.QComboBox()
         self.SpriteCombo.addItem('<no sprite>')
-        self.SpriteCombo.addItems(self.tree.main.Sources["Sprites"])
+        self.SpriteCombo.activated[str].connect(self.changeSprite)
+        
+        
+        #self.SpriteCombo.addItems(self.tree.main.Sources["Sprites"][:-3])
         self.SpriteFrame = QtGui.QGroupBox("Sprite")
         
         self.spritelayout = QtGui.QGridLayout()
@@ -461,8 +464,28 @@ class ObjectGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.objectsplitter)
         self.setLayout(self.ContainerGrid)
 
+        self.refreshSprites()
         self.readObjectEvents()
+        
+    def refreshSprites(self):
+        self.SpriteCombo.clear()
+        self.SpriteCombo.addItem('<no sprite>')
+        for sprite in self.tree.main.Sources["Sprites"]:
+            self.SpriteCombo.addItem(sprite[:-4])
 
+    def changeSprite(self,newsprite):
+        print (newsprite)
+        objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
+        lines = objectfile.readlines()
+        objectfile.close()
+        f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
+        for line in lines:  
+            if ('<Sprite>' in line):
+                f.write('<Sprite>'+newsprite+"\n") 
+            else:
+                f.write(line)
+        f.close()
+    
     def readObjectEvents(self):
         objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
         lines = objectfile.readlines()
@@ -470,14 +493,21 @@ class ObjectGUI(QtGui.QWidget):
         self.ActionNumber=0
         self.actionstree.clear()
         for line in lines:
+            if ('<Sprite>' in line):
+                line = line.replace("\n",">")
+                line = line.split(">")
+                index = self.SpriteCombo.findText(line[1])
+                if index==-1:
+                    #QtGui.QMessageBox.warning(self, "Error.", 'The sprite named "'+line[1]+'" does not exist.',QtGui.QMessageBox.Ok)
+                    self.SpriteCombo.setCurrentIndex(0)
+                else:
+                    self.SpriteCombo.setCurrentIndex (index)
             #Events
-            if ('def event_create' in line ):
+            elif ('def event_create' in line ):
                 self.AddToEventList("Create")
-                print("create")
                 
             elif('def event_step' in line):
                 self.AddToEventList("Step")
-                print("step")
 
             elif('def event_destroy' in line):
                 self.AddToEventList("Destroy")
@@ -492,12 +522,10 @@ class ObjectGUI(QtGui.QWidget):
         for line in lines:
             if ('<Actions>' in line):
                 self.ActionNumber+=1
-                print("Action "+str(self.ActionNumber))
             #Actions
             elif('<AddActionComment>' in line):
                 line = line.replace('\n','')
                 line = line.split('>')
-                print (line[1])
                 if self.create.isSelected()==True and self.ActionNumber==1:
                     self.readActionComment(line[1])
                 elif self.stepeventree.isSelected()==True and self.ActionNumber==2:

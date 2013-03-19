@@ -399,6 +399,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         sgesprites=[]
         sgeobjects=[]
         sgerooms=[]
+        objectsprite=""
         if len(os.listdir(os.path.join(self.dirname,"Sprites"))) > 0:
             src=os.path.join(self.dirname,"Sprites")
             src_files = os.listdir(src)
@@ -430,10 +431,15 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     for line in objinfolines:
                         if ('<Actions>' in line ):
                             objinfolines = [w.replace('<Actions>', "") for w in objinfolines]
+                        elif ('<Sprite>' in line):
+                            line = line.replace("\n",">")
+                            line = line.split(">")
+                            objectsprite=line[1]
+                            objinfolines = [w.replace('<Sprite>', "#") for w in objinfolines]
                         elif ('<AddActionComment>' in line):
                             objinfolines = [w.replace('<AddActionComment>', "#") for w in objinfolines]
                         elif ('#__init__' in line):
-                            objinfolines = [w.replace('#__init__', "    def __init__(self, x, y, player=0):\n        super(obj_ball, self).__init__(x, y, 5, 'circle', collision_precise=True)\n        self.player = player") for w in objinfolines]
+                            objinfolines = [w.replace('#__init__', "    def __init__(self, x, y, player=0):\n        super("+file_name[:-3]+", self).__init__(x, y, 5, '"+objectsprite+"', collision_precise=True)\n        self.player = player") for w in objinfolines]
                         elif ('#class' in line):
                             objinfolines = [w.replace('#class', "class "+file_name[:-3]+"(sge.StellarClass):") for w in objinfolines]
                         elif ('<AddActionScript>' in line ):
