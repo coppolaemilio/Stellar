@@ -4,7 +4,6 @@
 # Copyright (C) 2012, 2013 Emilio Coppola
 #
 # This file is part of Stellar.
-#
 # Stellar is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -18,15 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
 from __future__ import division
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-
 import sys
 import os
-
+import shutil
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.Qsci import QsciScintilla, QsciLexerPython
@@ -47,10 +47,8 @@ numbercol = cfg.get('colors', 'number', 0x000000)
 class SimplePythonEditor(QsciScintilla):
     ARROW_MARKER_NUM = 8
 
-
     def __init__(self, parent=None):
         super(SimplePythonEditor, self).__init__(parent)
-        
         # Set the default font
         font = QtGui.QFont()
         font.setFamily(fontconfig)
@@ -58,15 +56,12 @@ class SimplePythonEditor(QsciScintilla):
         font.setPointSize(int(sizeconfig))
         self.setFont(font)
         self.setMarginsFont(font)
-        
-
         # Margin 0 is used for line numbers
         fontmetrics = QtGui.QFontMetrics(font)
         self.setMarginsFont(font)
         self.setMarginWidth(0, 30)
         self.setMarginLineNumbers(0, True)
         self.setMarginsBackgroundColor(QtGui.QColor("#cccccc"))
-
         # Clickable margin 1 for showing markers
         self.setMarginSensitivity(1, True)
         self.connect(self,
@@ -76,22 +71,16 @@ class SimplePythonEditor(QsciScintilla):
             self.ARROW_MARKER_NUM)
         self.setMarkerBackgroundColor(QtGui.QColor("#ee1111"),
             self.ARROW_MARKER_NUM)
-
         # Brace matching: enable for a brace immediately before or after
         # the current position
         #
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        
-        #replacing tabs for 4 spaces
         self.setIndentationWidth(4)
-        
         #set autocomplete
         self.autoCompleteFromAPIs()
-
         # Current line visible with special background color
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QtGui.QColor(str(actualline)))
-
         # Set Python lexer
         # Set style for Python comments (style number 1) to a fixed-width
         # courier.
@@ -109,12 +98,10 @@ class SimplePythonEditor(QsciScintilla):
         Decorator = 15 """
         self.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 1, QtGui.QColor(str(commentcol)))
         self.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 2, QtGui.QColor(str(numbercol)))
-
         # Don't want to see the horizontal scrollbar at all
         # Use raw message to Scintilla here (all messages are documented
         # here: http://www.scintilla.org/ScintillaDoc.html)
         #self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
-
         # not too small
         #self.setMinimumSize(600, 450)
 
@@ -124,28 +111,26 @@ class SimplePythonEditor(QsciScintilla):
             self.markerDelete(nline, self.ARROW_MARKER_NUM)
         else:
             self.markerAdd(nline, self.ARROW_MARKER_NUM)
-            
+
 class ScriptGUI(QtGui.QWidget):
-  
     def __init__(self, main, FileName, dirname, tree):
         super(ScriptGUI, self).__init__()
-        
         self.main = main
-        self.tree = tree
         self.dirname = dirname
         self.FileName = FileName
         self.initUI()
 
     def initUI(self):
+        #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
-        
-        editor = self.textEdit = SimplePythonEditor()
         
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
         self.nameEdit.textChanged[str].connect(self.onChanged)
-		
+        
+        self.textEdit = SimplePythonEditor()
+
         saveAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'tick.png')), 'Save', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.triggered.connect(self.saveScript)
@@ -165,7 +150,6 @@ class ScriptGUI(QtGui.QWidget):
         self.whitespacevisAction = QtGui.QAction(QtGui.QIcon(os.path.join('Data', 'font.png')), 'White Space', self)
         self.whitespacevisAction.triggered.connect(self.whitespace)
         self.visible= False
-		
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
         self.toolbar.addAction(saveAction)
@@ -183,18 +167,11 @@ class ScriptGUI(QtGui.QWidget):
 
 
         self.ContainerGrid.setSpacing(0)
-        self.ContainerGrid.addWidget(editor, 1, 0,1,15)
+        self.ContainerGrid.addWidget(self.textEdit, 1, 0,1,15)
         self.ContainerGrid.addWidget(self.toolbar, 0, 0)
-		
-        self.startopen()
-        
-        self.main.setWindowTitle("Script Properties: "+ self.FileName)
         
         self.setLayout(self.ContainerGrid)
-        
-        self.show()
-        
-     
+        self.startopen()
 
     def onChanged(self, text):
         self.main.setWindowTitle("Script Properties: "+ text)
@@ -256,3 +233,6 @@ class ScriptGUI(QtGui.QWidget):
         with open(fname, 'r') as f:
             data = f.read()
             self.textEdit.setText(data)
+            
+    def ok(self):
+        self.main.qmdiarea.activeSubWindow().close()

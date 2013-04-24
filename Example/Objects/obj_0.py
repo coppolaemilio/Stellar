@@ -1,4 +1,4 @@
-<Sprite><no sprite>
-#class
-#__init__
-#events
+<Sprite>spr_cancel
+<Class>
+<init>
+<Events>

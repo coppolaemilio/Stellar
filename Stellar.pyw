@@ -36,6 +36,7 @@ import webbrowser
 import inspect
 import subprocess
 import shutil
+import platform
 
 from PyQt4 import QtCore, QtGui
 
@@ -436,12 +437,17 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                             line = line.split(">")
                             objectsprite=line[1]
                             objinfolines = [w.replace('<Sprite>', "#") for w in objinfolines]
+                        elif ('<Events>' in line):
+                            objinfolines = [w.replace('<Events>', "") for w in objinfolines]
                         elif ('<AddActionComment>' in line):
                             objinfolines = [w.replace('<AddActionComment>', "#") for w in objinfolines]
-                        elif ('#__init__' in line):
-                            objinfolines = [w.replace('#__init__', "    def __init__(self, x, y, player=0):\n        super("+file_name[:-3]+", self).__init__(x, y, 5, '"+objectsprite+"', collision_precise=True)\n        self.player = player") for w in objinfolines]
-                        elif ('#class' in line):
-                            objinfolines = [w.replace('#class', "class "+file_name[:-3]+"(sge.StellarClass):") for w in objinfolines]
+                        elif ('<init>' in line):
+                            objectsprite.replace("\n", "")
+                            print ("estoss")
+                            print (objectsprite+objectsprite)
+                            objinfolines = [w.replace('<init>',"    def __init__(self, x, y, player=0):\n        super("+file_name[:-3]+", self).__init__(x, y, 5, '"+objectsprite+"', collision_precise=True)\n        self.player = player") for w in objinfolines]
+                        elif ('<Class>' in line):
+                            objinfolines = [w.replace('<Class>', "class "+file_name[:-3]+"(sge.StellarClass):") for w in objinfolines]
                         elif ('<AddActionScript>' in line ):
                             line = line.replace("\n","")
                             line = line.split(">")
@@ -498,7 +504,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         #FIXME I'm using subprocess.Popen since I need to test it quick on windwos.
         tmpdir = os.getcwd()
         os.chdir(self.dirname)
-        subprocess.Popen(["C:\Python27\python.exe", self.fname]).communicate()
+        if platform.system() == 'Windows':
+            subprocess.Popen(["C:\Python27\python.exe", self.fname]).communicate()
+        else:
+            os.system('python '+self.fname)
         os.chdir(tmpdir)
 
     def addSource(self, source):

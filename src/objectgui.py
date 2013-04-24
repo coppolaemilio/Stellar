@@ -584,6 +584,20 @@ class ObjectGUI(QtGui.QWidget):
             self.create = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[0]))
             self.create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
             self.create.setSelected(True)
+            objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
+            lines = objectfile.readlines()
+            for line in lines:
+                if ("def event_create" in line):
+                    print ("EXISTE!!")
+                    return
+            objectfile.close()
+            f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
+            for line in lines:  
+                if ('<Events>' in line):
+                     f.write('<Events>\n    def event_create(self):\n        <Actions>\n') 
+                else:
+                     f.write(line)
+            f.close()
         elif name=="Step":
             self.stepeventree = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[1]))
             self.stepeventree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))            

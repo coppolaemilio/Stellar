@@ -18,8 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 from __future__ import division
 from __future__ import absolute_import
 from __future__ import print_function
@@ -100,7 +98,6 @@ class TreeWidget(QtGui.QTreeWidget):
         action = menu.exec_(self.mapToGlobal(event.pos()))
         
     def DeleteEvent(self):
-       
         def openWindow(directory):
             if item.parent().text(0) == directory:
                 itemtext = str(item.text(0))
@@ -142,51 +139,54 @@ class TreeWidget(QtGui.QTreeWidget):
                 openWindow(name)
                 
     def DoEvent(self):
-       
         def openWindow(directory):
             if item.parent().text(0) == directory:
                 itemtext = str(item.text(0))
 
                 if directory == "Sprites":
-                    window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
+                    self.window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Backgrounds":
-                    window = BackgroundGUI(self.main,itemtext, self.main.dirname, self)
+                    self.window = BackgroundGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Sound":
-                    window = SoundGUI(self.main,itemtext, self.main.dirname, self)
+                    self.window = SoundGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Fonts":
-                    window = FontGUI(self.main,itemtext)
+                    self.window = FontGUI(self.main,itemtext)
                 elif directory == "Scripts":
-                    window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
+                    #self.window = ScriptGUI(self.main,itemtext)
+                    self.window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Objects":
-                    window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
+                    self.window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Rooms":
-                    window = RoomGUI(self.main,itemtext, self.main.dirname, self)
+                    self.window = RoomGUI(self.main,itemtext, self.main.dirname, self)
 
                 
-                if directory[-1:] == "s":
-                    directory = directory[:-1]
-                
-                self.main.qmdiarea.addSubWindow(window)
-                window.setVisible(True)
-                window.setWindowTitle( directory + " properties: " + itemtext )
-                
-                if directory == "Sprite":
+                self.main.qmdiarea.addSubWindow(self.window)
+
+                self.window.setVisible(True)
+
+                self.window.setWindowTitle( directory[:-1] + " properties: " + itemtext )
+
+                if directory == "Sprites":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
-                elif directory == "Script" or directory == "Room":
+                elif directory == "Scripts":
                     print("FIXME")
-                    #self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))                
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))
+                elif directory == "Rooms":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
                 else:
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory + 's'])))           
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))           
 
 
             def GameSettings():
                 print ("hola")
         
         item = self.currentItem()
+        print (item)
         if not item.parent() == None:
             for name in self.Names:
+                print (name)
                 openWindow(name)
 
     def InsertItem(self):
