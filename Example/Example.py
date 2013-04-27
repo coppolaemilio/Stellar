@@ -27,17 +27,7 @@ class Game(sge.Game):
 class obj_0(sge.StellarClass):
 
     def __init__(self, x, y, player=0):
-        super(obj_0, self).__init__(x, y, 5, 'spr_cancel', collision_precise=True)
-        self.player = player
-
-
-
-#spr_cancel
-
-class obj_0.(sge.StellarClass):
-
-    def __init__(self, x, y, player=0):
-        super(obj_0., self).__init__(x, y, 5, 'spr_cancel', collision_precise=True)
+        super(obj_0, self).__init__(x, y, 5, 'spr_cancel', collision_precise=True)
         self.player = player
 
 
@@ -89,60 +79,13 @@ class obj_cristal(sge.StellarClass):
             self.bbox_top = 0
         elif self.bbox_bottom >= sge.game.current_room.height:
             self.bbox_bottom = sge.game.current_room.height - 1
-
-#spr_cristal
-
-class obj_cristal.(sge.StellarClass):
-
-    def __init__(self, x, y, player=0):
-        super(obj_cristal., self).__init__(x, y, 5, 'spr_cristal', collision_precise=True)
-        self.player = player
-
-
-
-
-
-    def event_create(self):
-
         
-
-        #"This is the creation event"
-
-        self.image_alpha = 200
-        self.image_blend = 'white'
-
-    def event_step(self, time_passed):
-
-        
-
-        left_key = ['left', 'a', 'j', 'kp_4'][self.player]
-        right_key = ['right', 'd', 'l', 'kp_6'][self.player]
-        up_key = ['up', 'w', 'i', 'kp_8'][self.player]
-        down_key = ['down', 's', 'k', 'kp_5'][self.player]
-        
-        self.xvelocity = (sge.game.get_key_pressed(right_key) -
-                                  sge.game.get_key_pressed(left_key))
-        self.yvelocity = (sge.game.get_key_pressed(down_key) -
-                                  sge.game.get_key_pressed(up_key))
-        
-        self.x += self.xvelocity
-        self.y += self.yvelocity
-        
-        # Limit the circles to inside the room.
-        if self.bbox_left < 0:
-            self.bbox_left = 0
-        elif self.bbox_right >= sge.game.current_room.width:
-            self.bbox_right = sge.game.current_room.width - 1
-        if self.bbox_top < 0:
-            self.bbox_top = 0
-        elif self.bbox_bottom >= sge.game.current_room.height:
-            self.bbox_bottom = sge.game.current_room.height - 1
 
 
 
 game = Game()
 # Load sprites
-cancel_sprite = sge.Sprite('cancel', transparent=True)
+spr_cancel_sprite = sge.Sprite('spr_cancel', transparent=True)
 spr_cristal_sprite = sge.Sprite('spr_cristal', transparent=True)
 fence_sprite = sge.Sprite('fence', transparent=True)
 
