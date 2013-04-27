@@ -1,6 +1,7 @@
-<Sprite>spr_circle
-#class
-#__init__
+<Sprite>spr_cristal
+<Class>
+<init>
+<Events>
 
     def event_create(self):
         <Actions>

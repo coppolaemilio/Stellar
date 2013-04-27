@@ -188,7 +188,6 @@ class RoomGUI(QtGui.QWidget):
         
         self.setLayout(self.ContainerGrid)
         
-        self.show()
         
      
 
