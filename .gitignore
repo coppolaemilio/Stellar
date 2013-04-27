@@ -1,7 +1,7 @@
 *.py[cod]
 *~
 config.ini
-
+*.ini
 # C extensions
 *.so
 
