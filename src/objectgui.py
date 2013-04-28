@@ -503,13 +503,13 @@ class ObjectGUI(QtGui.QWidget):
                 else:
                     self.SpriteCombo.setCurrentIndex (index)
             #Events
-            elif ('def event_create' in line ):
+            elif('<EventCreate>' in line ):
                 self.AddToEventList("Create")
                 
-            elif('def event_step' in line):
+            elif('<EventStep>' in line):
                 self.AddToEventList("Step")
 
-            elif('def event_destroy' in line):
+            elif('<EventDestroy>' in line):
                 self.AddToEventList("Destroy")
         self.readObjectActions()
     def readObjectActions(self):
@@ -576,8 +576,6 @@ class ObjectGUI(QtGui.QWidget):
                     self.readObjectActions()
             else:
                 event.ignore()
-                
-
 
     def AddToEventList(self, name):
         if name=="Create":
@@ -587,23 +585,51 @@ class ObjectGUI(QtGui.QWidget):
             objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
             lines = objectfile.readlines()
             for line in lines:
-                if ("def event_create" in line):
-                    print ("EXISTE!!")
+                if ("<EventCreate>" in line):
+                    print ("Has Create Event")
                     return
             objectfile.close()
             f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
             for line in lines:  
                 if ('<Events>' in line):
-                     f.write('<Events>\n    def event_create(self):\n        <Actions>\n') 
+                     f.write('<Events>\n    <EventCreate>\n        <Actions>\n') 
                 else:
                      f.write(line)
             f.close()
         elif name=="Step":
             self.stepeventree = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[1]))
-            self.stepeventree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))            
+            self.stepeventree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
+            objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
+            lines = objectfile.readlines()
+            for line in lines:
+                if ("<EventStep>" in line):
+                    print ("Has Step Event")
+                    return
+            objectfile.close()
+            f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
+            for line in lines:  
+                if ('<Events>' in line):
+                     f.write('<Events>\n    <EventStep>\n        <Actions>\n') 
+                else:
+                     f.write(line)
+            f.close()
         elif name=="Destroy":
             self.destroy = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[2]))
             self.destroy.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
+            objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
+            lines = objectfile.readlines()
+            for line in lines:
+                if ("<EventDestroy>" in line):
+                    print ("Has Destroy Event")
+                    return
+            objectfile.close()
+            f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
+            for line in lines:  
+                if ('<Events>' in line):
+                     f.write('<Events>\n    <EventDestroy>\n        <Actions>\n') 
+                else:
+                     f.write(line)
+            f.close()
         elif name=="Collision":
             self.collision = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[3]))
             self.collision.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))      
@@ -611,6 +637,7 @@ class ObjectGUI(QtGui.QWidget):
             self.draw = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[4]))
             self.draw.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))         
         
+
     #def ok(self):
     #    self.main.qmdiarea.activeSubWindow().close()
     def ok(self):
