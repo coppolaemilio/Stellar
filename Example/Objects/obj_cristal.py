@@ -3,10 +3,10 @@
 <init>
 <Events>
 
-    def event_create(self):
+    <EventCreate>
         <Actions>
         <AddActionComment>"This is the creation event"
         <AddActionScript>creating_script
-    def event_step(self, time_passed):
+    <EventStep>
         <Actions>
         <AddActionScript>step_script
