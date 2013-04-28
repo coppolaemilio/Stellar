@@ -432,24 +432,27 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     objinfo = open(full_file_name, "r")
                     objinfolines = objinfo.readlines()
                     for line in objinfolines:
-                        if ('<Actions>' in line ):
-                            objinfolines = [w.replace('<Actions>', "") for w in objinfolines]
-                        elif ('<Sprite>' in line):
+                        if ('<Sprite>' in line):
                             line = line.replace("\n",">")
                             line = line.split(">")
                             objectsprite=line[1]
                             objinfolines = [w.replace('<Sprite>', "#") for w in objinfolines]
-                        elif ('<Events>' in line):
-                            objinfolines = [w.replace('<Events>', "") for w in objinfolines]
-                        elif ('<AddActionComment>' in line):
-                            objinfolines = [w.replace('<AddActionComment>', "#") for w in objinfolines]
                         elif ('<init>' in line):
                             objectsprite.replace("\n", "")
-                            print ("estoss")
-                            print (objectsprite+objectsprite)
-                            objinfolines = [w.replace('<init>',"    def __init__(self, x, y, player=0):\n        super("+file_name[:-3]+", self).__init__(x, y, 5, '"+objectsprite+"', collision_precise=True)\n        self.player = player") for w in objinfolines]
+                            finalline = "    def __init__(self, x, y, player=0):"+"\n        super("+file_name[:-3]+", self).__init__(x, y, 5, '"+objectsprite+"', collision_precise=True)\n        self.player = player"
+                            objinfolines = [w.replace('<init>',finalline.replace("\r", "")) for w in objinfolines]
                         elif ('<Class>' in line):
                             objinfolines = [w.replace('<Class>', "class "+file_name[:-3]+"(sge.StellarClass):") for w in objinfolines]
+                        #EVENTS##################################
+                        elif ('<Events>' in line):
+                            objinfolines = [w.replace('<Events>', "") for w in objinfolines]
+                        elif ('<EventCreate>' in line):
+                            objinfolines =[w.replace('<EventCreate>', "def event_create(self):") for w in objinfolines]
+                        elif ('<EventStep>' in line):
+                            objinfolines =[w.replace('<EventStep>', "def event_step(self, time_passed):") for w in objinfolines]
+                        #ACTIONS##################################
+                        elif ('<Actions>' in line ):
+                            objinfolines = [w.replace('<Actions>', "") for w in objinfolines]
                         elif ('<AddActionScript>' in line ):
                             line = line.replace("\n","")
                             line = line.split(">")
@@ -461,6 +464,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                             else:
                                 QtGui.QMessageBox.warning(self, "Error on object "+file_name+" Action.", 'The script named "'+line[1]+'" does not exist.',QtGui.QMessageBox.Ok)
                                 return
+                        elif ('<AddActionComment>' in line):
+                            objinfolines = [w.replace('<AddActionComment>', "#") for w in objinfolines]
+                    
                     sgeobjects.append(objinfolines)
         if len(os.listdir(os.path.join(self.dirname,"Rooms"))) > 0:
             src=os.path.join(self.dirname,"Rooms")
@@ -499,11 +505,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     
             else:
                 f.write(line)
-
-                
+               
         f.close()
-        
-        #FIXME I'm using subprocess.Popen since I need to test it quick on windwos.
+
         tmpdir = os.getcwd()
         os.chdir(self.dirname)
         if platform.system() == 'Windows':
@@ -511,7 +515,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         else:
             os.system('python '+self.fname)
         os.chdir(tmpdir)
-
+        
     def addSource(self, source):
         
         def get_name(source, name):
