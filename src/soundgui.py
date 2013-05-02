@@ -77,6 +77,7 @@ class SoundGUI(QtGui.QWidget):
         self.BtnSave.clicked.connect(self.SaveSound)
 
         self.BtnEdit = QtGui.QPushButton('Edit Sound')
+        self.BtnEdit.setEnabled(False)
         self.BtnEdit.setIcon(QtGui.QIcon('Data/editbutton.png'))        
         
         self.BtnOK = QtGui.QPushButton('OK')
@@ -91,9 +92,11 @@ class SoundGUI(QtGui.QWidget):
         self.OptionsBox.setTitle("Options")
 
         self.RadioSound = QtGui.QRadioButton("Normal Sound")
+        self.RadioSound.setEnabled(False)
         self.RadioSound.toggle()
         
         self.RadioMusic = QtGui.QRadioButton("Background Music")
+        self.RadioMusic.setEnabled(False)
         
         self.optionslayout = QtGui.QGridLayout()
         self.optionslayout.setMargin(0)
@@ -107,11 +110,12 @@ class SoundGUI(QtGui.QWidget):
         self.PanBox.setTitle("Pan")
 
         self.pan = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.pan.setEnabled(False)
         self.pan.setFocusPolicy(QtCore.Qt.NoFocus)
         self.pan.setRange(-50,51)
         self.pan.valueChanged[int].connect(self.changeValuePan)
 
-        self.LblPan = QtGui.QLabel() 
+        self.LblPan = QtGui.QLabel()
         self.LblPan.setText('Music is Centered') 
         self.LblPan.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
@@ -128,6 +132,7 @@ class SoundGUI(QtGui.QWidget):
         self.MusicBox.setTitle("Volume")
 
         self.Music = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.Music.setEnabled(False)
         self.Music.setFocusPolicy(QtCore.Qt.NoFocus)
         self.Music.setRange(-100,0)
         self.Music.valueChanged[int].connect(self.changeValueMusic)

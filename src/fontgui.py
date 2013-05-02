@@ -46,15 +46,22 @@ class FontGUI(QtGui.QWidget):
         self.nameEdit = QtGui.QLineEdit('')
         self.font = QtGui.QLabel('Font:')
         self.fontBox = QtGui.QFontComboBox()   
-        self.fontBox.activated.connect(self.onFontChanged)    
+        self.fontBox.activated.connect(self.onChanged)    
         self.size = QtGui.QLabel('Size:')
-        self.sizeEdit = QtGui.QLineEdit('12')
-        self.sizeEdit.textChanged.connect(self.onFontChanged)
+        self.sizeEdit = QtGui.QSpinBox()
+        self.sizeEdit.setValue(12)
+        self.sizeEdit.valueChanged.connect(self.onChanged)
         self.bold = QtGui.QCheckBox('Bold')
+        self.bold.setEnabled(False)
         self.Italic = QtGui.QCheckBox('Italic')
+        self.Italic.setEnabled(False)
         self.antiAli = QtGui.QCheckBox('Anti-Aliasing')
+        self.antiAli.setEnabled(False)
         self.testtext = QtGui.QTextEdit('A text. 1234567890')
+        #self.testtext.textChanged.connect(self.onChanged)
+        self.connect(self.testtext,QtCore.SIGNAL("textChanged()"),self.onChanged)
         self.previewtext = QtGui.QTextEdit('A text. 1234567890')
+        self.previewtext.setReadOnly(True)
         self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), 10, True) )
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
@@ -106,11 +113,11 @@ class FontGUI(QtGui.QWidget):
         self.ContainerGrid.addWidget(self.LastWidget)
         self.setLayout(self.ContainerGrid)
         
-    def onFontChanged(self):
-        self.previewtext.setFont(QtGui.QFont(self.fontBox.currentText(),float(self.sizeEdit.text())) )
+    def onChanged(self):
+        self.previewtext.setPlainText(self.testtext.toPlainText())
+        self.previewtext.setFontPointSize(self.sizeEdit.value())
+        self.previewtext.setFontFamily(self.fontBox.currentText())
         
-    def onChanged(self, text):
-        self.previewtext.setText(text)
         
     def AddEvent(self):
         eventdialog = Events(self)
