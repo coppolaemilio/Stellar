@@ -115,6 +115,7 @@ class BackgroundGUI(QtGui.QWidget):
         self.BtnSave.clicked.connect(self.SaveSprite)
  
         self.BtnEdit = QtGui.QPushButton('Edit Background')
+        self.BtnEdit.setEnabled(False)
         self.BtnEdit.setIcon(QtGui.QIcon('Data/editbutton.png'))
         self.BtnEdit.clicked.connect(self.EditSprite)
 

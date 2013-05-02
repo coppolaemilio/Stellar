@@ -56,7 +56,6 @@ class SpriteGUI(QtGui.QWidget):
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
-        
                 
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
@@ -64,12 +63,14 @@ class SpriteGUI(QtGui.QWidget):
 
         self.LblShow = QtGui.QLabel('Show:')
         self.BtnNext = QtGui.QPushButton()
+        self.BtnNext.setEnabled(False)#This is currently not implemented
         self.BtnNext.setIcon(QtGui.QIcon('Data/nextimg.png'))
         self.ShowImage = QtGui.QLineEdit("0")
+        self.ShowImage.setEnabled(False)#This is currently not implemented
         self.BtnPrev = QtGui.QPushButton()
+        self.BtnPrev.setEnabled(False)#This is currently not implemented
         self.BtnPrev.setIcon(QtGui.QIcon('Data/previmg.png'))
 
-        
         self.ShowFrame = QtGui.QFrame()
         self.showlayout = QtGui.QGridLayout()
         self.showlayout.setMargin (0)
@@ -80,10 +81,8 @@ class SpriteGUI(QtGui.QWidget):
         
         self.ShowFrame.setLayout(self.showlayout)
         
-
         #Scroll Area------------------------------------------
-        self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension)))
-                                    
+        self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension)))                         
         
         self.spriteLbl = QtGui.QLabel(self.main)
         self.spriteLbl.setPixmap(self.sprite)
@@ -116,6 +115,7 @@ class SpriteGUI(QtGui.QWidget):
  
         self.BtnEdit = QtGui.QPushButton('Edit Sprite')
         self.BtnEdit.setIcon(QtGui.QIcon('Data/editbutton.png'))
+        self.BtnEdit.setEnabled(False)#This is currently not implemented
         self.BtnEdit.clicked.connect(self.EditSprite)
 
         self.LblName = QtGui.QLabel('Name:') 
@@ -129,7 +129,6 @@ class SpriteGUI(QtGui.QWidget):
         self.namelayout.addWidget(self.qleSprite,0,1)
         
         self.NameFrame.setLayout(self.namelayout)
-
 
         self.OriginBox = QtGui.QGroupBox("Origin")
         self.LblX = QtGui.QLabel('X:')
@@ -155,15 +154,11 @@ class SpriteGUI(QtGui.QWidget):
         self.Lblspacer = QtGui.QLabel(" ")
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
 
-
-
         self.LblWidth = QtGui.QLabel('Width:   %d Pixels'%(self.width)) 
  
         self.LblHeight = QtGui.QLabel('Height:  %d Pixels'%(self.height))
         
         self.LblSubimages = QtGui.QLabel('Number of subimages: %d'%(self.frames))
-
-        
 
         self.LblFormat = QtGui.QLabel('File Format:  %s'%(self.format)) 
 

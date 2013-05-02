@@ -177,19 +177,12 @@ class RoomGUI(QtGui.QWidget):
         self.toolbar.addWidget(self.LblName)
         self.toolbar.addWidget(self.nameEdit)
 
-
         self.ContainerGrid.setSpacing(0)
         self.ContainerGrid.addWidget(editor, 1, 0,1,15)
         self.ContainerGrid.addWidget(self.toolbar, 0, 0)
 		
         self.startopen()
-        
-        self.main.setWindowTitle("Rooms Properties: "+ self.FileName)
-        
         self.setLayout(self.ContainerGrid)
-        
-        
-     
 
     def onChanged(self, text):
         self.main.setWindowTitle("Rooms Properties: "+ text)
