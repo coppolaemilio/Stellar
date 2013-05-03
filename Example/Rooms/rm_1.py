@@ -5,6 +5,7 @@ circle = obj_cristal(game.width // 2, game.height // 2)
 circle1= obj_0(20,20)
 objects = [circle,circle1]
 
+
 views = (sge.View(0, 0),)
 
 rm_0 = sge.Room(tuple(objects), views=views, background=background)

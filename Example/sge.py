@@ -73,6 +73,24 @@ Classes:
     Room: Class used for game rooms, e.g. levels.
     View: Class used for views in rooms.
 
+Functions:
+    create_object: Create an object in the current room.
+    sound_stop_all: Stop playback of all sounds.
+    get_key_pressed: Return whether or not a given key is pressed.
+    get_mouse_button_pressed: Return whether or not a given mouse
+        button is pressed.
+    get_joystick_axis: Return the position of the given axis.
+    get_joystick_hat: Return the position of the given HAT.
+    get_joystick_button_pressed: Return whether or not the given
+        joystick button is pressed.
+    get_joysticks: Return the number of joysticks available.
+    get_joystick_axes: Return the number of axes on the given
+        joystick.
+    get_joystick_hats: Return the number of HATs on the given
+        joystick.
+    get_joystick_buttons: Return the number of buttons on the
+        given joystick.
+
 Implementation-specific information:
 This implementation supports hardware rendering, which can improve
 performance in some cases.  It is not enabled by default.  To enable it,
@@ -82,21 +100,49 @@ transparency.
 
 Since Pygame supports trackballs, they are implemented as extra analog
 sticks.  Their movement is limited to the range of an analog stick to
-ensure full compatibility.
+ensure full compatibility.  You can disable this limitation by setting
+``sge.real_trackballs`` to True.
 
-In addition to Ogg Vorbis, Music supports the following formats:
+sge.Sprite supports the following image formats:
+    PNG
+    JPEG
+    Non-animated GIF
+    BMP
+    PCX
+    Uncompressed Truevision TGA
+    TIFF
+    ILBM
+    Netpbm
+    X Pixmap
 
+sge.Sound supports the following audio formats:
+    Uncompressed WAV
+    Ogg Vorbis
+
+sge.Music supports the following audio formats:
+    Ogg Vorbis
     MP3 (support limited; use not recommended)
     MOD
     XM
     MIDI
 
 For starting position in MOD files, the pattern order number is used
-instead of the number of milliseconds.  For some other extra formats,
-specifying the starting position may have no effect.
+instead of the number of milliseconds.
 
-Game.draw_line supports anti-aliasing for lines with a thickness of 1
-only.  No other drawing functions support anti-aliasing.
+If Pygame is built without full image support, sge.Sprite will only
+support uncompressed BMP images.  In addition, the pygame.mixer module,
+which is used for audio playback, is optional and depends on SDL_mixer;
+if pygame.mixer is unavailable, sounds and music will not play.  If you
+encounter problems with loading images or playing sounds, check your
+build of Pygame.
+
+On some systems, the game will crash if sge.Music attempts to load an
+unsupported format.  Since MP3's support is limited, it is best to avoid
+using it; consider using Ogg instead.
+
+sge.Sprite.draw_line supports anti-aliasing for lines with a thickness
+of 1 only.  sge.Sprite.draw_text supports anti-aliasing in all cases.
+No other drawing functions support anti-aliasing.
 
 """
 
@@ -105,7 +151,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-__version__ = "0.0.30"
+__version__ = "0.0.46"
 
 import sys
 import os
@@ -115,19 +161,20 @@ import weakref
 import pygame
 
 __all__ = ['Game', 'Sprite', 'BackgroundLayer', 'Background', 'Font', 'Sound',
-           'Music', 'StellarClass', 'Room', 'View', 'game', 'ALIGN_LEFT',
-           'ALIGN_CENTER', 'ALIGN_RIGHT', 'ALIGN_TOP', 'ALIGN_MIDDLE',
-           'ALIGN_BOTTOM']
-# Except in extreme cases, these constants should not be modified.
-DEFAULT_SCREENWIDTH = 640
-DEFAULT_SCREENHEIGHT = 480
-DEFAULT_FULLSCREEN = False
-DEFAULT_SCALE = 0
-DEFAULT_SCALE_PROPORTIONAL = True
-DEFAULT_SCALE_SMOOTH = False
-DEFAULT_FPS = 60
-DEFAULT_DELTA = False
-DEFAULT_DELTA_MIN = 15
+           'Music', 'StellarClass', 'Room', 'View', 'game',
+           'image_directories', 'font_directories', 'sound_directories',
+           'music_directories', 'IMPLEMENTATION', 'ALIGN_LEFT', 'ALIGN_CENTER',
+           'ALIGN_RIGHT', 'ALIGN_TOP', 'ALIGN_MIDDLE', 'ALIGN_BOTTOM',
+           'MOUSE_BUTTON_LEFT', 'MOUSE_BUTTON_RIGHT', 'MOUSE_BUTTON_MIDDLE',
+           'create_object', 'sound_stop_all', 'music_clear_queue',
+           'music_stop_all', 'get_key_pressed', 'get_mouse_button_pressed',
+           'get_joystick_axis', 'get_joystick_hat',
+           'get_joystick_button_pressed', 'get_joysticks', 'get_joystick_axes',
+           'get_joystick_hats', 'get_joystick_buttons', 'hardware_rendering',
+           'real_trackballs']
+
+PROGRAM_DIR = os.path.dirname(sys.argv[0])
+
 COLORS = {'white': '#ffffff', 'silver': '#c0c0c0', 'gray': '#808080',
           'black': '#000000', 'red': '#ff0000', 'maroon': '#800000',
           'yellow': '#ffff00', 'olive': '#808000', 'lime': '#00ff00',
@@ -211,14 +258,15 @@ MOUSE_BUTTON_WHEEL_RIGHT = 7
 
 # Global variables
 game = None
-image_directories = [os.path.join('data', 'images'),
-                     os.path.join('data', 'sprites'),
-                     os.path.join('data', 'backgrounds')]
-font_directories = [os.path.join('data', 'fonts')]
-sound_directories = [os.path.join('data', 'sounds')]
-music_directories = [os.path.join('data', 'music')]
+image_directories = [os.path.join(PROGRAM_DIR, 'data', 'images'),
+                     os.path.join(PROGRAM_DIR, 'data', 'sprites'),
+                     os.path.join(PROGRAM_DIR, 'data', 'backgrounds')]
+font_directories = [os.path.join(PROGRAM_DIR, 'data', 'fonts')]
+sound_directories = [os.path.join(PROGRAM_DIR, 'data', 'sounds')]
+music_directories = [os.path.join(PROGRAM_DIR, 'data', 'music')]
 
 hardware_rendering = False
+real_trackballs = False
 
 
 class Game(object):
@@ -255,6 +303,8 @@ class Game(object):
             setting limits this by pretending that the frame rate is
             never lower than this amount, resulting in the game slowing
             down like normal if it is.
+        grab_input: If set to True, all input will be locked into the
+            game.
 
     The following read-only attributes are also available:
         sprites: A dictionary containing all loaded sprites, using their
@@ -285,26 +335,6 @@ class Game(object):
         end: Properly end the game.
         pause: Pause the game.
         unpause: Unpause the game.
-        draw_dot: Draw a single-pixel dot.
-        draw_line: Draw a line segment between the given points.
-        draw_rectangle: Draw a rectangle at the given position.
-        draw_ellipse: Draw an ellipse at the given position.
-        draw_circle: Draw a circle at the given position.
-        sound_stop_all: Stop playback of all sounds.
-        get_key_pressed: Return whether or not a given key is pressed.
-        get_mouse_button_pressed: Return whether or not a given mouse
-            button is pressed.
-        get_joystick_axis: Return the position of the given axis.
-        get_joystick_hat: Return the position of the given HAT.
-        get_joystick_button_pressed: Return whether or not the given
-            joystick button is pressed.
-        get_joysticks: Return the number of joysticks available.
-        get_joystick_axes: Return the number of axes on the given
-            joystick.
-        get_joystick_hats: Return the number of HATs on the given
-            joystick.
-        get_joystick_buttons: Return the number of buttons on the
-            given joystick.
 
     Game events are handled by special methods.  The exact timing of
     their calling is implementation-dependent except where otherwise
@@ -408,12 +438,18 @@ class Game(object):
             self._scale_smooth = value
             self._set_mode()
 
-    def __init__(self, width=DEFAULT_SCREENWIDTH, height=DEFAULT_SCREENHEIGHT,
-                 fullscreen=DEFAULT_FULLSCREEN, scale=DEFAULT_SCALE,
-                 scale_proportional=DEFAULT_SCALE_PROPORTIONAL,
-                 scale_smooth=DEFAULT_SCALE_SMOOTH, fps=DEFAULT_FPS,
-                 delta=DEFAULT_DELTA, delta_min=DEFAULT_DELTA_MIN):
-        """Create a new Game object.
+    @property
+    def grab_input(self):
+        return pygame.event.get_grab()
+
+    @grab_input.setter
+    def grab_input(self, value):
+        pygame.event.set_grab(value)
+
+    def __init__(self, width=640, height=480, fullscreen=False, scale=0,
+                 scale_proportional=True, scale_smooth=False, fps=60,
+                 delta=False, delta_min=15, grab_input=False):
+        """Create a new Game object and assign it to ``game``.
 
         Arguments set the properties of the game.  See Game.__doc__ for
         more information.
@@ -422,6 +458,7 @@ class Game(object):
         # Settings use CD quality and a smaller buffer size for less lag.
         pygame.mixer.pre_init(44100, -16, 2, 1024)
         pygame.init()
+
         global game
         game = self
 
@@ -543,27 +580,32 @@ class Game(object):
                     elif event.type == pygame.JOYBALLMOTION:
                         # Limited support for trackballs by pretending
                         # they're axes.  Since they're acting like axes,
-                        # they must be in the range [-1,1].
+                        # they must be in the range [-1,1] unless the
+                        # special variable real_trackballs is True.
                         n = (self._joysticks[event.joy].get_numaxes() +
                              2 * event.ball)
-                        xvalue = min(max(-1, event.rel[0]), 1)
-                        yvalue = min(max(-1, event.rel[1]), 1)
+                        
+                        if real_trackballs:
+                            xvalue = event.rel[0]
+                            yvalue = event.rel[1]
+                        else:
+                            xvalue = min(max(-1, event.rel[0]), 1)
+                            yvalue = min(max(-1, event.rel[1]), 1)
 
-                        if xvalue != 0:
-                            self.event_joystick_axis_move(event.joy, n, xvalue)
-                            self.current_room.event_joystick_axis_move(
-                                event.joy, n, xvalue)
-                            for obj in self.current_room.objects:
-                                obj.event_joystick_axis_move(event.joy, n,
-                                                             xvalue)
-                        if yvalue != 0:
-                            self.event_joystick_axis_move(event.joy, n + 1,
-                                                          yvalue)
-                            self.current_room.event_joystick_axis_move(
-                                event.joy, n + 1, yvalue)
-                            for obj in self.current_room.objects:
-                                obj.event_joystick_axis_move(event.joy, n + 1,
-                                                             yvalue)
+                        # x-axis
+                        self.event_joystick_axis_move(event.joy, n, xvalue)
+                        self.current_room.event_joystick_axis_move(
+                            event.joy, n, xvalue)
+                        for obj in self.current_room.objects:
+                            obj.event_joystick_axis_move(event.joy, n, xvalue)
+                        
+                        # y-axis
+                        self.event_joystick_axis_move(event.joy, n + 1, yvalue)
+                        self.current_room.event_joystick_axis_move(
+                            event.joy, n + 1, yvalue)
+                        for obj in self.current_room.objects:
+                            obj.event_joystick_axis_move(event.joy, n + 1,
+                                                         yvalue)
                     elif event.type == pygame.JOYHATMOTION:
                         self.event_joystick_hat_move(event.joy, event.hat,
                                                      *event.value)
@@ -654,13 +696,14 @@ class Game(object):
                     background.blit(b, (self._x, self._y))
                     self._window.blit(background, (0, 0))
                     self._background_changed = False
+                    self._pygame_sprites.clear(self._window, background)
                     for sprite in self._pygame_sprites:
                         sprite.rect = pygame.Rect(0, 0, 1, 1)
                         sprite.image = pygame.Surface((1, 1))
                         sprite.image.set_colorkey((0, 0, 0))
                     self._pygame_sprites.update()
                     self._pygame_sprites.draw(self._window)
-                    dirty = self._window.get_rect()
+                    dirty = [self._window.get_rect()]
                 else:
                     self._pygame_sprites.clear(self._window, background)
                     self._pygame_sprites.update()
@@ -697,14 +740,14 @@ class Game(object):
         """Properly end the game."""
         self._running = False
 
-    def pause(self, image=None):
+    def pause(self, sprite=None):
         """Pause the game.
 
-        ``image`` is the image to show when the game is paused.  If set
-        to None, the default image will be shown.  The default image is
-        at the discretion of the Stellar Game Engine implementation, as
-        are any additional visual effects, with the stipulation that the
-        following conditions are met:
+        ``sprite`` is the sprite to show when the game is paused.  If
+        set to None, a default image will be shown.  The default image
+        is at the discretion of the Stellar Game Engine implementation,
+        as are any additional visual effects, with the stipulation that
+        the following conditions are met:
 
             1. The default image must unambiguously demonstrate that the
                 game is paused (the easiest way to do this is to include
@@ -713,23 +756,39 @@ class Game(object):
             3. What was going on within the view before the game was
                 paused must remain visible while the game is paused.
 
-        While the game is paused, all game events will be halted, all
-        objects will be treated like they don't exist, and all sounds
-        and music will be stopped.  Game events whose names start with
-        "event_paused_" will occur during this time.
+        While the game is paused, all game events will be halted.
+        Events whose names start with "event_paused_" will occur during
+        this time instead.
 
         """
-        # TODO: Show pause image
+        if sprite is not None:
+            image = sprite._get_image(0)
+        else:
+            try:
+                image = pygame.image.load(
+                    os.path.join(os.path.dirname(__file__),
+                                 'sge_pause.png')).convert()
+                image.set_colorkey((255, 0, 255))
+            except pygame.error:
+                image = pygame.Surface((16, 16))
+                image.fill((255, 255, 255), pygame.Rect(0, 0, 4, 16))
+                image.fill((255, 255, 255), pygame.Rect(12, 0, 4, 16))
+                image.set_colorkey((0, 0, 0))
+
+        rect = image.get_rect(center=self._window.get_rect().center)
+
         self._paused = True
         screenshot = self._window.copy()
         background = screenshot.copy()
         dimmer = pygame.Surface(self._window.get_size(), pygame.SRCALPHA)
         dimmer.fill(pygame.Color(0, 0, 0, 128))
         background.blit(dimmer, (0, 0))
-        paused_sprites = pygame.sprite.RenderUpdates()
+        background.blit(image, rect)
+        orig_screenshot = screenshot
+        orig_background = background
         self._clock.tick()
 
-        while self._paused:
+        while self._paused and self._running:
             # Events
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -773,28 +832,35 @@ class Game(object):
                 elif event.type == pygame.JOYBALLMOTION:
                     # Limited support for trackballs by pretending
                     # they're axes.  Since they're acting like axes,
-                    # they must be in the range [-1,1].
+                    # they must be in the range [-1,1] unless the
+                    # special variable real_trackballs is True.
                     n = (self._joysticks[event.joy].get_numaxes() +
                          2 * event.ball)
-                    xvalue = min(max(-1, event.rel[0]), 1)
-                    yvalue = min(max(-1, event.rel[1]), 1)
 
-                    if xvalue != 0:
-                        self.event_paused_joystick_axis_move(event.joy, n,
-                                                             xvalue)
-                        self.current_room.event_paused_joystick_axis_move(
-                            event.joy, n, xvalue)
-                        for obj in self.current_room.objects:
-                            obj.event_paused_joystick_axis_move(event.joy, n,
-                                                                xvalue)
-                    if yvalue != 0:
-                        self.event_paused_joystick_axis_move(event.joy, n + 1,
-                                                             yvalue)
-                        self.current_room.event_paused_joystick_axis_move(
+                    if real_trackballs:
+                        xvalue = event.rel[0]
+                        yvalue = event.rel[1]
+                    else:
+                        xvalue = min(max(-1, event.rel[0]), 1)
+                        yvalue = min(max(-1, event.rel[1]), 1)
+
+                    # x-axis
+                    self.event_paused_joystick_axis_move(event.joy, n,
+                                                         xvalue)
+                    self.current_room.event_paused_joystick_axis_move(
+                        event.joy, n, xvalue)
+                    for obj in self.current_room.objects:
+                        obj.event_paused_joystick_axis_move(event.joy, n,
+                                                            xvalue)
+
+                    # y-axis
+                    self.event_paused_joystick_axis_move(event.joy, n + 1,
+                                                         yvalue)
+                    self.current_room.event_paused_joystick_axis_move(
+                        event.joy, n + 1, yvalue)
+                    for obj in self.current_room.objects:
+                        obj.event_paused_joystick_axis_move(
                             event.joy, n + 1, yvalue)
-                        for obj in self.current_room.objects:
-                            obj.event_paused_joystick_axis_move(
-                                event.joy, n + 1, yvalue)
                 elif event.type == pygame.JOYHATMOTION:
                     self.event_paused_joystick_hat_move(event.joy, event.hat,
                                                         *event.value)
@@ -827,447 +893,30 @@ class Game(object):
                     self._window_height = event.h
                     self._set_mode()
                     self._background_changed = True
+                    screenshot = pygame.transform.scale(orig_screenshot,
+                                                        (event.w, event.h))
+                    background = pygame.transform.scale(orig_background,
+                                                        (event.w, event.h))
 
             # Time management
             self._clock.tick(self.fps)
             
             # Redraw
-            paused_sprites.clear(self._window, background)
-            paused_sprites.update()
-            dirty = paused_sprites.draw(self._window)
+            self._window.blit(background, (0, 0))
 
             if hardware_rendering:
                 pygame.display.flip()
             else:
-                pygame.display.update(dirty)
+                pygame.display.update()
 
         # Restore the look of the screen from before it was paused
         self._window.blit(screenshot, (0, 0))
+        pygame.display.update()
+        self._background_changed = True
 
     def unpause(self):
         """Unpause the game."""
         self._paused = False
-
-    def draw_dot(self, x, y, z, color):
-        """Draw a single-pixel dot.
-
-        ``x`` and ``y`` indicate the location in the room to draw the
-        dot, where the left and top edges of the room are 0 and x and y
-        increase toward the right and bottom.  ``z`` indicates the
-        Z-axis position to draw the dot, where a higher Z value is
-        closer to the viewer.  ``color`` indicates the color of the dot.
-
-        """
-        img = pygame.Surface((1, 1))
-        img.fill(_get_pygame_color(color))
-        img = _scale(img, 1, 1)
-        self._draw_surface(img, x, y, z)
-
-    def draw_line(self, x1, y1, x2, y2, z, color, thickness=1,
-                  anti_alias=False):
-        """Draw a line segment between the given points.
-
-        ``x1``, ``y1``, ``x2``, and ``y2`` indicate the location in the
-        room of the points between which to draw the line segment, where
-        the left and top edges of the room are 0 and x and y increase
-        toward the right and bottom.  ``z`` indicates the Z-axis
-        position to draw the line, where a higher Z value is closer to
-        the viewer.  ``color`` indicates the color of the line segment.
-        ``thickness`` indicates the thickness of the line segment in
-        pixels.  ``anti_alias`` indicates whether or not anti-aliasing
-        should be used.
-
-        Support for anti-aliasing is optional in Stellar Game Engine
-        implementations.  If the implementation used does not support
-        anti-aliasing, this function will act like ``anti_alias`` is
-        False.
-
-        """
-        thickness = abs(thickness)
-        x = min(x1, x2) - thickness // 2
-        y = min(y1, y2) - thickness // 2
-        w = abs(x2 - x1) + thickness
-        h = abs(y2 - y1) + thickness
-        c = _get_pygame_color(color)
-        startpos = (x1 - x, y1 - y)
-        endpos = (x2 - x, y2 - y)
-        if anti_alias and thickness == 1:
-            img = pygame.Surface((w, h), pygame.SRCALPHA)
-            img.fill(pygame.Color(0, 0, 0, 0))
-            pygame.draw.aaline(img, c, startpos, endpos)
-        else:
-            img = pygame.Surface((w, h))
-            colorkey = pygame.Color(255, 255, 255)
-
-            # Prevent the colorkey from being the same color as the
-            # line.
-            if c.g == colorkey.g:
-                colorkey.g = 0
-
-            img.fill(colorkey)
-            img.set_colorkey(colorkey)
-            pygame.draw.line(img, c, startpos, endpos, thickness)
-
-        self._draw_surface(img, x, y, z)
-
-    def draw_rectangle(self, x, y, z, width, height, fill=None, outline=None,
-                       outline_thickness=1):
-        """Draw a rectangle at the given position.
-
-        ``x`` and ``y`` indicate the location in the room to position
-        the top-left corner of the rectangle, where the left and top
-        edges of the room are 0 and x and y increase toward the right
-        and bottom.  ``z`` indicates the Z-axis position to draw the
-        rectangle, where a higher Z value is closer to the viewer.
-        ``width`` and ``height`` indicate the size of the rectangle.
-        ``fill`` indicates the color of the fill of the rectangle; set
-        to None for no fill.  ``outline`` indicates the color of the
-        outline of the rectangle; set to None for no outline.
-        ``outline_thickness`` indicates the thickness of the outline in
-        pixels (ignored if there is no outline).
-
-        """
-        outline_thickness = abs(outline_thickness)
-        if outline_thickness == 0:
-            outline = None
-
-        if fill is None and outline is None:
-            # There's no point in trying in this case.
-            return
-
-        surf_x = x
-        surf_y = y
-        w = width
-        h = height
-
-        if outline is not None:
-            surf_x -= outline_thickness // 2
-            surf_y -= outline_thickness // 2
-            w += outline_thickness
-            h += outline_thickness
-
-        img = pygame.Surface((w, h))
-        rect = pygame.Rect(x - surf_x, y - surf_y, width, height)
-
-        if fill is not None:
-            img.fill(_get_pygame_color(fill), rect)
-
-        if outline is not None:
-            c = _get_pygame_color(outline)
-            pygame.draw.rect(img, c, rect, outline_thickness)
-
-            if fill is None:
-                colorkey = pygame.Color(255, 255, 255)
-
-                # Prevent the colorkey from being the same color as the
-                # outline.
-                if c.g == colorkey.g:
-                    colorkey.g = 0
-
-                img.set_colorkey(colorkey)
-
-        self._draw_surface(img, surf_x, surf_y, z)
-
-    def draw_ellipse(self, x, y, z, width, height, fill=None, outline=None,
-                     outline_thickness=1, anti_alias=False):
-        """Draw an ellipse at the given position.
-
-        ``x`` and ``y`` indicate the location in the room to position
-        the top-left corner of the imaginary rectangle containing the
-        ellipse, where the left and top edges of the room are 0 and x
-        and y increase toward the right and bottom.  ``z`` indicates the
-        Z-axis position to draw the ellipse, where a higher Z value is
-        closer to the viewer.  ``width`` and ``height`` indicate the
-        size of the ellipse.  ``fill`` indicates the color of the fill
-        of the ellipse; set to None for no fill.  ``outline`` indicates
-        the color of the outline of the ellipse; set to None for no
-        outline.  ``outline_thickness`` indicates the thickness of the
-        outline in pixels (ignored if there is no outline).
-        ``anti_alias`` indicates whether or not anti-aliasing should be
-        used on the outline.
-
-        Support for anti-aliasing is optional in Stellar Game Engine
-        implementations.  If the implementation used does not support
-        anti-aliasing, this function will act like ``anti_alias`` is
-        False.
-
-        """
-        outline_thickness = abs(outline_thickness)
-        if outline_thickness == 0:
-            outline = None
-
-        if fill is None and outline is None:
-            # There's no point in trying in this case.
-            return
-
-        surf_x = x
-        surf_y = y
-        w = width
-        h = height
-
-        if outline is not None:
-            surf_x -= outline_thickness // 2
-            surf_y -= outline_thickness // 2
-            w += outline_thickness
-            h += outline_thickness
-
-        img = pygame.Surface((w, h))
-        rect = pygame.Rect(x - surf_x, y - surf_y, width, height)
-        colorkey = pygame.Color(255, 255, 255)
-
-        if fill is not None:
-            c = _get_pygame_color(fill)
-            pygame.draw.ellipse(img, c, rect)
-
-            # Prevent the colorkey from being the same color as the
-            # fill.
-            if c.r == colorkey.r:
-                colorkey.r = 0
-
-        if outline is not None:
-            c = _get_pygame_color(outline)
-            pygame.draw.ellipse(img, c, rect, outline_thickness)
-
-            # Prevent the colorkey from being the same color as the
-            # outline.
-            if c.g == colorkey.g:
-                colorkey.g = 0
-
-    def draw_circle(self, x, y, z, radius, fill=None, outline=None,
-                    outline_thickness=1):
-        """Draw a circle at the given position.
-
-        ``x`` and ``y`` indicate the location in the room to position
-        the center of the circle, where the left and top edges of the
-        room are 0 and x and y increase toward the right and bottom.
-        ``z`` indicates the Z-axis position to draw the circle, where a
-        higher Z value is closer to the viewer.  ``radius`` indicates
-        the radius of the circle in pixels.  ``fill`` indicates the
-        color of the fill of the circle; set to None for no fill.
-        ``outline`` indicates the color of the outline of the circle;
-        set to None for no outline.  ``outline_thickness`` indicates the
-        thickness of the outline in pixels (ignored if there is no
-        outline).  ``anti_alias`` indicates whether or not anti-aliasing
-        should be used on the outline.
-
-        Support for anti-aliasing is optional in Stellar Game Engine
-        implementations.  If the implementation used does not support
-        anti-aliasing, this function will act like ``anti_alias`` is
-        False.
-
-        """
-        outline_thickness = abs(outline_thickness)
-        if outline_thickness == 0:
-            outline = None
-
-        if fill is None and outline is None:
-            # There's no point in trying in this case.
-            return
-
-        surf_x = x - radius
-        surf_y = y - radius
-        w = radius * 2
-        h = radius * 2
-
-        if outline is not None:
-            surf_x -= outline_thickness // 2
-            surf_y -= outline_thickness // 2
-            w += outline_thickness
-            h += outline_thickness
-
-        img = pygame.Surface((w, h))
-        pos = (x - surf_x, y - surf_y)
-        colorkey = pygame.Color(255, 255, 255)
-
-        if fill is not None:
-            c = _get_pygame_color(fill)
-            pygame.draw.circle(img, c, pos, radius)
-
-            # Prevent the colorkey from being the same color as the
-            # fill.
-            if c.r == colorkey.r:
-                colorkey.r = 0
-
-        if outline is not None:
-            c = _get_pygame_color(outline)
-            pygame.draw.circle(img, c, pos, radius, outline_thickness)
-
-            # Prevent the colorkey from being the same color as the
-            # outline.
-            if c.g == colorkey.g:
-                colorkey.g = 0
-
-    def sound_stop_all(self):
-        """Stop playback of all sounds."""
-        # TODO
-
-    def get_key_pressed(self, key):
-        """Return whether or not a given key is pressed.
-
-        ``key`` is the key to check.
-
-        """
-        key = key.lower()
-        if key in KEYS:
-            return pygame.key.get_pressed()[KEYS[key]]
-        else:
-            return False
-
-    def get_mouse_button_pressed(self, button):
-        """Return whether or not a given mouse button is pressed.
-
-        ``button`` is the number of the mouse button to check, where 0
-        is the first mouse button.
-
-        """
-        if button < 3:
-            return pygame.mouse.get_pressed()[button]
-        else:
-            return False
-
-    def get_joystick_axis(self, joystick, axis):
-        """Return the position of the given axis.
-
-        ``joystick`` is the number of the joystick to check, where 0 is
-        the first joystick.  ``axis`` is the number of the axis to
-        check, where 0 is the first axis of the joystick.
-
-        Returned value is a float from -1 to 1, where 0 is centered, -1
-        is all the way to the left or up, and 1 is all the way to the
-        right or down.
-
-        If the joystick or axis requested does not exist, 0 is returned.
-
-        Support for joysticks in Stellar Game Engine implementations is
-        optional.  If the implementation used does not support
-        joysticks, this function will act like the joystick requested
-        does not exist.
-
-        """
-        if joystick < len(self._joysticks):
-            numaxes = self._joysticks[joystick].get_numaxes()
-            if axis < numaxes:
-                return self._joysticks[joystick].get_axis(axis)
-            else:
-                ball = (axis - numaxes) // 2
-                direction = (axis - numaxes) % 2
-                if ball < self._joysticks[joystick].get_numballs():
-                    return self._joysticks[joystick].get_ball(ball)[direction]
-        else:
-            return 0
-
-    def get_joystick_hat(self, joystick, hat):
-        """Return the position of the given HAT.
-
-        ``joystick`` is the number of the joystick to check, where 0 is
-        the first joystick.  ``hat`` is the number of the HAT to check,
-        where 0 is the first HAT of the joystick.
-
-        Returned value is a tuple in the form (x, y), where x is the
-        horizontal position and y is the vertical position.  Both x and
-        y are 0 (centered), -1 (left or up), or 1 (right or down).
-
-        If the joystick or HAT requested does not exist, (0, 0) is
-        returned.
-
-        Support for joysticks in Stellar Game Engine implementations is
-        optional.  If the implementation used does not support
-        joysticks, this function will act like the joystick requested
-        does not exist.
-
-        """
-        if joystick < len(self._joysticks):
-            if hat < self._joysticks[joystick].get_numhats():
-                return self._joysticks[joystick].get_hat(hat)
-        else:
-            return (0, 0)
-
-    def get_joystick_button_pressed(self, joystick, button):
-        """Return whether or not the given button is pressed.
-
-        ``joystick`` is the number of the joystick to check, where 0 is
-        the first joystick.  ``button`` is the number of the button to
-        check, where 0 is the first button of the joystick.
-
-        If the joystick or button requested does not exist, False is
-        returned.
-
-        Support for joysticks in Stellar Game Engine implementations is
-        optional.  If the implementation used does not support
-        joysticks, this function will act like the joystick requested
-        does not exist.
-
-        """
-        if joystick < len(self._joysticks):
-            if button < self._joysticks[joystick].get_numbuttons():
-                return self._joysticks[joystick].get_button(button)
-        else:
-            return False
-
-    def get_joysticks(self):
-        """Return the number of joysticks available.
-
-        Support for joysticks in Stellar Game Engine implementations is
-        optional.  If the implementation used does not support
-        joysticks, this function will always return 0.
-
-        """
-        return len(self._joysticks)
-
-    def get_joystick_axes(self, joystick):
-        """Return the number of axes available on the given joystick.
-
-        ``joystick`` is the number of the joystick to check, where 0 is
-        the first joystick.  If the given joystick does not exist, 0
-        will be returned.
-
-        Support for joysticks in Stellar Game Engine implementations is
-        optional.  If the implementation used does not support
-        joysticks, this function will act like the joystick requested
-        does not exist.
-
-        """
-        if joystick < len(self._joysticks):
-            return (self._joysticks[joystick].get_numaxes() +
-                    self._joysticks[joystick].get_numballs() * 2)
-        else:
-            return 0
-
-    def get_joystick_hats(self, joystick):
-        """Return the number of HATs available on the given joystick.
-
-        ``joystick`` is the number of the joystick to check, where 0 is
-        the first joystick.  If the given joystick does not exist, 0
-        will be returned.
-
-        Support for joysticks in Stellar Game Engine implementations is
-        optional.  If the implementation used does not support
-        joysticks, this function will act like the joystick requested
-        does not exist.
-
-        """
-        if joystick < len(self._joysticks):
-            return self._joysticks[joystick].get_numhats()
-        else:
-            return 0
-
-    def get_joystick_buttons(self, joystick):
-        """Return the number of buttons available on the given joystick.
-
-        ``joystick`` is the number of the joystick to check, where 0 is
-        the first joystick.  If the given joystick does not exist, 0
-        will be returned.
-
-        Support for joysticks in Stellar Game Engine implementations is
-        optional.  If the implementation used does not support
-        joysticks, this function will act like the joystick requested
-        does not exist.
-
-        """
-        if joystick < len(self._joysticks):
-            return self._joysticks[joystick].get_numbuttons()
-        else:
-            return 0
 
     def event_game_start(self):
         """Game start event.
@@ -1555,70 +1204,22 @@ class Game(object):
             if hardware_rendering:
                 flags |= pygame.HWSURFACE | pygame.DOUBLEBUF
 
+            #self._window = pygame.display.set_mode(
+            #    (int(round(self.width * self._xscale)),
+            #     int(round(self.height * self._yscale))), flags)
             self._window = pygame.display.set_mode(
-                (int(round(self.width * self._xscale)),
-                 int(round(self.height * self._yscale))), flags)
+                (self._window_width, self._window_height), flags)
+
+            w = max(1, self._window.get_width())
+            h = max(1, self._window.get_height())
+            self._x = int(round((w - int(round(self.width * self._xscale))) /
+                                2))
+            self._y = int(round((h - int(round(self.height * self._yscale))) /
+                                2))
 
         # Refresh sprites
         for s in self.sprites:
             self.sprites[s]._refresh()
-
-    def _draw_surface(self, image, x, y, z):
-        # Draw the surface indicated (used in all draw methods), using
-        # the given x and y as locations in the current room, and z.
-        image = _scale(image, *image.get_size())
-        w = max(1, image.get_width())
-        h = max(1, image.get_height())
-
-        for view in self.current_room.views:
-            rel_x = x - view.x + view.xport
-            rel_y = y - view.y + view.yport
-            rect = image.get_rect()
-            rect.left = round(rel_x * self._xscale + self._x)
-            rect.top = round(rel_y * self._yscale + self._y)
-            inside_view = (rel_x >= view.xport and
-                           rel_x + w <= view.xport + view.width and
-                           rel_y >= view.yport and
-                           rel_y + h <= view.yport + view.height)
-
-            if inside_view:
-                img = image
-            else:
-                # Make a cut-off version of the sprite and
-                # adjust the rect accordingly.
-                if rel_x < view.xport:
-                    cut_x = view.xport - rel_x
-                    rel_x = view.xport
-                    w -= cut_x
-                else:
-                    cut_x = 0
-
-                if rel_x + w > view.xport + view.width:
-                    w -= (rel_x + w) - (view.xport + view.width)
-
-                if y < view.yport:
-                    cut_y = view.yport - rel_y
-                    rel_y = view.yport
-                    h -= cut_y
-                else:
-                    cut_y = 0
-
-                if rel_y + h > view.yport + view.height:
-                    h -= (rel_y + h) - (view.yport + view.height)
-
-                rel_x = round(rel_x * self._xscale) + self._x
-                rel_y = round(rel_y * self._yscale) + self._y
-                cut_x = round(cut_x * self._xscale) + self._x
-                cut_y = round(cut_y * self._yscale) + self._y
-                w = round(w * self._xscale)
-                h = round(h * self._yscale)
-                cut_rect = pygame.Rect(cut_x, cut_y, w, h)
-                img = image.subsurface(cut_rect)
-                rect = pygame.Rect(rel_x, rel_y, w, h)
-
-            # Create proxy one-time sprite
-            proxy = _PygameOneTimeSprite(img, rect)
-            game._pygame_sprites.add(proxy, layer=z)
 
     def _get_channel(self):
         # Return a channel for a sound effect to use.
@@ -1681,6 +1282,15 @@ class Sprite(object):
         name: The name of the sprite given when it was created.  See
             Sprite.__init__.__doc__ for more information.
 
+    Sprite methods:
+        draw_dot: Draw a single-pixel dot.
+        draw_line: Draw a line segment between the given points.
+        draw_rectangle: Draw a rectangle at the given position.
+        draw_ellipse: Draw an ellipse at the given position.
+        draw_circle: Draw a circle at the given position.
+        draw_text: Draw the given text at the given position.
+        draw_clear: Erase everything from the sprite.
+
     """
 
     @property
@@ -1713,8 +1323,8 @@ class Sprite(object):
             self._transparent = value
             self._refresh()
 
-    def __init__(self, name, width=None, height=None, origin_x=0, origin_y=0,
-                 transparent=True, fps=DEFAULT_FPS, bbox_x=0, bbox_y=0,
+    def __init__(self, name=None, width=None, height=None, origin_x=0,
+                 origin_y=0, transparent=True, fps=60, bbox_x=0, bbox_y=0,
                  bbox_width=None, bbox_height=None):
         """Create a new Sprite object.
 
@@ -1743,10 +1353,14 @@ class Sprite(object):
         reel, with the first frame on the far left and the last frame on
         the far right, and no space in between frames.
 
-        If no image is found based on any of the above methods, a black
-        rectangle will be created at the size specified by ``width`` and
-        ``height``.  If either ``width`` or ``height`` is None, the
-        respective size will default to 16 in this case.
+        ``name`` can also be None, in which case the sprite will be a
+        transparent rectangle at the specified size (with both ``width``
+        and ``height`` defaulting to 32 if they are set to None).  The
+        implementation decides what to assign to the sprite's ``name``
+        attribute, but it is always a string.
+
+        If no image is found based on any of the above methods and
+        ``name`` is not None, IOError will be raised.
 
         If ``width`` or ``height`` is set to None, the respective size
         will be taken from the largest animation frame.  If
@@ -1760,7 +1374,7 @@ class Sprite(object):
         created.
 
         """
-        assert name
+        print('Creating sprite "{0}"'.format(name))
         self.name = name
 
         self._transparent = None
@@ -1768,84 +1382,103 @@ class Sprite(object):
         self._images = []
         self._masks = {}
 
-        paths = [os.path.join('data', 'images'), 'images',
-                 os.path.join('data', 'sprites'), 'sprites',
-                 os.path.join('data', 'backgrounds'), 'backgrounds']
         fname_single = None
         fname_frames = []
         fname_strip = None
 
-        for path in image_directories:
-            if os.path.isdir(path):
-                fnames = os.listdir(path)
-                for fname in fnames:
-                    full_fname = os.path.join(path, fname)
-                    if fname.startswith(name) and os.path.isfile(full_fname):
-                        root, ext = os.path.splitext(fname)
-                        if root.rsplit('-', 1)[0] == name:
-                            split = root.rsplit('-', 1)
-                        elif root.split('_', 1)[0] == name:
-                            split = root.rsplit('_', 1)
-                        else:
-                            split = (name, '')
+        print("Current image directories:")
+        for d in image_directories:
+            print(os.path.normpath(os.path.abspath(d)))
 
-                        if root == name:
-                            fname_single = full_fname
-                        elif split[1].isdigit():
-                            n = int(split[1])
-                            while len(fname_frames) - 1 < n:
-                                fname_frames.append(None)
-                            fname_frames[n] = full_fname
-                        elif (split[1].startswith('strip') and
-                              split[1][5:].isdigit()):
-                            fname_strip = full_fname
+        if name is not None:
+            for path in image_directories:
+                if os.path.isdir(path):
+                    fnames = os.listdir(path)
+                    for fname in fnames:
+                        full_fname = os.path.join(path, fname)
+                        if fname.startswith(name) and os.path.isfile(full_fname):
+                            root, ext = os.path.splitext(fname)
+                            if root.rsplit('-', 1)[0] == name:
+                                split = root.rsplit('-', 1)
+                            elif root.split('_', 1)[0] == name:
+                                split = root.rsplit('_', 1)
+                            else:
+                                split = (name, '')
 
-        if fname_single:
-            # Load the single image
-            try:
-                img = pygame.image.load(fname_single)
-                self._baseimages.append(img)
-            except pygame.error:
-                print("Ignored {0}; not a valid image.".format(fname_single))
+                            if root == name:
+                                fname_single = full_fname
+                            elif split[1].isdigit():
+                                n = int(split[1])
+                                while len(fname_frames) - 1 < n:
+                                    fname_frames.append(None)
+                                fname_frames[n] = full_fname
+                            elif (split[1].startswith('strip') and
+                                  split[1][5:].isdigit()):
+                                fname_strip = full_fname
 
-        if not self._baseimages and any(fname_frames):
-            # Load the multiple images
-            for fname in fname_frames:
-                if fname:
-                    try:
-                        self._baseimages.append(pygame.image.load(fname))
-                    except pygame.error:
-                        print("Ignored {0}; not a valid image.".format(fname))
-
-        if not self._baseimages and fname_strip:
-            # Load the strip (sprite sheet)
-            root, ext = os.path.splitext(os.path.basename(fname_strip))
-            assert '-' in root or '_' in root
-            assert (root.rsplit('-', 1)[0] == name or
-                    root.rsplit('_', 1)[0] == name)
-            if root.rsplit('-', 1)[0] == name:
-                split = root.rsplit('-', 1)
-            else:
-                split = root.rsplit('_', 1)
-
-            try:
-                sheet = pygame.image.load(fname_strip)
-                assert split[1][5:].isdigit()
-                n = int(split[1][5:])
-
-                img_w = max(1, sheet.get_width()) // n
-                img_h = max(1, sheet.get_height())
-                for x in xrange(0, img_w * n, img_w):
-                    rect = pygame.Rect(x, 0, img_w, img_h)
-                    img = sheet.subsurface(rect)
+            if fname_single:
+                # Load the single image
+                try:
+                    img = pygame.image.load(fname_single)
                     self._baseimages.append(img)
-            except pygame.error:
-                print("Ignored {0}; not a valid image.".format(fname_strip))
+                except pygame.error:
+                    print("Ignored {0}; not a valid image.".format(fname_single))
 
-        if not self._baseimages:
-            # Generate placeholder image
-            img = pygame.Surface((16, 16))
+            if not self._baseimages and any(fname_frames):
+                # Load the multiple images
+                for fname in fname_frames:
+                    if fname:
+                        try:
+                            self._baseimages.append(pygame.image.load(fname))
+                        except pygame.error:
+                            print("Ignored {0}; not a valid image.".format(fname))
+
+            if not self._baseimages and fname_strip:
+                # Load the strip (sprite sheet)
+                root, ext = os.path.splitext(os.path.basename(fname_strip))
+                assert '-' in root or '_' in root
+                assert (root.rsplit('-', 1)[0] == name or
+                        root.rsplit('_', 1)[0] == name)
+                if root.rsplit('-', 1)[0] == name:
+                    split = root.rsplit('-', 1)
+                else:
+                    split = root.rsplit('_', 1)
+
+                try:
+                    sheet = pygame.image.load(fname_strip)
+                    assert split[1][5:].isdigit()
+                    n = int(split[1][5:])
+
+                    img_w = max(1, sheet.get_width()) // n
+                    img_h = max(1, sheet.get_height())
+                    for x in xrange(0, img_w * n, img_w):
+                        rect = pygame.Rect(x, 0, img_w, img_h)
+                        img = sheet.subsurface(rect)
+                        self._baseimages.append(img)
+                except pygame.error:
+                    print("Ignored {0}; not a valid image.".format(fname_strip))
+
+            if not self._baseimages:
+                msg = 'Files for sprite name "{0}" not found.'.format(name)
+                raise IOError(msg)
+        else:
+            # Name is None; default to a blank rectangle.
+            if width is None:
+                width = 32
+            if height is None:
+                height = 32
+
+            # Choose name
+            prefix = "sge-pygame-dynamicsprite"
+            i = 0
+            while "{0}_{1}N".format(prefix, i) in game.sprites:
+                i += 1
+            self.name = "{0}_{1}N".format(prefix, i)
+
+            img = pygame.Surface((width, height), pygame.SRCALPHA)
+            img.fill(pygame.Color(0, 0, 0, 0))
             self._baseimages.append(img)
+            print("renamed to {0}".format(self.name))
 
         if width is None:
             width = 1
@@ -1863,6 +1496,18 @@ class Sprite(object):
         if bbox_height is None:
             bbox_height = height
 
+        for i in xrange(len(self._baseimages)):
+            if game.scale_smooth:
+                try:
+                    self._baseimages[i] = pygame.transform.smoothscale(
+                        self._baseimages[i], (width, height))
+                except pygame.error:
+                    self._baseimages[i] = pygame.transform.scale(
+                        self._baseimages[i], (width, height))
+            else:
+                self._baseimages[i] = pygame.transform.scale(
+                    self._baseimages[i], (width, height))
+
         self._w = width
         self._h = height
         self.origin_x = origin_x
@@ -1874,7 +1519,319 @@ class Sprite(object):
         self.bbox_width = bbox_width
         self.bbox_height = bbox_height
         self._refresh()
-        game.sprites[name] = self
+        game.sprites[self.name] = self
+
+    def draw_dot(self, x, y, color, frame=None):
+        """Draw a single-pixel dot.
+
+        ``x`` and ``y`` indicate the location in the sprite to draw the
+        dot, where x=0, y=0 is the origin and x and y increase toward
+        the right and bottom, respectively.  ``color`` indicates the
+        color of the dot.  ``frame`` indicates the frame of the sprite
+        to draw on, where 0 is the first frame; set to None to draw on
+        all frames.
+
+        """
+        color = _get_pygame_color(color)
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                self._baseimages[i].set_at((x, y), color)
+
+        self._refresh()
+
+    def draw_line(self, x1, y1, x2, y2, color, thickness=1, anti_alias=False,
+                  frame=None):
+        """Draw a line segment between the given points.
+
+        ``x1``, ``y1``, ``x2``, and ``y2`` indicate the location in the
+        sprite of the points between which to draw the line segment,
+        where x=0, y=0 is the origin and x and y increase toward the
+        right and bottom, respectively.  ``color`` indicates the color
+        of the line segment.  ``thickness`` indicates the thickness of
+        the line segment in pixels.  ``anti_alias`` indicates whether or
+        not anti-aliasing should be used.  ``frame`` indicates the frame
+        of the sprite to draw on, where 0 is the first frame; set to
+        None to draw on all frames.
+
+        Support for anti-aliasing is optional in Stellar Game Engine
+        implementations.  If the implementation used does not support
+        anti-aliasing, this method will act like ``anti_alias`` is
+        False.
+
+        """
+        color = _get_pygame_color(color)
+        thickness = abs(thickness)
+
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                if anti_alias and thickness == 1:
+                    pygame.draw.aaline(self._baseimages[i], color, (x1, y1),
+                                       (x2, y2))
+                else:
+                    pygame.draw.line(self._baseimages[i], color, (x1, y1),
+                                     (x2, y2), thickness)
+
+        self._refresh()
+
+    def draw_rectangle(self, x, y, width, height, fill=None, outline=None,
+                       outline_thickness=1, frame=None):
+        """Draw a rectangle at the given position.
+
+        ``x`` and ``y`` indicate the location in the sprite to position
+        the top-left corner of the rectangle, where x=0, y=0 is the
+        origin and x and y increase toward the right and bottom,
+        respectively.  ``width`` and ``height`` indicate the size of the
+        rectangle.  ``fill`` indicates the color of the fill of the
+        rectangle; set to None for no fill.  ``outline`` indicates the
+        color of the outline of the rectangle; set to None for no
+        outline.  ``outline_thickness`` indicates the thickness of the
+        outline in pixels (ignored if there is no outline).  ``frame``
+        indicates the frame of the sprite to draw on, where 0 is the
+        first frame; set to None to draw on all frames.
+
+        """
+        outline_thickness = abs(outline_thickness)
+        if outline_thickness == 0:
+            outline = None
+
+        if fill is None and outline is None:
+            # There's no point in trying in this case.
+            return
+
+        rect = pygame.Rect(x, y, width, height)
+
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                if fill is not None:
+                    self._baseimages[i].fill(_get_pygame_color(fill), rect)
+
+                if outline is not None:
+                    pygame.draw.rect(self._baseimages[i],
+                                     _get_pygame_color(outline), rect,
+                                     outline_thickness)
+
+        self._refresh()
+
+    def draw_ellipse(self, x, y, width, height, fill=None, outline=None,
+                     outline_thickness=1, anti_alias=False, frame=None):
+        """Draw an ellipse at the given position.
+
+        ``x`` and ``y`` indicate the location in the sprite to position
+        the top-left corner of the imaginary rectangle containing the
+        ellipse, where x=0, y=0 is the origin and x and y increase
+        toward the right and bottom, respectively.  ``width`` and
+        ``height`` indicate the size of the ellipse.  ``fill`` indicates
+        the color of the fill of the ellipse; set to None for no fill.
+        ``outline`` indicates the color of the outline of the ellipse;
+        set to None for no outline.  ``outline_thickness`` indicates the
+        thickness of the outline in pixels (ignored if there is no
+        outline).  ``anti_alias`` indicates whether or not anti-aliasing
+        should be used on the outline.  ``frame`` indicates the frame of
+        the sprite to draw on, where 0 is the first frame; set to None
+        to draw on all frames.
+
+        Support for anti-aliasing is optional in Stellar Game Engine
+        implementations.  If the implementation used does not support
+        anti-aliasing, this method will act like ``anti_alias`` is
+        False.
+
+        """
+        outline_thickness = abs(outline_thickness)
+        if outline_thickness == 0:
+            outline = None
+
+        if fill is None and outline is None:
+            # There's no point in trying in this case.
+            return
+
+        rect = pygame.Rect(x, y, width, height)
+
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                if fill is not None:
+                    c = _get_pygame_color(fill)
+                    pygame.draw.ellipse(self._baseimages[i], c, rect)
+
+                if outline is not None:
+                    c = _get_pygame_color(outline)
+                    pygame.draw.ellipse(self._baseimages[i], c, rect,
+                                        outline_thickness)
+
+        self._refresh()
+
+    def draw_circle(self, x, y, radius, fill=None, outline=None,
+                    outline_thickness=1, anti_alias=False, frame=None):
+        """Draw a circle at the given position.
+
+        ``x`` and ``y`` indicate the location in the sprite to position
+        the center of the circle, where x=0, y=0 is the origin and x and
+        y increase toward the right and bottom, respectively.
+        ``radius`` indicates the radius of the circle in pixels.
+        ``fill`` indicates the color of the fill of the circle; set to
+        None for no fill.  ``outline`` indicates the color of the
+        outline of the circle; set to None for no outline.
+        ``outline_thickness`` indicates the thickness of the outline in
+        pixels (ignored if there is no outline).  ``anti_alias``
+        indicates whether or not anti-aliasing should be used on the
+        outline.  ``frame`` indicates the frame of the sprite to draw
+        on, where 0 is the first frame; set to None to draw on all
+        frames.
+
+        Support for anti-aliasing is optional in Stellar Game Engine
+        implementations.  If the implementation used does not support
+        anti-aliasing, this method will act like ``anti_alias`` is
+        False.
+
+        """
+        outline_thickness = abs(outline_thickness)
+        if outline_thickness == 0:
+            outline = None
+
+        if fill is None and outline is None:
+            # There's no point in trying in this case.
+            return
+
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                if fill is not None:
+                    c = _get_pygame_color(fill)
+                    pygame.draw.circle(self._baseimages[i], c, (x, y), radius)
+
+                if outline is not None:
+                    c = _get_pygame_color(outline)
+                    pygame.draw.circle(self._baseimages[i], c, (x, y), radius,
+                                       outline_thickness)
+
+        self._refresh()
+
+    def draw_sprite(self, sprite, image, x, y, frame=None):
+        """Draw the given sprite at the given position.
+
+        ``sprite`` indicates the sprite to draw.  ``image`` indicates
+        the frame of ``sprite`` to draw, where 0 is the first frame.
+        ``x`` and ``y`` indicate the location in the sprite being drawn
+        on to position ``sprite``.  ``frame`` indicates the frame of the
+        sprite to draw on, where 0 is the first frame; set to None to
+        draw on all frames.
+
+        """
+        x -= sprite.origin_x
+        y -= sprite.origin_y
+        image %= len(sprite._baseimages)
+
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                self._baseimages[i].blit(sprite._baseimages[i], (x, y))
+
+        self._refresh()
+
+    def draw_text(self, font, text, x, y, width=None, height=None,
+                  color="black", halign=ALIGN_LEFT, valign=ALIGN_TOP,
+                  anti_alias=True, frame=None):
+        """Draw the given text at the given position.
+
+        ``font`` indicates the font to use to draw the text.  ``text``
+        indicates the text to draw.  ``x`` and ``y`` indicate the
+        location in the sprite to position the text, where x=0, y=0 is
+        the origin and x and y increase toward the right and bottom,
+        respectively.  ``width`` and ``height`` indicate the size of the
+        imaginary box the text is drawn in; set to None for no imaginary
+        box.  ``color`` indicates the color of the text.  ``halign``
+        indicates the horizontal alignment of the text and can be
+        ALIGN_LEFT, ALIGN_CENTER, or ALIGN_RIGHT.  ``valign`` indicates
+        the vertical alignment and can be ALIGN_TOP, ALIGN_MIDDLE, or
+        ALIGN_BOTTOM.  ``anti_alias`` indicates whether or not anti-
+        aliasing should be used.  ``frame`` indicates the frame of the
+        sprite to draw on, where 0 is the first frame; set to None to
+        draw on all frames.
+
+        If the text does not fit into the imaginary box specified, the
+        text that doesn't fit will be cut off at the bottom if valign is
+        ALIGN_TOP, the top if valign is ALIGN_BOTTOM, or equally the top
+        and bottom if valign is ALIGN_MIDDLE.
+
+        Support for anti-aliasing is optional in Stellar Game Engine
+        implementations.  If the implementation used does not support
+        anti-aliasing, this function will act like ``anti_alias`` is False.
+
+        """
+        if not isinstance(font, Font):
+            font = game.fonts[font]
+
+        lines = font._split_text(text, width)
+        width, height = font.get_size(text, x, y, width, height)
+        fake_height = font.get_size(text, x, y, width)[1]
+        color = _get_pygame_color(color)
+
+        text_surf = pygame.Surface((width, fake_height), pygame.SRCALPHA)
+        box_surf = pygame.Surface((width, height), pygame.SRCALPHA)
+        text_rect = text_surf.get_rect()
+        box_rect = box_surf.get_rect()
+
+        for i in xrange(len(lines)):
+            rendered_text = font._font.render(lines[i], anti_alias, color)
+            rect = rendered_text.get_rect()
+            rect.top = i * font._font.get_linesize()
+
+            if halign == ALIGN_LEFT:
+                rect.left = text_rect.left
+            elif halign == ALIGN_RIGHT:
+                rect.right = text_rect.right
+            elif halign == ALIGN_CENTER:
+                rect.centerx = text_rect.centerx
+
+            text_surf.blit(rendered_text, rect)
+
+        if valign == ALIGN_TOP:
+            text_rect.top = box_rect.top
+        elif valign == ALIGN_BOTTOM:
+            text_rect.bottom = box_rect.bottom
+        elif valign == ALIGN_MIDDLE:
+            text_rect.centery = box_rect.centery
+
+        box_surf.blit(text_surf, text_rect)
+
+        if halign == ALIGN_LEFT:
+            box_rect.left = x
+        elif halign == ALIGN_RIGHT:
+            box_rect.right = x
+        elif halign == ALIGN_CENTER:
+            box_rect.centerx = x
+        else:
+            box_rect.left = x
+
+        if valign == ALIGN_TOP:
+            box_rect.top = y
+        elif valign == ALIGN_BOTTOM:
+            box_rect.bottom = y
+        elif valign == ALIGN_MIDDLE:
+            box_rect.centery = y
+        else:
+            box_rect.top = y
+
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                self._baseimages[i].blit(box_surf, box_rect)
+
+        self._refresh()
+
+    def draw_clear(self, frame=None):
+        """Erase everything from the sprite.
+
+        ``frame`` indicates the frame of the sprite to clear, where 0 is
+        the first frame; set to None to clear all frames.
+
+        """
+        for i in xrange(len(self._baseimages)):
+            if frame is None or frame % len(self._baseimages) == i:
+                if self._baseimages[i].get_flags() & pygame.SRCALPHA:
+                    color = pygame.Color(0, 0, 0, 0)
+                else:
+                    color = self._baseimages[i].get_colorkey()
+
+                self._baseimages[i].fill(color)
+
+        self._refresh()
 
     def _refresh(self):
         # Set the _images list based on the variables.
@@ -1979,9 +1936,9 @@ class BackgroundLayer(object):
             of the view scroll speed.
         yscroll_rate: The vertical speed the layer scrolls as a factor
             of the view scroll speed.
-        xrepeat: Whether or not the background should be repeated
+        xrepeat: Whether or not the layer should be repeated
             horizontally.
-        yrepeat: Whether or not the background should be repeated
+        yrepeat: Whether or not the layer should be repeated
             vertically.
 
     """
@@ -1992,6 +1949,9 @@ class BackgroundLayer(object):
 
     @sprite.setter
     def sprite(self, value):
+        if not isinstance(value, Sprite):
+            value = game.sprites[value]
+
         if self._sprite != value:
             self._sprite = value
             game._background_changed = True
@@ -2145,8 +2105,7 @@ class Background(object):
         """
         # Since the docs say that ``id`` is a valid keyword argument,
         # you should do this to make sure that that is true.
-        if 'id' in kwargs:
-            id_ = kwargs['id']
+        id_ = kwargs.setdefault('id', id_)
 
         self.color = color
 
@@ -2188,12 +2147,14 @@ class Background(object):
         for view in game.current_room.views:
             view_x = int(round(view.x * game._xscale))
             view_y = int(round(view.y * game._yscale))
-            view_xport = max(0, int(round(view.xport * game._xscale)))
-            view_yport = max(0, int(round(view.yport * game._yscale)))
-            view_w = int(round(min(view.width, game.width - view.xport) *
-                               game._xscale))
-            view_h = int(round(min(view.height, game.height - view.yport) *
-                               game._yscale))
+            view_xport = max(0, min(int(round(view.xport * game._xscale)),
+                                    background.get_width() - 1))
+            view_yport = max(0, min(int(round(view.yport * game._yscale)),
+                                    background.get_height() - 1))
+            view_w = min(int(round((game.width - view.xport) * game._xscale)),
+                         background.get_width() - view_xport)
+            view_h = min(int(round((game.height - view.yport) * game._yscale)),
+                         background.get_height() - view_yport)
             surf = background.subsurface(view_xport, view_yport, view_w,
                                          view_h)
             for layer in self.layers:
@@ -2213,6 +2174,10 @@ class Background(object):
                     x = (x % image_w) - image_w
                 if layer.yrepeat:
                     y = (y % image_h) - image_h
+
+                # Apply the origin so the positions are as expected.
+                x -= layer.sprite.origin_x
+                y -= layer.sprite.origin_y
 
                 if layer.xrepeat and layer.yrepeat:
                     xstart = x
@@ -2252,6 +2217,9 @@ class Font(object):
     The following read-only attributes are also available:
         name: The name of the font given when it was created.  See
             Sound.__init__.__doc__ for more information.
+
+    Font methods:
+        get_size: Return the size of the given rendered text.
 
     """
 
@@ -2306,6 +2274,15 @@ class Font(object):
         font.  If the specified font does not exist in either form, a
         default, implementation-dependent font will be used.
 
+        ``name`` can also be a list or tuple of fonts to choose from in
+        order of preference.
+
+        Implementations are supposed, but not required, to attempt to
+        use a compatible font where possible.  For example, if the font
+        specified is "Times New Roman" and Times New Roman is not
+        available, compatible fonts such as Liberation Serif should be
+        attempted as well.
+
         All remaining arguments set the initial properties of the font.
         See Font.__doc__ for more information.
 
@@ -2314,93 +2291,42 @@ class Font(object):
 
         """
         assert pygame.font.get_init()
-        self.name = name
+
+        if isinstance(name, basestring):
+            name = (name,)
+
+        self.name = ''
+        compatible_fonts = (
+            ("liberation serif", "tinos", "times new roman",
+             "nimbus roman no9 l", "nimbus roman", "freeserif",
+             "dejavu serif"),
+            ("liberation sans", "arimo", "arial", "nimbus sans l", "freesans",
+             "dejavu sans"),
+            ("liberation sans narrow", "arial narrow"),
+            ("liberation mono", "cousine", "courier new", "courier",
+             "nimbus mono l", "freemono", "texgyrecursor", "courier prime",
+             "dejavu sans mono"))
+
+        try:
+            for n in name:
+                for fonts in compatible_fonts:
+                    if n.lower() in fonts:
+                        n = ','.join((n, ','.join(fonts)))
+                        break
+
+                self.name = ','.join((self.name, n))
+        except TypeError:
+            # Most likely a non-iterable value, such as None, so we
+            # assume the default font is to be used.
+            self.name = ''
+
+        self.name = self.name[1:]
         self.size = size
         self.underline = underline
         self.bold = bold
         self.italic = italic
 
-    def render(self, text, x, y, z, width=None, height=None, color="black",
-               halign=ALIGN_LEFT, valign=ALIGN_TOP, anti_alias=True):
-        """Render the given text to the screen.
-
-        ``text`` indicates the text to render.  ``x`` and ``y`` indicate
-        the location in the room to render the text, where the left and
-        top edges of the room are 0 and x and y increase toward the
-        right and bottom.  ``z`` indicates the Z-axis position to render
-        the text, where a higher Z value is closer to the viewer.
-        ``width`` and ``height`` indicate the size of the imaginary box
-        the text is drawn in; set to None for no imaginary box.
-        ``color`` indicates the color of the text.  ``halign`` indicates
-        the horizontal alignment and can be ALIGN_LEFT, ALIGN_CENTER, or
-        ALIGN_RIGHT. ``valign`` indicates the vertical alignment and can
-        be ALIGN_TOP, ALIGN_MIDDLE, or ALIGN_BOTTOM.  ``anti_alias``
-        indicates whether or not anti-aliasing should be used.
-
-        If the text does not fit in the imaginary box specified, the
-        text that doesn't fit will be cut off at the bottom if valign is
-        ALIGN_TOP, the top if valign is ALIGN_BOTTOM, or equally the top
-        and bottom if valign is ALIGN_MIDDLE.
-
-        Support for anti-aliasing is optional in Stellar Game Engine
-        implementations.  If the implementation used does not support
-        anti-aliasing, this function will act like ``anti_alias`` is False.
-
-        """
-        lines = self._split_text(text, width)
-        width, height = self.get_size(text, x, y, width, height)
-        fake_height = self.get_size(text, x, y, width)[1]
-        color = _get_pygame_color(color)
-
-        text_surf = pygame.Surface((width, fake_height), pygame.SRCALPHA)
-        box_surf = pygame.Surface((width, height), pygame.SRCALPHA)
-        text_rect = text_surf.get_rect()
-        box_rect = box_surf.get_rect()
-
-        for i in xrange(len(lines)):
-            rendered_text = self._font.render(lines[i], anti_alias, color)
-            rect = rendered_text.get_rect()
-            rect.top = i * self._font.get_linesize()
-
-            if halign == ALIGN_LEFT:
-                rect.left = text_rect.left
-            elif halign == ALIGN_RIGHT:
-                rect.right = text_rect.right
-            elif halign == ALIGN_CENTER:
-                rect.centerx = text_rect.centerx
-
-            text_surf.blit(rendered_text, rect)
-
-        if valign == ALIGN_TOP:
-            text_rect.top = box_rect.top
-        elif valign == ALIGN_BOTTOM:
-            text_rect.bottom = box_rect.bottom
-        elif valign == ALIGN_MIDDLE:
-            text_rect.centery = box_rect.centery
-
-        box_surf.blit(text_surf, text_rect)
-
-        if halign == ALIGN_LEFT:
-            box_rect.left = x
-        elif halign == ALIGN_RIGHT:
-            box_rect.right = x
-        elif halign == ALIGN_CENTER:
-            box_rect.centerx = x
-        else:
-            box_rect.left = x
-
-        if valign == ALIGN_TOP:
-            box_rect.top = y
-        elif valign == ALIGN_BOTTOM:
-            box_rect.bottom = y
-        elif valign == ALIGN_MIDDLE:
-            box_rect.centery = y
-        else:
-            box_rect.top = y
-
-        game._draw_surface(box_surf, box_rect.left, box_rect.top, z)
-
-    def get_size(self, text, x, y, width=None, height=None):
+    def get_size(self, text, width=None, height=None):
         """Return the size of the given rendered text.
 
         All arguments correspond with the same arguments in Font.render,
@@ -2477,9 +2403,6 @@ class Sound(object):
         Sound.stop: Stop the sound.
         Sound.pause: Pause playback of the sound.
         Sound.unpause: Resume playback of the sound if paused.
-
-    Ogg Vorbis and uncompressed WAV are supported at a minimum.
-    Depending on the implementation, other formats may be supported.
 
     """
 
@@ -2634,9 +2557,6 @@ class Music(object):
         Music.pause: Pause playback of the music.
         Music.unpause: Resume playback of the music if paused.
         Music.restart: Restart music from the beginning.
-
-    Ogg Vorbis is supported at a minimum.  Depending on the
-    implementation, other formats may be supported.
 
     """
 
@@ -2851,6 +2771,7 @@ class StellarClass(object):
         collides: Return whether or not this object collides with
             another.
         set_alarm: Set an alarm.
+        get_alarm: Return the count on an alarm.
         destroy: Destroy the object.
 
     StellarClass events are handled by special methods.  The exact
@@ -3027,8 +2948,8 @@ class StellarClass(object):
     def bbox_bottom(self, value):
         self.yprevious = self._y
         self._bbox_bottom = value
-        self._bbox_top = value - self.bbox_width
-        self._y = self.bbox_top - self.bbox_x
+        self._bbox_top = value - self.bbox_height
+        self._y = self.bbox_top - self.bbox_y
 
     @property
     def xvelocity(self):
@@ -3099,10 +3020,13 @@ class StellarClass(object):
         else:
             self._frame_time = None
 
-    def __init__(self, x, y, z, sprite=None, visible=True,
+    def __init__(self, x, y, z, id_=None, sprite=None, visible=True,
                  detects_collisions=True, bbox_x=None, bbox_y=None,
                  bbox_width=None, bbox_height=None, collision_ellipse=False,
-                 collision_precise=False, id_=None, **kwargs):
+                 collision_precise=False, xvelocity=0, yvelocity=0,
+                 image_index=0, image_fps=0, image_xscale=1, image_yscale=1,
+                 image_rotation=0, image_alpha=255, image_blend=None,
+                 **kwargs):
         """Create a new StellarClass object.
 
         Arguments set the properties of the object.  See
@@ -3122,8 +3046,7 @@ class StellarClass(object):
         """
         # Since the docs say that ``id`` is a valid keyword argument,
         # you should do this to make sure that that is true.
-        if 'id' in kwargs:
-            id_ = kwargs['id']
+        id_ = kwargs.setdefault('id', id_)
 
         self.xstart = x
         self.ystart = y
@@ -3169,14 +3092,17 @@ class StellarClass(object):
         self._yvelocity = 0
         self._move_direction = 0
         self._speed = 0
+        self.xvelocity = xvelocity
+        self.yvelocity = yvelocity
         self._anim_count = 0
-        self.image_index = 0
-        self.image_fps = self.sprite.fps if self.sprite is not None else 0
-        self.image_xscale = 1
-        self.image_yscale = 1
-        self.image_rotation = 0
-        self.image_alpha = 255
-        self.image_blend = None
+        self.image_index = image_index
+        self.image_fps = (self.sprite.fps if self.sprite is not None else
+                          image_fps)
+        self.image_xscale = image_xscale
+        self.image_yscale = image_yscale
+        self.image_rotation = image_rotation
+        self.image_alpha = image_alpha
+        self.image_blend = image_blend
 
         self._alarms = {}
 
@@ -3541,7 +3467,7 @@ class StellarClass(object):
             self._anim_count %= self._frame_time
 
         # Alarms
-        for a in self._alarms.keys():
+        for a in self._alarms:
             self._alarms[a] -= delta_mult
             if self._alarms[a] <= 0:
                 del self._alarms[a]
@@ -3549,8 +3475,9 @@ class StellarClass(object):
 
         # Movement
         if self.xvelocity or self.yvelocity:
-            self.x += self.xvelocity * delta_mult
-            self.y += self.yvelocity * delta_mult
+            if self.id != "mouse":
+                self.x += self.xvelocity * delta_mult
+                self.y += self.yvelocity * delta_mult
 
             # Detect collisions
             if self.detects_collisions:
@@ -3723,8 +3650,18 @@ class Mouse(StellarClass):
 
     @x.setter
     def x(self, value):
-        # Do nothing; we don't want this to be manually set.
-        pass
+        rel_x = (value - self.x) * game._xscale
+        self.mouse_x += rel_x
+
+        self.xprevious = self._x
+        self._x = value
+        self._bbox_left = value + self.bbox_x
+        self._bbox_right = self.bbox_left + self.bbox_width
+
+        # Cause the Pygame sprite to make itself dirty
+        self._pygame_sprite.rect = pygame.Rect(0, 0, 1, 1)
+
+        pygame.mouse.set_pos(self.mouse_x, self.mouse_y)
 
     @property
     def y(self):
@@ -3745,51 +3682,48 @@ class Mouse(StellarClass):
 
     @y.setter
     def y(self, value):
-        # Do nothing; we don't want this to be manually set.
-        pass
+        rel_y = (value - self.y) * game._yscale
+        self.mouse_y += rel_y
+
+        self.yprevious = self._y
+        self._y = value
+        self._bbox_top = value + self.bbox_y
+        self._bbox_bottom = self.bbox_top + self.bbox_height
+
+        # Cause the Pygame sprite to make itself dirty
+        self._pygame_sprite.rect = pygame.Rect(0, 0, 1, 1)
+
+        pygame.mouse.set_pos(self.mouse_x, self.mouse_y)
 
     @property
-    def bbox_left(self):
-        return self.x
+    def sprite(self):
+        return self._sprite
 
-    @bbox_left.setter
-    def bbox_left(self, value):
-        # Do nothing; we don't want this to be manually set.
-        pass
+    @sprite.setter
+    def sprite(self, value):
+        if isinstance(value, Sprite) or value is None:
+            self._sprite = value
+        else:
+            self._sprite = game.sprites[value]
 
-    @property
-    def bbox_right(self):
-        return self.x
-
-    @bbox_right.setter
-    def bbox_right(self, value):
-        # Do nothing; we don't want this to be manually set.
-        pass
+        self.set_cursor()
 
     @property
-    def bbox_top(self):
-        return self.y
+    def visible(self):
+        return self._visible
 
-    @bbox_top.setter
-    def bbox_top(self, value):
-        # Do nothing; we don't want this to be manually set.
-        pass
-
-    @property
-    def bbox_bottom(self):
-        return self.y
-
-    @bbox_bottom.setter
-    def bbox_bottom(self, value):
-        # Do nothing; we don't want this to be manually set.
-        pass
+    @visible.setter
+    def visible(self, value):
+        self._visible = value
+        self.set_cursor()
 
     def __init__(self):
-        super(Mouse, self).__init__(0, 0, 0, id='mouse')
+        self._visible = True
         self.mouse_x, self.mouse_y = pygame.mouse.get_pos()
         self.mouse_xprevious = self.mouse_x
         self.mouse_yprevious = self.mouse_y
         self.previous_speeds = []
+        super(Mouse, self).__init__(0, 0, 0, id='mouse')
 
     def event_collision(self, other):
         game.event_mouse_collision(other)
@@ -3841,6 +3775,13 @@ class Mouse(StellarClass):
         self.mouse_yprevious = self.mouse_y
         self.xprevious = self.x
         self.yprevious = self.y
+
+    def set_cursor(self):
+        # Set the mouse cursor and visibility state.
+        if not game.grab_input:
+            pygame.mouse.set_visible(self.visible and self.sprite is None)
+        else:
+            pygame.mouse.set_visible(False)
 
 
 class Room(object):
@@ -3905,8 +3846,8 @@ class Room(object):
 
     """
 
-    def __init__(self, objects=(), width=DEFAULT_SCREENWIDTH,
-                 height=DEFAULT_SCREENHEIGHT, views=None, background=None):
+    def __init__(self, objects=(), width=640, height=480, views=None,
+                 background=None):
         """Create a new Room object.
 
         Arguments set the properties of the room.  See Room.__doc__ for
@@ -3987,9 +3928,6 @@ class Room(object):
         method behaves in the same way that Room.start does.
 
         """
-        if game.current_room is not None:
-            game.current_room.event_room_end()
-
         for sprite in game._pygame_sprites:
             sprite.kill()
 
@@ -4006,17 +3944,30 @@ class Room(object):
 
         self._started = True
 
-    def end(self):
-        """Start the next room.
+    def end(self, next_room=None, resume=True):
+        """End the current room.
 
-        If this room is the last room, the game is ended.  Note that
-        this does not reset the state of this room.  The state of the
-        next room, if any, is reset, however.
+        ``next_room`` indicates the room number of the room to go to
+        next; if set to None, the room after this one is chosen.
+        ``resume`` indicates whether or not to resume the next room
+        instead of restarting it.  If the room chosen as the next room
+        does not exist, the game is ended.
+
+        This triggers this room's ``event_room_end`` and resets the
+        state of this room.
 
         """
-        next_room = self.room_number + 1
-        if next_room < len(game.rooms):
-            game.rooms[next_room].start()
+        self.event_room_end()
+        self._reset()
+
+        if next_room is None:
+            next_room = self.room_number + 1
+
+        if next_room >= -len(game.rooms) and next_room < len(game.rooms):
+            if resume:
+                game.rooms[next_room].resume()
+            else:
+                game.rooms[next_room].start()
         else:
             game.end()
 
@@ -4026,6 +3977,15 @@ class Room(object):
         Called when the room starts.  It is always called after any game
         start events and before any object create events occurring at
         the same time.
+
+        """
+        pass
+
+    def event_room_end(self):
+        """Room end event.
+
+        Called when the room ends.  It is always called before any game
+        end events occurring at the same time.
 
         """
         pass
@@ -4144,15 +4104,6 @@ class Room(object):
 
         It is always called before any game close events occurring at
         the same time.
-
-        """
-        pass
-
-    def event_room_end(self):
-        """Room end event.
-
-        Called when the room ends.  It is always called before any game
-        end events occurring at the same time.
 
         """
         pass
@@ -4556,6 +4507,216 @@ class _FakeFont(object):
 
     def get_size(self, text, x, y, width=None, height=None):
         return (1, 1)
+
+
+def create_object(cls, *args, **kwargs):
+    """Create an object in the current room.
+
+    ``cls`` is the class (derived from StellarClass) to create an object
+    of.  ``args`` and ``kwargs`` are passed on to cls.__init__ as
+    arguments.
+
+    Calling this function is equivalent to:
+        sge.game.current_room.add(cls(*args, **kwargs))
+
+    """
+    game.current_room.add(cls(*args, **kwargs))
+
+
+def sound_stop_all():
+    """Stop playback of all sounds."""
+    for i in game.sounds:
+        game.sounds[i].stop()
+
+
+def music_clear_queue():
+    """Clear the music queue."""
+    game._music_queue = []
+
+
+def music_stop_all():
+    """Stop playback of any music and clear the queue."""
+    for i in game.music:
+        game.music[i].stop()
+
+    music_clear_queue()
+
+
+def get_key_pressed(key):
+    """Return whether or not a given key is pressed.
+
+    ``key`` is the key to check.
+
+    """
+    key = key.lower()
+    if key in KEYS:
+        return pygame.key.get_pressed()[KEYS[key]]
+    else:
+        return False
+
+
+def get_mouse_button_pressed(button):
+    """Return whether or not a given mouse button is pressed.
+
+    ``button`` is the number of the mouse button to check, where 0
+    is the first mouse button.
+
+    """
+    if button < 3:
+        return pygame.mouse.get_pressed()[button]
+    else:
+        return False
+
+
+def get_joystick_axis(joystick, axis):
+    """Return the position of the given axis.
+
+    ``joystick`` is the number of the joystick to check, where 0 is
+    the first joystick.  ``axis`` is the number of the axis to
+    check, where 0 is the first axis of the joystick.
+
+    Returned value is a float from -1 to 1, where 0 is centered, -1
+    is all the way to the left or up, and 1 is all the way to the
+    right or down.
+
+    If the joystick or axis requested does not exist, 0 is returned.
+
+    Support for joysticks in Stellar Game Engine implementations is
+    optional.  If the implementation used does not support
+    joysticks, this function will act like the joystick requested
+    does not exist.
+
+    """
+    if joystick < len(game._joysticks):
+        numaxes = game._joysticks[joystick].get_numaxes()
+        if axis < numaxes:
+            return game._joysticks[joystick].get_axis(axis)
+        else:
+            ball = (axis - numaxes) // 2
+            direction = (axis - numaxes) % 2
+            if ball < game._joysticks[joystick].get_numballs():
+                return game._joysticks[joystick].get_ball(ball)[direction]
+    else:
+        return 0
+
+
+def get_joystick_hat(joystick, hat):
+    """Return the position of the given HAT.
+
+    ``joystick`` is the number of the joystick to check, where 0 is
+    the first joystick.  ``hat`` is the number of the HAT to check,
+    where 0 is the first HAT of the joystick.
+
+    Returned value is a tuple in the form (x, y), where x is the
+    horizontal position and y is the vertical position.  Both x and
+    y are 0 (centered), -1 (left or up), or 1 (right or down).
+
+    If the joystick or HAT requested does not exist, (0, 0) is
+    returned.
+
+    Support for joysticks in Stellar Game Engine implementations is
+    optional.  If the implementation used does not support
+    joysticks, this function will act like the joystick requested
+    does not exist.
+
+    """
+    if joystick < len(game._joysticks):
+        if hat < game._joysticks[joystick].get_numhats():
+            return game._joysticks[joystick].get_hat(hat)
+    else:
+        return (0, 0)
+
+
+def get_joystick_button_pressed(joystick, button):
+    """Return whether or not the given button is pressed.
+
+    ``joystick`` is the number of the joystick to check, where 0 is
+    the first joystick.  ``button`` is the number of the button to
+    check, where 0 is the first button of the joystick.
+
+    If the joystick or button requested does not exist, False is
+    returned.
+
+    Support for joysticks in Stellar Game Engine implementations is
+    optional.  If the implementation used does not support
+    joysticks, this function will act like the joystick requested
+    does not exist.
+
+    """
+    if joystick < len(game._joysticks):
+        if button < game._joysticks[joystick].get_numbuttons():
+            return game._joysticks[joystick].get_button(button)
+    else:
+        return False
+
+
+def get_joysticks():
+    """Return the number of joysticks available.
+
+    Support for joysticks in Stellar Game Engine implementations is
+    optional.  If the implementation used does not support
+    joysticks, this function will always return 0.
+
+    """
+    return len(game._joysticks)
+
+
+def get_joystick_axes(joystick):
+    """Return the number of axes available on the given joystick.
+
+    ``joystick`` is the number of the joystick to check, where 0 is
+    the first joystick.  If the given joystick does not exist, 0
+    will be returned.
+
+    Support for joysticks in Stellar Game Engine implementations is
+    optional.  If the implementation used does not support
+    joysticks, this function will act like the joystick requested
+    does not exist.
+
+    """
+    if joystick < len(game._joysticks):
+        return (game._joysticks[joystick].get_numaxes() +
+                game._joysticks[joystick].get_numballs() * 2)
+    else:
+        return 0
+
+
+def get_joystick_hats(joystick):
+    """Return the number of HATs available on the given joystick.
+
+    ``joystick`` is the number of the joystick to check, where 0 is
+    the first joystick.  If the given joystick does not exist, 0
+    will be returned.
+
+    Support for joysticks in Stellar Game Engine implementations is
+    optional.  If the implementation used does not support
+    joysticks, this function will act like the joystick requested
+    does not exist.
+
+    """
+    if joystick < len(game._joysticks):
+        return game._joysticks[joystick].get_numhats()
+    else:
+        return 0
+
+
+def get_joystick_buttons(joystick):
+    """Return the number of buttons available on the given joystick.
+
+    ``joystick`` is the number of the joystick to check, where 0 is
+    the first joystick.  If the given joystick does not exist, 0
+    will be returned.
+
+    Support for joysticks in Stellar Game Engine implementations is
+    optional.  If the implementation used does not support
+    joysticks, this function will act like the joystick requested
+    does not exist.
+
+    """
+    if joystick < len(game._joysticks):
+        return game._joysticks[joystick].get_numbuttons()
+    else:
+        return 0
 
 
 def _scale(surface, width, height):

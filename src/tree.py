@@ -171,7 +171,6 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Sound":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
                 elif directory == "Scripts":
-                    print("FIXME")
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))
                 elif directory == "Rooms":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
@@ -183,16 +182,13 @@ class TreeWidget(QtGui.QTreeWidget):
                 print ("hola")
         
         item = self.currentItem()
-        print (item)
         if not item.parent() == None:
             for name in self.Names:
-                print (name)
                 openWindow(name)
 
     def InsertItem(self):
         item = self.currentItem()    
         itemtext = str(item.text(0))
-        print (str(itemtext)) 
         if itemtext == "Sprites":
             self.main.addSprite()
         elif itemtext == "Sound":

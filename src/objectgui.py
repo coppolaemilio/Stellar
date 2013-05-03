@@ -365,7 +365,7 @@ class ObjectGUI(QtGui.QWidget):
         self.cbvisible = QtGui.QCheckBox('Visible', self)
         self.cbsolid = QtGui.QCheckBox('Solid', self)
         self.cbpersis = QtGui.QCheckBox('Persistent', self)
-        self.LblDepth = QtGui.QLabel('Depth:')
+        self.LblDepth = QtGui.QLabel('Z:')
         self.depthEdit = QtGui.QLineEdit("0")
         self.LblParent = QtGui.QPushButton("Parent:")
         self.ParentEdit = QtGui.QComboBox()
