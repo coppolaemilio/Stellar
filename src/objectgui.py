@@ -27,6 +27,7 @@ from __future__ import unicode_literals
 import sys
 import os
 import shutil
+import ConfigParser
 from PyQt4 import QtGui, QtCore
 
 
@@ -35,11 +36,11 @@ class ExecuteScriptD(QtGui.QDialog):
         super(ExecuteScriptD, self).__init__(parent.main)
         self.parent = parent       
         self.tree = tree
-        
                 
         self.initUI()
         
     def initUI(self):
+        
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.image = QtGui.QLabel()
         self.image.setPixmap(QtGui.QPixmap(os.path.join('Data', 'Actions', 'executescript.png')))
@@ -125,7 +126,7 @@ class ExecuteScriptD(QtGui.QDialog):
             return
         else:
             scripttoexecute = self.scriptcombobox.currentText()[:-3]
-            self.parent.OkActionScript(scripttoexecute)
+            self.parent.readActionScript(scripttoexecute)
             self.close()
 
     def cancel(self):
@@ -152,11 +153,11 @@ class Events(QtGui.QDialog):
         
 
         self.btn_Create = QtGui.QPushButton('Create')
-        self.btn_Create.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
+        self.btn_Create.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Create.png')))
         self.btn_Create.clicked.connect(self.addEvent_Create)
         
         self.btn_Mouse = QtGui.QPushButton('Mouse')
-        self.btn_Mouse.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'mouse.png')))
+        self.btn_Mouse.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Mouse.png')))
         self.btn_Mouse.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.btn_Mouse.clicked.connect(self.on_mouse_menu)
         # create context menu
@@ -196,14 +197,14 @@ class Events(QtGui.QDialog):
 
 
         self.btn_Destroy = QtGui.QPushButton('Destroy')
-        self.btn_Destroy.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
+        self.btn_Destroy.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Destroy.png')))
         self.btn_Destroy.clicked.connect(self.addEvent_Destroy)
 
         self.btn_Other = QtGui.QPushButton('Other')
         self.btn_Other.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'other.png')))
 
         self.btn_Alarm = QtGui.QPushButton('Alarm')
-        self.btn_Alarm.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'alarm.png')))
+        self.btn_Alarm.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Alarm.png')))
         self.btn_Alarm.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.btn_Alarm.clicked.connect(self.on_context_menu)
         # create context menu
@@ -222,12 +223,12 @@ class Events(QtGui.QDialog):
         self.popMenu.addAction(QtGui.QAction('Alarm 11', self)) 
         
         self.btn_Draw = QtGui.QPushButton('Draw')
-        self.btn_Draw.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))
+        self.btn_Draw.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Draw.png')))
         self.btn_Draw.clicked.connect(self.addEvent_Draw)
 
 
         self.btn_Step = QtGui.QPushButton('Step')
-        self.btn_Step.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
+        self.btn_Step.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Step.png')))
         self.btn_Step.clicked.connect(self.addEvent_Step)
 
         self.btn_KeyPress = QtGui.QPushButton('Key Press')
@@ -235,15 +236,15 @@ class Events(QtGui.QDialog):
         self.btn_Collision = QtGui.QPushButton('Collision')
         self.btn_Collision.clicked.connect(self.addEvent_Collision)
 
-        self.btn_Collision.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))
+        self.btn_Collision.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Collision.png')))
 
         self.btn_KeyReleased = QtGui.QPushButton('Key Released')
 
         self.btn_Joystick = QtGui.QPushButton('Joystick')
-        self.btn_Joystick.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'joystick.png')))
+        self.btn_Joystick.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Joystick.png')))
 
         self.btn_Keyboard = QtGui.QPushButton('Keyboard')
-        self.btn_Keyboard.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'keyboard.png')))
+        self.btn_Keyboard.setIcon(QtGui.QIcon(os.path.join('Data', 'Events', 'Keyboard.png')))
         
         self.btn_Cancel = QtGui.QPushButton('Cancel')
         self.btn_Cancel.setIcon(QtGui.QIcon(os.path.join('Data', 'cancel.png')))
@@ -256,9 +257,7 @@ class Events(QtGui.QDialog):
         self.cancellayout.addItem(spacerItem)
         self.cancellayout.addWidget(self.btn_Cancel)
         self.cancellayout.addItem(spacerItem)
-        self.CancelFrame.setLayout(self.cancellayout)     
-
-        
+        self.CancelFrame.setLayout(self.cancellayout)        
 
         self.ContainerGrid.addWidget(self.btn_Create, 0, 0)
         self.ContainerGrid.addWidget(self.btn_Mouse, 0, 1)
@@ -272,8 +271,7 @@ class Events(QtGui.QDialog):
         self.ContainerGrid.addWidget(self.btn_KeyReleased, 4, 1)
         self.ContainerGrid.addWidget(self.btn_Joystick, 5, 0)
         self.ContainerGrid.addWidget(self.btn_Keyboard, 5, 1)
-        self.ContainerGrid.addWidget(self.CancelFrame, 7, 0,1,2)
-        
+        self.ContainerGrid.addWidget(self.CancelFrame, 7, 0,1,2)    
 
         #self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         self.setWindowTitle("Choose the Event to add")
@@ -309,30 +307,26 @@ class Events(QtGui.QDialog):
     def on_mouse_menu(self):
         # show context menu
         self.pos = QtGui.QCursor.pos()
-        self.popMenuMouse.exec_(self.pos)        
+        self.popMenuMouse.exec_(self.pos)
+        
 
+EventList = ['EventCreate','EventStep','EventDestroy'] 
 class ObjectGUI(QtGui.QWidget):
     def __init__(self, main, FileName, dirname, tree):
         super(ObjectGUI, self).__init__()
-
         self.main = main
         self.dirname = dirname
         self.FileName = FileName
         self.tree = tree
-        self.extension = "py"
-
-
-        
-        self.initUI()
-
-
+        self.extension = "ini"
+        self.config = ConfigParser.ConfigParser()
+        self.initUI()     
 
     def initUI(self):
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
-
-        
+ 
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
         self.BnewSprite = QtGui.QPushButton("New")
@@ -340,8 +334,7 @@ class ObjectGUI(QtGui.QWidget):
         self.SpriteCombo = QtGui.QComboBox()
         self.SpriteCombo.addItem('<no sprite>')
         self.SpriteCombo.activated[str].connect(self.changeSprite)
-        
-        
+    
         #self.SpriteCombo.addItems(self.tree.main.Sources["Sprites"][:-3])
         self.SpriteFrame = QtGui.QGroupBox("Sprite")
         
@@ -351,7 +344,6 @@ class ObjectGUI(QtGui.QWidget):
         self.spritelayout.addWidget(self.BnewSprite,1,0)
         self.spritelayout.addWidget(self.BeditSprite,1,1)
         self.SpriteFrame.setLayout(self.spritelayout)
-
         
         self.NameFrame = QtGui.QFrame()
         self.namelayout = QtGui.QGridLayout()
@@ -360,7 +352,6 @@ class ObjectGUI(QtGui.QWidget):
         self.namelayout.addWidget(self.nameEdit,0,1)
         self.namelayout.addWidget(self.SpriteFrame,1,0,1,2)
         self.NameFrame.setLayout(self.namelayout)
-
         
         self.cbvisible = QtGui.QCheckBox('Visible', self)
         self.cbsolid = QtGui.QCheckBox('Solid', self)
@@ -389,12 +380,9 @@ class ObjectGUI(QtGui.QWidget):
         self.Btndelete = QtGui.QPushButton("Delete")
         self.Btndelete.clicked.connect(self.DeleteEvent)
         self.Btnchange = QtGui.QPushButton("Change")
-        self.Btnchange.clicked.connect(self.AddEvent)
-
-        
+        self.Btnchange.clicked.connect(self.AddEvent)      
 
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-
 
         self.FirstWidget = QtGui.QWidget()
         self.FirstGrid = QtGui.QGridLayout()
@@ -412,9 +400,7 @@ class ObjectGUI(QtGui.QWidget):
         self.FirstGrid.addItem(spacerItem)
         self.FirstGrid.addWidget(self.Btninfo, 7, 0, 1, 2)
         self.FirstGrid.addWidget(self.Btnok, 8, 0,1,2)
-        self.FirstWidget.setLayout(self.FirstGrid)
-        
-
+        self.FirstWidget.setLayout(self.FirstGrid)      
         #---
         self.SecondWidget = QtGui.QWidget()
         self.SecondGrid = QtGui.QGridLayout()
@@ -424,14 +410,12 @@ class ObjectGUI(QtGui.QWidget):
         self.SecondGrid.addWidget(self.Btndelete,      8, 0)
         self.SecondGrid.addWidget(self.Btnchange,      8, 1)
         self.SecondWidget.setLayout(self.SecondGrid)
-
         #---
         self.ThirdWidget = QtGui.QWidget()
         self.ThirdGrid = QtGui.QGridLayout()
         self.ThirdGrid.setHorizontalSpacing(0)
         self.ThirdGrid.addWidget(self.actionstree, 0, 0, 9, 2)
         self.ThirdWidget.setLayout(self.ThirdGrid)
-
 
         self.ActionCombo = QtGui.QComboBox()
         self.ActionCombo.addItem('Code')
@@ -447,19 +431,14 @@ class ObjectGUI(QtGui.QWidget):
         self.actionToolbar = QtGui.QToolBar('Script Toolbar', orientation=QtCore.Qt.Vertical)
         self.actionToolbar.addAction(self.exCodeAction)
         self.actionToolbar.addAction(self.exScriptAction)
-        self.actionToolbar.addAction(self.commentAction)
-
-        
+        self.actionToolbar.addAction(self.commentAction)   
         #---
-
-
         self.objectsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
         self.objectsplitter.addWidget(self.FirstWidget)
         self.objectsplitter.addWidget(self.SecondWidget)
         self.objectsplitter.addWidget(self.ThirdWidget)
         self.objectsplitter.addWidget(self.actionToolbar)
         self.objectsplitter.setStretchFactor(1, 1)
-        
 
         self.ContainerGrid.addWidget(self.objectsplitter)
         self.setLayout(self.ContainerGrid)
@@ -474,69 +453,56 @@ class ObjectGUI(QtGui.QWidget):
             self.SpriteCombo.addItem(sprite[:-4])
 
     def changeSprite(self,newsprite):
-        print (newsprite)
-        objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
-        lines = objectfile.readlines()
-        objectfile.close()
-        f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
-        for line in lines:  
-            if ('<Sprite>' in line):
-                f.write('<Sprite>'+newsprite+"\n") 
-            else:
-                f.write(line)
-        f.close()
+        self.config.set('data', 'sprite', newsprite)
+        with open(self.currentfile, 'wb') as self.configfile:
+            self.config.write(self.configfile)
+
     
     def readObjectEvents(self):
-        objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
-        lines = objectfile.readlines()
-        objectfile.close()
-        self.ActionNumber=0
-        self.actionstree.clear()
-        for line in lines:
-            if ('<Sprite>' in line):
-                line = line.replace("\n",">")
-                line = line.split(">")
-                index = self.SpriteCombo.findText(line[1])
-                if index==-1:
-                    #QtGui.QMessageBox.warning(self, "Error.", 'The sprite named "'+line[1]+'" does not exist.',QtGui.QMessageBox.Ok)
-                    self.SpriteCombo.setCurrentIndex(0)
-                else:
-                    self.SpriteCombo.setCurrentIndex (index)
-            #Events
-            elif('<EventCreate>' in line ):
-                self.AddToEventList("Create")
-                
-            elif('<EventStep>' in line):
-                self.AddToEventList("Step")
 
-            elif('<EventDestroy>' in line):
-                self.AddToEventList("Destroy")
+        self.eventstree.clear()
+        self.currentfile = os.path.join(self.dirname,"Objects",self.FileName+".ini")
+        self.config.read(self.currentfile)
+        
+        currentsprite = self.config.get('data', 'sprite', 0)
+        index = self.SpriteCombo.findText(currentsprite)
+        if index==-1:
+            #QtGui.QMessageBox.warning(self, "Error.", 'The sprite named "'+currentsprite+'" does not exist.',QtGui.QMessageBox.Ok)
+            self.SpriteCombo.setCurrentIndex(0)
+        else:
+            self.SpriteCombo.setCurrentIndex (index)
+
+        
+        for event in EventList:
+            if self.config.has_section(event):
+                self.AddToEventList(event.replace('Event',''))
+
         self.readObjectActions()
+        
     def readObjectActions(self):
-        #Opens and read the object information           
-        objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
-        lines = objectfile.readlines()
-        objectfile.close()
-        self.ActionNumber=0
+        #Opens and read the object information
         self.actionstree.clear()
-        for line in lines:
-            if ('<Actions>' in line):
-                self.ActionNumber+=1
-            #Actions
-            elif('<AddActionComment>' in line):
-                line = line.replace('\n','')
-                line = line.split('>')
-                if self.create.isSelected()==True and self.ActionNumber==1:
-                    self.readActionComment(line[1])
-                elif self.stepeventree.isSelected()==True and self.ActionNumber==2:
-                    self.readActionComment(line[1])
-            elif('<AddActionScript>' in line):
-                line = line.replace('\n','')
-                line = line.split('>')
-                if self.create.isSelected()==True and self.ActionNumber==1:
-                    self.OkActionScript(line[1])
-                elif self.stepeventree.isSelected()==True and self.ActionNumber==2:
-                    self.OkActionScript(line[1])
+        item = self.eventstree.currentItem()
+        for item in self.eventstree.selectedItems():
+            event = str(item.text(0))
+            event = "Event"+event
+            for option in self.config.options(event):
+                if "comment" in option:
+                    self.readActionComment(self.config.get(event, option, 0))
+                if "runscript" in option:
+                    self.readActionScript(self.config.get(event, option, 0))
+                if "destroy" in option:
+                    self.readActionDestroy(self.config.get(event, option, 0))
+
+    def name_option(self, section, name):
+        #FIXME 
+        number = 0
+        prefix = name
+        name = prefix + str(number)
+        if self.config.has_option(section, prefix):
+            number += 1 
+            name = prefix + str(number)
+        return name
         
     def AddActionCode(self):
         create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[0]))
@@ -545,9 +511,14 @@ class ObjectGUI(QtGui.QWidget):
     def AddActionScript(self):
         scriptdialog = ExecuteScriptD(self, self.tree)
 
-    def OkActionScript(self, scriptname):
-        scriptactree = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[1]+': '+scriptname+'.'))
+    def readActionScript(self, scriptname):
+        scriptactree = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[1]+': '+scriptname))
         scriptactree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executescript.png')))
+        
+
+    def readActionDestroy(self, who):
+        scriptactree = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList('Destroy: '+who))
+        scriptactree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
 
     def AddActionComment(self):
         self.comment = QtGui.QInputDialog.getText(self, "Comment","Comment:", 0)
@@ -555,12 +526,21 @@ class ObjectGUI(QtGui.QWidget):
         if not self.comment[0]=="":
             commentree = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.comment[0]))
             commentree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'comment.png')))
+
+            item = self.eventstree.currentItem()
+            for item in self.eventstree.selectedItems():
+                event = "Event"+str(item.text(0))
+                option = self.name_option(event,"comment")
+                self.config.set(event, option, self.comment[0])
+                with open(self.currentfile, 'wb') as self.configfile:
+                    self.config.write(self.configfile)
+                
     def readActionComment(self, text):
         print (text)
         commentree = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(text))
         commentree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'comment.png')))
         #commentree.setFont(0, QtGui.QFont.StyleItalic())
-              
+        
     def AddEvent(self):
         eventdialog = Events(self)
 
@@ -573,78 +553,29 @@ class ObjectGUI(QtGui.QWidget):
                 root = self.eventstree.invisibleRootItem()
                 for item in self.eventstree.selectedItems():
                     (item.parent() or root).removeChild(item)
+                    self.config.remove_section("Event"+str(item.text(0)))
+                    with open(self.currentfile, 'wb') as self.configfile:    
+                        self.config.write(self.configfile)
                     self.readObjectActions()
             else:
                 event.ignore()
 
     def AddToEventList(self, name):
-        if name=="Create":
-            self.create = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[0]))
-            self.create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'create.png')))
-            self.create.setSelected(True)
-            objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
-            lines = objectfile.readlines()
-            for line in lines:
-                if ("<EventCreate>" in line):
-                    print ("Has Create Event")
-                    return
-            objectfile.close()
-            f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
-            for line in lines:  
-                if ('<Events>' in line):
-                     f.write('<Events>\n    <EventCreate>\n        <Actions>\n') 
-                else:
-                     f.write(line)
-            f.close()
-        elif name=="Step":
-            self.stepeventree = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[1]))
-            self.stepeventree.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'step.png')))
-            objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
-            lines = objectfile.readlines()
-            for line in lines:
-                if ("<EventStep>" in line):
-                    print ("Has Step Event")
-                    return
-            objectfile.close()
-            f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
-            for line in lines:  
-                if ('<Events>' in line):
-                     f.write('<Events>\n    <EventStep>\n        <Actions>\n') 
-                else:
-                     f.write(line)
-            f.close()
-        elif name=="Destroy":
-            self.destroy = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[2]))
-            self.destroy.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'destroy.png')))
-            objectfile = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), "r")
-            lines = objectfile.readlines()
-            for line in lines:
-                if ("<EventDestroy>" in line):
-                    print ("Has Destroy Event")
-                    return
-            objectfile.close()
-            f = open(os.path.join(self.dirname,"Objects",self.FileName+".py"), 'w')
-            for line in lines:  
-                if ('<Events>' in line):
-                     f.write('<Events>\n    <EventDestroy>\n        <Actions>\n') 
-                else:
-                     f.write(line)
-            f.close()
-        elif name=="Collision":
-            self.collision = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[3]))
-            self.collision.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'collision.png')))      
-        elif name=="Draw":
-            self.draw = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(self.events[4]))
-            self.draw.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', 'draw.png')))         
+        self.create = QtGui.QTreeWidgetItem(self.eventstree,QtCore.QStringList(name))
+        self.create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Events', name+'.png')))
+        self.create.setSelected(True)
+        if self.config.has_section('Event'+name):
+            #self.eventstree.setCurrentItem(0)
+            return
+        else:
+            self.config.add_section('Event'+name)
+        with open(self.currentfile, 'wb') as self.configfile:    
+            self.config.write(self.configfile)
         
-
-    #def ok(self):
-    #    self.main.qmdiarea.activeSubWindow().close()
     def ok(self):
         self.close()
         icon = str(self.nameEdit.text())
         if self.FileName is not icon:
-
             in_fname = os.path.join(self.dirname, 'Objects', "%s.%s" %
                                     (self.FileName, self.extension))
             out_fname = os.path.join(self.dirname, 'Objects', "%s.%s" % 

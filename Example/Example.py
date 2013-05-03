@@ -81,6 +81,31 @@ class obj_cristal(sge.StellarClass):
             self.bbox_bottom = sge.game.current_room.height - 1
         
 
+[data]
+
+sprite = spr_cancel
+
+visible = true
+
+solid = true
+
+z = 0
+
+
+
+[EventCreate]
+
+comment = Esto es un comment
+
+comment1 = otro comment
+
+runscript = creating_script
+
+destroy = self
+
+[EventStep]
+
+destroy = self
 
 
 game = Game()

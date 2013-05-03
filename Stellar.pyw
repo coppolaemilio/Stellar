@@ -85,8 +85,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         dirname, filename = os.path.split(os.path.abspath(self.stellardir))
         self.pref = "preferences.pyw"
         self.stellarnew = "Stellar.pyw"
+        
 
         self.sge_file = os.path.join(dirname, "Data","SGE", "sge.py")
+        self.obj_template_file= os.path.join(dirname, "Data","SGE", "objecttemplate.ini")
         
         actions = self.initActions()
         self.statusBar()
@@ -395,7 +397,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
     def rungame(self):
         GameRunner(self.dirname, self.fname)
-        print ("cacaseca")
         
     def addSource(self, source):
         
@@ -404,6 +405,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             prefix = name
             name = prefix + str(number)
             while os.path.exists(os.path.join(self.dirname, source, name + ".py")):
+                number += 1 
+                name = prefix + str(number)
+            while os.path.exists(os.path.join(self.dirname, source, name + ".ini")):
                 number += 1 
                 name = prefix + str(number)
             return name
@@ -415,7 +419,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     shutil.copy(path, os.path.join(self.dirname, source, name))
             elif source== "Objects":
                 if path != os.path.join(self.dirname, source, name):
-                    shutil.copy(self.obj_template_file, os.path.join(self.dirname, source, name+".py"))
+                    shutil.copy(self.obj_template_file, os.path.join(self.dirname, source, name+".ini"))
                 
                     
             elif source == "Scripts" or source == "Fonts" or source == "Rooms":
