@@ -8,8 +8,11 @@ self.xvelocity = (sge.game.get_key_pressed(right_key) -
 self.yvelocity = (sge.game.get_key_pressed(down_key) -
                           sge.game.get_key_pressed(up_key))"""
 
-self.x += self.xvelocity
-self.y += self.yvelocity
+if self.xvelocity>0:
+    self.x += self.xvelocity
+    self.y += self.yvelocity
+else:
+    self.x = obj_cristal.x
 
 
 # Limit the circles to inside the room.

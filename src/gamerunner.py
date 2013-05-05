@@ -18,11 +18,10 @@
 # along with Stellar. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""
-Known bugs:
-    - if an event only contains coments the game will not run.
-"""
-
+#"""
+#Known bugs:
+#    - if an event only contains coments the game will not run.
+#"""
 
 import os
 import shutil
@@ -102,7 +101,7 @@ class GameRunner(object):
                 if (os.path.isfile(full_file_name)):
                     roominfo = open(full_file_name, "r")
                     roominfolines = roominfo.read()
-                    #roominfolines = roominfolines.replace("\n","\n        ")
+                    roominfolines = roominfolines.replace("\r","")
                     sgerooms.append(roominfolines)
 
         roominfo.close()

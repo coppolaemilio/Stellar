@@ -127,6 +127,14 @@ class ExecuteScriptD(QtGui.QDialog):
             scripttoexecute = self.scriptcombobox.currentText()[:-3]
             self.parent.readActionScript(scripttoexecute)
             self.close()
+            item = self.parent.eventstree.currentItem()
+            for item in self.parent.eventstree.selectedItems():
+                event = "Event"+str(item.text(0))
+                option = self.parent.name_option(event,"runscript")
+                print (scripttoexecute)
+                self.parent.config.set(event, option, scripttoexecute)
+                with open(self.parent.currentfile, 'wb') as self.parent.configfile:
+                    self.parent.config.write(self.parent.configfile)
             return scripttoexecute
 
     def cancel(self):
@@ -512,15 +520,7 @@ class ObjectGUI(QtGui.QWidget):
 
     def AddActionScript(self):
         scriptdialog = ExecuteScriptD(self, self.tree)
-        item = self.eventstree.currentItem()
-        for item in self.eventstree.selectedItems():
-            event = "Event"+str(item.text(0))
-            option = self.name_option(event,"runscript")
-            global nameofscript
-            
-            self.config.set(event, option, nameofscript)
-            with open(self.currentfile, 'wb') as self.configfile:
-                self.config.write(self.configfile)
+        
 
     def readActionScript(self, scriptname):
         scriptactree = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[1]+': '+scriptname))
@@ -541,6 +541,7 @@ class ObjectGUI(QtGui.QWidget):
             item = self.eventstree.currentItem()
             for item in self.eventstree.selectedItems():
                 event = "Event"+str(item.text(0))
+                print (item.text(0))
                 option = self.name_option(event,"comment")
                 self.config.set(event, option, self.comment[0])
                 with open(self.currentfile, 'wb') as self.configfile:
