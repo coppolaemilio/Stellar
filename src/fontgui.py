@@ -133,7 +133,7 @@ class FontGUI(QtGui.QWidget):
         
     def ok(self):
         self.close()
-        name  str(self.nameEdit.text())
+        name = str(self.nameEdit.text())
         if self.name is not name:
             self.tree.fnt_parser.remove_section(self.name)
             self.tree.fnt_parser.add_section(name)
