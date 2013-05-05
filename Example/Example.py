@@ -22,90 +22,52 @@ class Game(sge.Game):
         self.end()
         
 
-#spr_cancel
 
 class obj_0(sge.StellarClass):
-
     def __init__(self, x, y, player=0):
-        super(obj_0, self).__init__(x, y, 5, 'spr_cancel', collision_precise=True)
-        self.player = player
-
-
-
-#spr_cristal
-
-class obj_cristal(sge.StellarClass):
-
-    def __init__(self, x, y, player=0):
-        super(obj_cristal, self).__init__(x, y, 5, 'spr_cristal', collision_precise=True)
-        self.player = player
-
-
-
-
-
+        super(obj_0, self).__init__(x, y, 5, sprite='spr_cancel', collision_precise=True)
     def event_create(self):
 
-        
+class obj_1(sge.StellarClass):
+    def __init__(self, x, y, player=0):
+        super(obj_1, self).__init__(x, y, 5, sprite='spr_cancel', collision_precise=True)
 
-        #"This is the creation event"
-
-        self.image_alpha = 200
-        self.image_blend = 'white'
-
+class obj_cristal(sge.StellarClass):
+    def __init__(self, x, y, player=0):
+        super(obj_cristal, self).__init__(x, y, 5, sprite='spr_cristal', collision_precise=True)
+    def event_create(self):
+        self.xvelocity=1
+        self.yvelocity=1
     def event_step(self, time_passed):
-
+        """left_key = ['left', 'a', 'j', 'kp_4'][self.player]
+        right_key = ['right', 'd', 'l', 'kp_6'][self.player]
+        up_key = ['up', 'w', 'i', 'kp_8'][self.player]
+        down_key = ['down', 's', 'k', 'kp_5'][self.player]
         
-
-        left_key = ['left', 'a', 'j', 'kp_4'][self.player]
-        right_key = ['right', 'd', 'l', 'kp_6'][self.player]
-        up_key = ['up', 'w', 'i', 'kp_8'][self.player]
-        down_key = ['down', 's', 'k', 'kp_5'][self.player]
-        
-        self.xvelocity = (sge.game.get_key_pressed(right_key) -
-                                  sge.game.get_key_pressed(left_key))
-        self.yvelocity = (sge.game.get_key_pressed(down_key) -
-                                  sge.game.get_key_pressed(up_key))
-        
-        self.x += self.xvelocity
-        self.y += self.yvelocity
-        
-        # Limit the circles to inside the room.
-        if self.bbox_left < 0:
-            self.bbox_left = 0
-        elif self.bbox_right >= sge.game.current_room.width:
-            self.bbox_right = sge.game.current_room.width - 1
-        if self.bbox_top < 0:
-            self.bbox_top = 0
-        elif self.bbox_bottom >= sge.game.current_room.height:
+        self.xvelocity = (sge.game.get_key_pressed(right_key) -
+                                  sge.game.get_key_pressed(left_key))
+        self.yvelocity = (sge.game.get_key_pressed(down_key) -
+                                  sge.game.get_key_pressed(up_key))"""
+        
+        self.x += self.xvelocity
+        self.y += self.yvelocity
+        
+        
+        # Limit the circles to inside the room.
+        if self.bbox_left < 0:
+            self.bbox_left = 0
+            self.xvelocity=self.xvelocity*-1
+        elif self.bbox_right >= sge.game.current_room.width:
+            self.bbox_right = sge.game.current_room.width - 1
+            self.xvelocity=self.xvelocity*-1
+        if self.bbox_top < 0:
+            self.bbox_top = 0
+            self.xvelocity=self.yvelocity*-1
+        elif self.bbox_bottom >= sge.game.current_room.height:
             self.bbox_bottom = sge.game.current_room.height - 1
+            self.xvelocity=self.yvelocity*-1
         
-
-[data]
-
-sprite = spr_cancel
-
-visible = true
-
-solid = true
-
-z = 0
-
-
-
-[EventCreate]
-
-comment = Esto es un comment
-
-comment1 = otro comment
-
-runscript = creating_script
-
-destroy = self
-
-[EventStep]
-
-destroy = self
+        #comment loco
 
 
 game = Game()

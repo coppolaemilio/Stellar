@@ -1,7 +1,34 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright (C) 2012, 2013 Emilio Coppola
+#
+# This file is part of Stellar.
+# Stellar is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Stellar is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Stellar. If not, see <http://www.gnu.org/licenses/>.
+
+
+"""
+Known bugs:
+    - if an event only contains coments the game will not run.
+"""
+
+
 import os
 import shutil
 import platform
 import subprocess
+import ConfigParser
 
 from PyQt4 import QtGui, QtCore
 
@@ -51,45 +78,22 @@ class GameRunner(object):
             for file_name in src_files:
                 full_file_name = os.path.join(src, file_name)
                 if (os.path.isfile(full_file_name)):
-                    objinfo = open(full_file_name, "r")
-                    objinfolines = objinfo.readlines()
-                    for line in objinfolines:
-                        if ('<Sprite>' in line):
-                            line = line.replace("\n",">")
-                            line = line.split(">")
-                            objectsprite=line[1]
-                            objinfolines = [w.replace('<Sprite>', "#") for w in objinfolines]
-                        elif ('<init>' in line):
-                            objectsprite.replace("\n", "")
-                            finalline = "    def __init__(self, x, y, player=0):"+"\n        super("+file_name[:-3]+", self).__init__(x, y, 5, '"+objectsprite+"', collision_precise=True)\n        self.player = player"
-                            objinfolines = [w.replace('<init>',finalline.replace("\r", "")) for w in objinfolines]
-                        elif ('<Class>' in line):
-                            objinfolines = [w.replace('<Class>', "class "+file_name[:-3]+"(sge.StellarClass):") for w in objinfolines]
-                        #EVENTS##################################
-                        elif ('<Events>' in line):
-                            objinfolines = [w.replace('<Events>', "") for w in objinfolines]
-                        elif ('<EventCreate>' in line):
-                            objinfolines =[w.replace('<EventCreate>', "def event_create(self):") for w in objinfolines]
-                        elif ('<EventStep>' in line):
-                            objinfolines =[w.replace('<EventStep>', "def event_step(self, time_passed):") for w in objinfolines]
-                        #ACTIONS##################################
-                        elif ('<Actions>' in line ):
-                            objinfolines = [w.replace('<Actions>', "") for w in objinfolines]
-                        elif ('<AddActionScript>' in line ):
-                            line = line.replace("\n","")
-                            line = line.split(">")
-                            if (os.path.isfile(os.path.join(self.dirname,"Scripts",line[1]+".py"))):
-                                scriptinfo = open(os.path.join(self.dirname,"Scripts",line[1]+".py"), "r")
-                                scriptinfolines = scriptinfo.read()
-                                scriptinfolines = scriptinfolines.replace("\n","\n        ")
-                                objinfolines = [w.replace('<AddActionScript>'+line[1], scriptinfolines) for w in objinfolines]
-                            else:
-                                QtGui.QMessageBox.warning(self, "Error on object "+file_name+" Action.", 'The script named "'+line[1]+'" does not exist.',QtGui.QMessageBox.Ok)
-                                return
-                        elif ('<AddActionComment>' in line):
-                            objinfolines = [w.replace('<AddActionComment>', "#") for w in objinfolines]
+                    config = ConfigParser.RawConfigParser()
+                    config.read(full_file_name)
+                    sprite = config.get('data', 'sprite')
                     
-                    sgeobjects.append(objinfolines)
+                    sgeobjects.append(["\nclass "+file_name[:-4]+"(sge.StellarClass):"])
+                    sgeobjects.append(["    def __init__(self, x, y, player=0):"])
+                    sgeobjects.append(["        super("+file_name[:-4]+", self).__init__(x, y, 5, sprite='"+sprite+"', collision_precise=True)"])
+
+                    if config.has_section("EventCreate") and len(config.options("EventCreate"))!= 0:
+                        sgeobjects.append(["    def event_create(self):"])
+                        self.addactions("EventCreate", config, sgeobjects)
+                        
+                    if config.has_section("EventStep") and len(config.options("EventStep"))!= 0:
+                        sgeobjects.append(["    def event_step(self, time_passed):"])
+                        self.addactions("EventStep", config, sgeobjects)
+                    
         if len(os.listdir(os.path.join(self.dirname,"Rooms"))) > 0:
             src=os.path.join(self.dirname,"Rooms")
             src_files = os.listdir(src)
@@ -101,8 +105,6 @@ class GameRunner(object):
                     #roominfolines = roominfolines.replace("\n","\n        ")
                     sgerooms.append(roominfolines)
 
-
-        objinfo.close()
         roominfo.close()
         #Opens and read the template           
         template = open(self.template_file, "r")
@@ -116,7 +118,6 @@ class GameRunner(object):
                 f.write('# Load sprites\n')
                 for sprite in sgesprites:
                     f.write(""+sprite+"_sprite = sge.Sprite('"+sprite+"', transparent=True)\n")
-                
             elif('# Add Stellar objects' in line):
                 for sobject in sgeobjects:
                     for dobject in sobject:
@@ -124,7 +125,6 @@ class GameRunner(object):
             elif('# Rooms' in line):
                 for sroom in sgerooms:
                     f.write("\n"+sroom)
-                    
             else:
                 f.write(line)
                
@@ -137,3 +137,21 @@ class GameRunner(object):
         else:
             os.system('python '+self.fname)
         os.chdir(tmpdir)
+
+    def addactions(self, event, configuration, sgeobjects):
+        config = configuration
+        for option in config.options(event):
+            command = config.get(event, option)
+            if "comment" in option:
+                sgeobjects.append(['        #'+command])
+            elif "variable" in option:
+                sgeobjects.append(['        '+command])
+            elif "runscript" in option:
+                print "aca"
+                if (os.path.isfile(os.path.join(self.dirname,"Scripts",command+".py"))):
+                    scriptinfo = open(os.path.join(self.dirname,"Scripts",command+".py"), "r")
+                    scriptinfolines = scriptinfo.read()
+                    scriptinfolines = scriptinfolines.replace("\n","\n        ")
+                    scriptinfolines = scriptinfolines.replace("\r","")
+                    sgeobjects.append(["        "+scriptinfolines])
+                    scriptinfo.close()

@@ -30,7 +30,6 @@ import shutil
 import ConfigParser
 from PyQt4 import QtGui, QtCore
 
-
 class ExecuteScriptD(QtGui.QDialog):
     def __init__(self, parent, tree):
         super(ExecuteScriptD, self).__init__(parent.main)
@@ -128,6 +127,7 @@ class ExecuteScriptD(QtGui.QDialog):
             scripttoexecute = self.scriptcombobox.currentText()[:-3]
             self.parent.readActionScript(scripttoexecute)
             self.close()
+            return scripttoexecute
 
     def cancel(self):
         self.close()
@@ -506,10 +506,21 @@ class ObjectGUI(QtGui.QWidget):
         
     def AddActionCode(self):
         create = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[0]))
-        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executecode.png')))        
+        create.setIcon(0, QtGui.QIcon(os.path.join('Data', 'Actions', 'executecode.png')))
+        
+        
 
     def AddActionScript(self):
         scriptdialog = ExecuteScriptD(self, self.tree)
+        item = self.eventstree.currentItem()
+        for item in self.eventstree.selectedItems():
+            event = "Event"+str(item.text(0))
+            option = self.name_option(event,"runscript")
+            global nameofscript
+            
+            self.config.set(event, option, nameofscript)
+            with open(self.currentfile, 'wb') as self.configfile:
+                self.config.write(self.configfile)
 
     def readActionScript(self, scriptname):
         scriptactree = QtGui.QTreeWidgetItem(self.actionstree,QtCore.QStringList(self.actions[1]+': '+scriptname))
