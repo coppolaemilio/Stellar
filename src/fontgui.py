@@ -138,7 +138,6 @@ class FontGUI(QtGui.QWidget):
             self.tree.fnt_parser.remove_section(self.name)
             self.tree.fnt_parser.add_section(name)
 
-            os.rename(in_fname, out_fname)
             self.name = str(self.nameEdit.text())
 
         self.snd_parser.set(name, 'font', '')
