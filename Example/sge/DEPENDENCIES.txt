@@ -1,0 +1,4 @@
+Python version: 2.6 or later, but not Python 3
+
+Other dependencies:
+Pygame 1.9 or later <http://pygame.org>
