@@ -30,10 +30,19 @@ import shutil
 from PyQt4 import QtGui, QtCore
 
 class FontGUI(QtGui.QWidget):
-    def __init__(self, main, dirname):
+    def __init__(self, main, name, dirname, tree):
         super(FontGUI, self).__init__()
         self.main = main
+        self.name = name
         self.dirname = dirname
+        self.tree = tree
+
+        self.font = self.tree.fnt_parser.get(self.icon, 'font')
+        self.size = self.tree.fnt_parser.get(self.icon, 'size')
+        self.bold = self.tree.fnt_parser.get(self.icon, 'bold')
+        self.italic = self.tree.fnt_parser.get(self.icon, 'italic')
+        self.antialiasing = self.tree.fnt_parser.get(self.icon, 'antialiasing')
+
         self.initUI()
 
     def initUI(self):
@@ -45,7 +54,7 @@ class FontGUI(QtGui.QWidget):
         self.name = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit('')
         self.font = QtGui.QLabel('Font:')
-        self.fontBox = QtGui.QFontComboBox()   
+        self.fontBox = QtGui.QFontComboBox()
         self.fontBox.activated.connect(self.onChanged)    
         self.size = QtGui.QLabel('Size:')
         self.sizeEdit = QtGui.QSpinBox()
@@ -123,4 +132,22 @@ class FontGUI(QtGui.QWidget):
         eventdialog = Events(self)
         
     def ok(self):
+        self.close()
+        name  str(self.nameEdit.text())
+        if self.name is not name:
+            self.tree.fnt_parser.remove_section(self.name)
+            self.tree.fnt_parser.add_section(name)
+
+            os.rename(in_fname, out_fname)
+            self.name = str(self.nameEdit.text())
+
+        self.snd_parser.set(name, 'font', '')
+        self.snd_parser.set(name, 'size', '')
+        self.snd_parser.set(name, 'bold', 'False')
+        self.snd_parser.set(name, 'italic', 'False')
+        self.snd_parser.set(name, 'antialiasing', 'False')
+
+        self.tree.write_fonts()
+
+        self.main.updatetree()
         self.main.qmdiarea.activeSubWindow().close()

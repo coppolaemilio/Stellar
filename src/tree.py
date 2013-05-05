@@ -150,7 +150,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Sound":
                     self.window = SoundGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Fonts":
-                    self.window = FontGUI(self.main,itemtext)
+                    self.window = FontGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Scripts":
                     #self.window = ScriptGUI(self.main,itemtext)
                     self.window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
@@ -254,6 +254,9 @@ class TreeWidget(QtGui.QTreeWidget):
         self.snd_parser = configparser.RawConfigParser()
         self.snd_parser.read(os.path.join(self.main.dirname, 'Sound', 'soundconfig.ini'))
 
+        self.fnt_parser = configparser.RawConfigParser()
+        self.fnt_parser.read(os.path.join(self.main.dirname, 'Fonts', 'fontconfig.ini'))
+
         #TODO: soundparser...etc
 
     def write_sprites(self):
@@ -263,6 +266,10 @@ class TreeWidget(QtGui.QTreeWidget):
     def write_sound(self):
         with open(os.path.join(self.main.dirname, 'Sound', 'soundconfig.ini'), 'w') as configfile:
             self.snd_parser.write(configfile)
+
+    def write_fonts(self):
+        with open(os.path.join(self.main.dirname, 'Fonts', 'fontconfig.ini'), 'w') as configfile:
+            self.fnt_parser.write(configfile)
 
     def add_sprite_section(self, name):
         self.spr_parser.add_section(name[:-4])
@@ -279,6 +286,16 @@ class TreeWidget(QtGui.QTreeWidget):
         self.snd_parser.set(name[:-4], 'pan', '0')
 
         self.write_sound()
+
+    def add_font_section(self, name):
+        self.snd_parser.add_section(name)
+        self.snd_parser.set(name, 'font', '')
+        self.snd_parser.set(name, 'size', '')
+        self.snd_parser.set(name, 'bold', 'False')
+        self.snd_parser.set(name, 'italic', 'False')
+        self.snd_parser.set(name, 'antialiasing', 'False')
+
+        self.write_fonts()
         
     def addChild(self, directory, name):
         icon = QtGui.QIcon()
@@ -290,6 +307,8 @@ class TreeWidget(QtGui.QTreeWidget):
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[directory])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             if directory == 'Sound':
                 self.add_sound_section(name)
+            elif directory == 'Fonts':
+                self.add_font_section(name)
                 
                
         if directory == 'Scripts' or directory =='Rooms' or directory =='Objects':

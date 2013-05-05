@@ -358,6 +358,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         f = open(os.path.join(self.dirname, u"Sound", u"soundconfig.ini"), 'w+')
         f.close()
 
+        f = open(os.path.join(self.dirname, u"Fonts", u"fontconfig.ini"), 'w+')
+        f.close()
+
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
         with open('config.ini', 'w') as configfile:
@@ -422,7 +425,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     shutil.copy(self.obj_template_file, os.path.join(self.dirname, source, name+".ini"))
                 
                     
-            elif source == "Scripts" or source == "Fonts" or source == "Rooms":
+            elif source == "Scripts" or source == "Rooms":
                 f = open(os.path.join(self.dirname, source, name+".py"), 'w')
                 f.close()
                 
