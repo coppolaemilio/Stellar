@@ -223,29 +223,35 @@ class TreeWidget(QtGui.QTreeWidget):
         
         for name in self.Names:
             self.Path[name] = os.path.join(dirname, name)
-            for ChildSource in sorted(os.listdir(self.Path[name])):
-                ChildSource = str(ChildSource)
-                icon = QtGui.QIcon()
-                if name == "Sprites" or name == "Backgrounds":
-                    icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                else:
+            
+            if name == "Fonts":
+                for section in self.fnt_parser.sections():
+                    icon = QtGui.QIcon()
                     icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
-
-                if name == "Sprites" or name == "Sound" or name == "Fonts" or name == "Backgrounds":
-                    if ChildSource.endswith(".ini"):
-                        continue
-                    QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
-                elif name == "Scripts" or name == "Rooms":
-                    QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-3]])).setIcon(0,icon)
-                elif name == "Objects":
-                    if ChildSource.endswith(".ini"):
-                        QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
+                    QtGui.QTreeWidgetItem(self.Parent[name], StringList(section)).setIcon(0,icon)
+            else:
+                for ChildSource in sorted(os.listdir(self.Path[name])):
+                    ChildSource = str(ChildSource)
+                    icon = QtGui.QIcon()
+                    if name == "Sprites" or name == "Backgrounds":
+                        icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                     else:
-                        continue
-                                    
+                        icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
 
-                if fillarrays:
-                    self.main.Sources[name].append(ChildSource)
+                    if name == "Sprites" or name == "Sound" or name == "Backgrounds":
+                        if ChildSource.endswith(".ini"):
+                            continue
+                        QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
+                    elif name == "Scripts" or name == "Rooms":
+                        QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-3]])).setIcon(0,icon)
+                    elif name == "Objects":
+                        if ChildSource.endswith(".ini"):
+                            QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
+                        else:
+                            continue                    
+                    
+                    if fillarrays:
+                        self.main.Sources[name].append(ChildSource)
 
     def InitParsers(self):
         self.spr_parser = configparser.RawConfigParser()
@@ -288,12 +294,12 @@ class TreeWidget(QtGui.QTreeWidget):
         self.write_sound()
 
     def add_font_section(self, name):
-        self.snd_parser.add_section(name)
-        self.snd_parser.set(name, 'font', '')
-        self.snd_parser.set(name, 'size', '')
-        self.snd_parser.set(name, 'bold', 'False')
-        self.snd_parser.set(name, 'italic', 'False')
-        self.snd_parser.set(name, 'antialiasing', 'False')
+        self.fnt_parser.add_section(name)
+        self.fnt_parser.set(name, 'font', '')
+        self.fnt_parser.set(name, 'size', '')
+        self.fnt_parser.set(name, 'bold', 'False')
+        self.fnt_parser.set(name, 'italic', 'False')
+        self.fnt_parser.set(name, 'antialiasing', 'False')
 
         self.write_fonts()
         
@@ -311,7 +317,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 self.add_font_section(name)
                 
                
-        if directory == 'Scripts' or directory =='Rooms' or directory =='Objects':
+        if directory == 'Scripts' or directory =='Rooms' or directory =='Objects' or directory == 'Fonts':
             QtGui.QTreeWidgetItem(self.Parent[directory], StringList([name])).setIcon(0,icon)
         else:
             QtGui.QTreeWidgetItem(self.Parent[directory], StringList([name[:-4]])).setIcon(0,icon)

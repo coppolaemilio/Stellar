@@ -407,12 +407,17 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             number = 0
             prefix = name
             name = prefix + str(number)
-            while os.path.exists(os.path.join(self.dirname, source, name + ".py")):
-                number += 1 
-                name = prefix + str(number)
-            while os.path.exists(os.path.join(self.dirname, source, name + ".ini")):
-                number += 1 
-                name = prefix + str(number)
+            if source == "Fonts":
+                while self.tree.fnt_parser.has_section(name):
+                    number += 1
+                    name = prefix + str(number)    
+            else:
+                while os.path.exists(os.path.join(self.dirname, source, name + ".py")):
+                    number += 1 
+                    name = prefix + str(number)
+                while os.path.exists(os.path.join(self.dirname, source, name + ".ini")):
+                    number += 1 
+                    name = prefix + str(number)
             return name
             
         def include_into_project(source, name, path=None):
