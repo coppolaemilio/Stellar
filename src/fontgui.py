@@ -37,11 +37,11 @@ class FontGUI(QtGui.QWidget):
         self.dirname = dirname
         self.tree = tree
 
-        self.font = self.tree.fnt_parser.get(self.icon, 'font')
-        self.size = self.tree.fnt_parser.get(self.icon, 'size')
-        self.bold = self.tree.fnt_parser.get(self.icon, 'bold')
-        self.italic = self.tree.fnt_parser.get(self.icon, 'italic')
-        self.antialiasing = self.tree.fnt_parser.get(self.icon, 'antialiasing')
+        self.font = self.tree.fnt_parser.get(self.name, 'font')
+        self.size = self.tree.fnt_parser.get(self.name, 'size')
+        self.bold = self.tree.fnt_parser.get(self.name, 'bold')
+        self.italic = self.tree.fnt_parser.get(self.name, 'italic')
+        self.antialiasing = self.tree.fnt_parser.get(self.name, 'antialiasing')
 
         self.initUI()
 
@@ -140,8 +140,8 @@ class FontGUI(QtGui.QWidget):
 
             self.name = str(self.nameEdit.text())
 
-        self.snd_parser.set(name, 'font', '')
-        self.snd_parser.set(name, 'size', '')
+        self.snd_parser.set(name, 'font', self.fontBox.currentText())
+        self.snd_parser.set(name, 'size', self.sizeEdit.value())
         self.snd_parser.set(name, 'bold', 'False')
         self.snd_parser.set(name, 'italic', 'False')
         self.snd_parser.set(name, 'antialiasing', 'False')
