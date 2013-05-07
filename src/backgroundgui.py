@@ -130,28 +130,6 @@ class BackgroundGUI(QtGui.QWidget):
         
         self.NameFrame.setLayout(self.namelayout)
 
-
-        #self.OriginBox = QtGui.QGroupBox("Origin")
-        #self.LblX = QtGui.QLabel('X:')
-        #self.LblX.setAlignment(QtCore.Qt.AlignRight)
-        #self.LblY = QtGui.QLabel('Y:')
-        #self.LblY.setAlignment(QtCore.Qt.AlignRight)
-        #self.EdirXorig = QtGui.QLineEdit(str(self.xorig))
-        #self.EdirYorig = QtGui.QLineEdit(str(self.yorig))
-
-        #self.BtnCenter = QtGui.QPushButton('Center')
-        #self.BtnCenter.clicked.connect(self.CenterSprite)
-
-        #self.originlayout = QtGui.QGridLayout()
-        #self.originlayout.setMargin (3)
-        #self.originlayout.addWidget(self.LblX,7,0)
-        #self.originlayout.addWidget(self.EdirXorig,7,1)
-        #self.originlayout.addWidget(self.LblY,7,2)
-        #self.originlayout.addWidget(self.EdirYorig,7,3)
-        #self.originlayout.addWidget(self.BtnCenter,8,1,2,2)
-        
-        #self.OriginBox.setLayout(self.originlayout)
-
         self.Lblspacer = QtGui.QLabel(" ")
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
 
@@ -176,11 +154,6 @@ class BackgroundGUI(QtGui.QWidget):
         self.nameandlayout.addWidget(self.BtnEdit,3,0,1,2)
         self.nameandlayout.addWidget(self.LblWidth,4,0)
         self.nameandlayout.addWidget(self.LblHeight,5,0)
-        #self.nameandlayout.addWidget(self.LblSubimages,6,0)
-        #self.nameandlayout.addWidget(self.ShowFrame,7,0)
-        #self.nameandlayout.addWidget(self.BtnNext,7,1)
-        
-        #self.nameandlayout.addWidget(self.OriginBox,9,0)
         
         self.NameAndThingsBox.setLayout(self.nameandlayout)
 
@@ -266,12 +239,6 @@ class BackgroundGUI(QtGui.QWidget):
             #self.image_handle.close()
             os.rename(in_fname, out_fname)
             self.icon = str(self.qleSprite.text())
-
-        #self.tree.spr_parser.set(self.icon, 'xorig', str(self.EdirXorig.text()))
-        #self.tree.spr_parser.set(self.icon, 'yorig', str(self.EdirYorig.text()))
-        #self.tree.spr_parser.set(self.icon, 'extension', self.extension)
-
-        #self.tree.write_sprites()
 
         self.main.updatetree()
         self.main.qmdiarea.activeSubWindow().close()

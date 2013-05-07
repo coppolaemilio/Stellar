@@ -102,6 +102,8 @@ class Game(object):
         event_game_start: Called when the game starts.  This is only
             called once (it is not called again when the game restarts)
             and it is always the first event method called.
+        event_game_end: Called when the game ends.  This is only called
+            once and it is always the last event method called.
         event_step: Called once each frame.
         event_key_press: Key press event.
         event_key_release: Key release event.
@@ -120,8 +122,6 @@ class Game(object):
         event_mouse_collision_right: Right mouse collision event.
         event_mouse_collision_top: Top mouse collision event.
         event_mouse_collision_bottom: Bottom mouse collision event.
-        event_game_end: Called when the game ends.  This is only called
-            once and it is always the last event method called.
 
     The following alternative events are executed when the game is
     paused in place of the corresponding normal events:
@@ -686,6 +686,15 @@ class Game(object):
         """
         pass
 
+    def event_game_end(self):
+        """Game end event.
+
+        Called when the game ends.  This is only called once and it is
+        always the last event method called.
+
+        """
+        pass
+
     def event_step(self, time_passed):
         """Global step event.
 
@@ -823,15 +832,6 @@ class Game(object):
     def event_mouse_collision_bottom(self, other):
         """Bottom mouse collision event."""
         self.event_mouse_collision(other)
-
-    def event_game_end(self):
-        """Game end event.
-
-        Called when the game ends.  This is only called once and it is
-        always the last event method called.
-
-        """
-        pass
 
     def event_paused_key_press(self, key):
         """Key press event when paused.

@@ -56,6 +56,8 @@ class Room(object):
         event_room_start: Called when the room starts.  It is always
             called after any game start events and before any object
             create events occurring at the same time.
+        event_room_end: Called when the room ends.  It is always called
+            before any game end events occurring at the same time.
         event_step: Called once each frame.
         event_key_press: Key press event.
         event_key_release: Key release event.
@@ -69,8 +71,6 @@ class Room(object):
         event_close: Close event (e.g. close button).  It is always
             called before any game close events occurring at the same
             time.
-        event_room_end: Called when the room ends.  It is always called
-            before any game end events occurring at the same time.
 
     The following alternative events are executed when the game is
     paused in place of the corresponding normal events:
@@ -115,13 +115,13 @@ class Room(object):
         if views is not None:
             self.views = list(views)
         else:
-            self.views = [View(0, 0)]
+            self.views = [sge.View(0, 0)]
         self._start_views = self.views[:]
 
         if background is not None:
             self.background = background
         else:
-            self.background = Background((), 'black')
+            self.background = sge.Background((), 'black')
         self._start_background = self.background
 
         self.room_number = len(sge.game.rooms)

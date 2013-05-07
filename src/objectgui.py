@@ -442,11 +442,14 @@ class ObjectGUI(QtGui.QWidget):
         self.actionToolbar.addAction(self.commentAction)   
         #---
         self.objectsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
+        self.FirstWidget.setMaximumWidth (170)
         self.objectsplitter.addWidget(self.FirstWidget)
+        self.SecondWidget.setMaximumWidth (170)
         self.objectsplitter.addWidget(self.SecondWidget)
+        self.SecondWidget.setMaximumWidth (200)
         self.objectsplitter.addWidget(self.ThirdWidget)
+        self.actionToolbar.setMaximumWidth (32)
         self.objectsplitter.addWidget(self.actionToolbar)
-        self.objectsplitter.setStretchFactor(1, 1)
 
         self.ContainerGrid.addWidget(self.objectsplitter)
         self.setLayout(self.ContainerGrid)

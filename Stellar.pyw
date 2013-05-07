@@ -102,6 +102,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.qmdiareaview = False
         self.qmdiarea.setTabsClosable(True)
         self.qmdiarea.setTabsMovable(True)
+        self.qmdiarea.setActivationOrder (1)
         
         self.initWindow()
 
@@ -504,6 +505,7 @@ def main():
     #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
     st = Stellar()
     sys.exit(app.exec_())
+    
 
 
 if __name__ == '__main__':

@@ -44,6 +44,8 @@ from objectgui import ObjectGUI
 from roomgui import RoomGUI
 from backgroundgui import BackgroundGUI
 
+
+
 class TreeWidget(QtGui.QTreeWidget):
     def __init__(self, main):
         super(TreeWidget, self).__init__(main)
@@ -55,6 +57,10 @@ class TreeWidget(QtGui.QTreeWidget):
         self.connect(self, QtCore.SIGNAL("itemCollapsed(QTreeWidgetItem *)"), self.itemCollapsed)
         self.connect(self, QtCore.SIGNAL("itemExpanded(QTreeWidgetItem *)"), self.itemExpanded)
         self.Path = {}
+
+        lastposition= QtCore.QPoint(-32,-32)
+        self.nwindows = 0
+        
         
         self.Names = self.main.Names
         self.ImageNames = (None, 'sound.png', 'backgrounds.png', 'font.png', 'script.png', 'object.png', 'game.png')
@@ -143,6 +149,13 @@ class TreeWidget(QtGui.QTreeWidget):
             if item.parent().text(0) == directory:
                 itemtext = str(item.text(0))
 
+
+                try:
+                    lastposition = self.main.qmdiarea.activeSubWindow().pos ()
+                except:
+                    lastpositions = QtCore.QPoint(-32,-32)
+                    print ("no other windows")
+
                 if directory == "Sprites":
                     self.window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Backgrounds":
@@ -161,7 +174,6 @@ class TreeWidget(QtGui.QTreeWidget):
 
                 
                 self.main.qmdiarea.addSubWindow(self.window)
-
                 self.window.setVisible(True)
 
                 self.window.setWindowTitle( directory[:-1] + " properties: " + itemtext )
@@ -175,7 +187,14 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Rooms":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
                 else:
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))           
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
+
+                
+                if self.nwindows==0:
+                    self.nwindows+=1
+                    self.main.qmdiarea.activeSubWindow().move(0,0)
+                else:
+                    self.main.qmdiarea.activeSubWindow().move(lastposition+QtCore.QPoint(25,25))
 
 
             def GameSettings():
