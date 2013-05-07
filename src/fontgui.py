@@ -46,8 +46,6 @@ class FontGUI(QtGui.QWidget):
         if self.font == '': self.font = 'Arial'
         if self.size == '': self.size = 11
 
-        print (self.font, self.size)
-
         self.initUI()
 
     def initUI(self):
