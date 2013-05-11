@@ -36,11 +36,19 @@ class SpriteGUI(QtGui.QWidget):
         self.dirname = dirname
         self.icon = str(icon)
         self.tree = tree
-
-        self.extension = self.tree.spr_parser.get(self.icon, 'extension')
+        
+        try:
+            self.extension = self.tree.spr_parser.get(self.icon, 'extension')
+        except:
+            self.extension = "png"
+        
         self.image_file = os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension))
-        self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
-        self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
+        try:
+            self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
+            self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
+        except:
+            self.xorig = 0
+            self.yorig = 0
         
         self.image_handle = open(self.image_file, 'rb')
         self.img = Image.open(self.image_handle)

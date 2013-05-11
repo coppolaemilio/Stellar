@@ -149,12 +149,10 @@ class TreeWidget(QtGui.QTreeWidget):
             if item.parent().text(0) == directory:
                 itemtext = str(item.text(0))
 
-
                 try:
                     lastposition = self.main.qmdiarea.activeSubWindow().pos ()
                 except:
                     lastpositions = QtCore.QPoint(-32,-32)
-                    print ("no other windows")
 
                 if directory == "Sprites":
                     self.window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
@@ -165,18 +163,19 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Fonts":
                     self.window = FontGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Scripts":
-                    #self.window = ScriptGUI(self.main,itemtext)
                     self.window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Objects":
                     self.window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Rooms":
                     self.window = RoomGUI(self.main,itemtext, self.main.dirname, self)
 
+                #ADD CHECK IF WINDOW EXIST AND THEN FOCUSE THAT ONE
                 
                 self.main.qmdiarea.addSubWindow(self.window)
                 self.window.setVisible(True)
 
                 self.window.setWindowTitle( directory[:-1] + " properties: " + itemtext )
+                
 
                 if directory == "Sprites":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
@@ -258,9 +257,17 @@ class TreeWidget(QtGui.QTreeWidget):
                         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
 
                     if name == "Sprites" or name == "Sound" or name == "Backgrounds":
-                        if ChildSource.endswith(".ini"):
+                        if ChildSource.endswith(".ini"):#skips the .ini of sprite information
                             continue
-                        QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
+
+                        print (ChildSource[:-4])
+                        if "-0" in ChildSource[:-4]:
+                            QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-6]])).setIcon(0,icon)
+                        elif "-" in ChildSource[:-4]:
+                            continue
+                        else:
+                            QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
+                        
                     elif name == "Scripts" or name == "Rooms":
                         QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-3]])).setIcon(0,icon)
                     elif name == "Objects":
