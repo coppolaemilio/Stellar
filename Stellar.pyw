@@ -299,14 +299,14 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                 return
             
 
-            for folder in self.subfolders:
+            """for folder in self.subfolders:
                 if folder == 'Build':
                     continue
                 elif not os.path.exists(os.path.join(os.path.dirname(project), folder)):
                     QtGui.QMessageBox.question(self, "Project is broken",
                         "Project is broken or doesn't contain important folders",
                         QtGui.QMessageBox.Ok)
-                    return
+                    return"""
         else:
             project = project + ".py"
             
