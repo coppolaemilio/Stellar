@@ -16,17 +16,13 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-
-
 import sys
 import os
 import shutil
+import string
 from PyQt4.Qt import Qt
 from PyQt4 import QtGui, QtCore
 from PIL import Image
-
-
-
 
 class SpriteGUI(QtGui.QWidget):
   
@@ -36,21 +32,39 @@ class SpriteGUI(QtGui.QWidget):
         self.dirname = dirname
         self.icon = str(icon)
         self.tree = tree
-
-        self.extension = self.tree.spr_parser.get(self.icon, 'extension')
-        self.image_file = os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension))
-        self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
-        self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
         
-        self.image_handle = open(self.image_file, 'rb')
+        try:
+            self.extension = self.tree.spr_parser.get(self.icon, 'extension')
+        except:
+            self.extension = "png"
+        
+        self.image_file = os.path.join(self.dirname, "Sprites", "%s"%(self.icon))
+        
+        try:
+            self.xorig = self.tree.spr_parser.get(self.icon, 'xorig')
+            self.yorig = self.tree.spr_parser.get(self.icon, 'yorig')
+        except:
+            self.xorig = 0
+            self.yorig = 0
+        
+        try:
+            self.image_handle = open(self.image_file+"."+self.extension, 'rb')
+            self.frames = 1
+        except:
+            self.image_handle = open(self.image_file+"-0."+self.extension, 'rb')
+            self.image_file = os.path.join(self.dirname, "Sprites", self.icon+"-0."+self.extension)
+            self.frames = 0
+            files = [f for f in os.listdir(os.path.join(self.dirname, "Sprites"))]
+            for f in files:
+                if self.icon in f:
+                    self.frames += 1
+
+        self.framenumber=0
         self.img = Image.open(self.image_handle)
         self.width, self.height = self.img.size
-
         self.format = self.extension
-        self.frames = 1
-        
         self.initUI()
-                        
+        
     def initUI(self):
 
         #Groupbox Container-----------------------------------
@@ -58,18 +72,24 @@ class SpriteGUI(QtGui.QWidget):
         self.ContainerGrid.setMargin (0)
                 
         self.BtnOK = QtGui.QPushButton('OK')
-        self.BtnOK.setIcon(QtGui.QIcon('Data/accept.png'))
+        self.BtnOK.setIcon(QtGui.QIcon(os.path.join('Data','accept.png')))
         self.BtnOK.clicked.connect(self.ok)
 
         self.LblShow = QtGui.QLabel('Show:')
         self.BtnNext = QtGui.QPushButton()
-        self.BtnNext.setEnabled(False)#This is currently not implemented
-        self.BtnNext.setIcon(QtGui.QIcon('Data/nextimg.png'))
-        self.ShowImage = QtGui.QLineEdit("0")
-        self.ShowImage.setEnabled(False)#This is currently not implemented
+        #self.BtnNext.clicked.connect(self.nextframe)
+        self.connect(self.BtnNext,QtCore.SIGNAL("clicked()"),self.nextframe)
+        self.BtnNext.setIcon(QtGui.QIcon(os.path.join('Data','nextimg.png')))
+        
+        self.ShowImage = QtGui.QLabel("0")
+        #self.connect(self.ShowImage,QtCore.SIGNAL("textChanged()"),self.previewframe)
+        
         self.BtnPrev = QtGui.QPushButton()
-        self.BtnPrev.setEnabled(False)#This is currently not implemented
-        self.BtnPrev.setIcon(QtGui.QIcon('Data/previmg.png'))
+        self.BtnPrev.clicked.connect(self.previousframe)
+        self.BtnPrev.setEnabled(False)
+        if self.frames==1:
+            self.BtnNext.setEnabled(False)
+        self.BtnPrev.setIcon(QtGui.QIcon(os.path.join('Data','previmg.png')))
 
         self.ShowFrame = QtGui.QFrame()
         self.showlayout = QtGui.QGridLayout()
@@ -82,7 +102,7 @@ class SpriteGUI(QtGui.QWidget):
         self.ShowFrame.setLayout(self.showlayout)
         
         #Scroll Area------------------------------------------
-        self.sprite = QtGui.QPixmap(os.path.join(self.dirname, "Sprites", "%s.%s"%(self.icon, self.extension)))                         
+        self.sprite = QtGui.QPixmap(self.image_file)                         
         
         self.spriteLbl = QtGui.QLabel(self.main)
         self.spriteLbl.setPixmap(self.sprite)
@@ -218,6 +238,36 @@ class SpriteGUI(QtGui.QWidget):
         self.EdirYorig.setText(self.yorig)
         self.click_positions = []
 
+
+    def nextframe(self):
+        self.framenumber+= 1
+        self.ShowImage.setText(str(self.framenumber))
+        self.previewframe()
+                    
+    def previousframe(self):
+        self.framenumber-=1
+        self.ShowImage.setText(str(self.framenumber))   
+        self.previewframe()
+        
+    def previewframe(self):
+       # print (self.framenumber)
+        if self.framenumber==0:
+            self.BtnPrev.setEnabled(False)
+        else:
+            self.BtnPrev.setEnabled(True)
+
+        if self.framenumber==(self.frames-1):
+            self.BtnNext.setEnabled(False)
+        else:
+            self.BtnNext.setEnabled(True)
+            
+        self.actualframe = os.path.basename(self.image_file)
+        self.actualframe = string.split(self.image_file,"-")
+        self.finalsprite = self.actualframe[0]+"-"+str(self.framenumber)+"."+self.extension 
+        self.sprite = QtGui.QPixmap(self.finalsprite)
+        #print (self.finalsprite)
+        self.spriteLbl.setPixmap(self.sprite)
+        
         
     def LoadSprite(self):
         self.asprite = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Sprite(s)', 

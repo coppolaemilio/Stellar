@@ -44,6 +44,8 @@ from objectgui import ObjectGUI
 from roomgui import RoomGUI
 from backgroundgui import BackgroundGUI
 
+
+
 class TreeWidget(QtGui.QTreeWidget):
     def __init__(self, main):
         super(TreeWidget, self).__init__(main)
@@ -55,6 +57,10 @@ class TreeWidget(QtGui.QTreeWidget):
         self.connect(self, QtCore.SIGNAL("itemCollapsed(QTreeWidgetItem *)"), self.itemCollapsed)
         self.connect(self, QtCore.SIGNAL("itemExpanded(QTreeWidgetItem *)"), self.itemExpanded)
         self.Path = {}
+
+        lastposition= QtCore.QPoint(-32,-32)
+        self.nwindows = 0
+        
         
         self.Names = self.main.Names
         self.ImageNames = (None, 'sound.png', 'backgrounds.png', 'font.png', 'script.png', 'object.png', 'game.png')
@@ -143,6 +149,11 @@ class TreeWidget(QtGui.QTreeWidget):
             if item.parent().text(0) == directory:
                 itemtext = str(item.text(0))
 
+                try:
+                    lastposition = self.main.qmdiarea.activeSubWindow().pos ()
+                except:
+                    lastpositions = QtCore.QPoint(-32,-32)
+
                 if directory == "Sprites":
                     self.window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Backgrounds":
@@ -152,19 +163,19 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Fonts":
                     self.window = FontGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Scripts":
-                    #self.window = ScriptGUI(self.main,itemtext)
                     self.window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Objects":
                     self.window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
                 elif directory == "Rooms":
                     self.window = RoomGUI(self.main,itemtext, self.main.dirname, self)
 
+                #ADD CHECK IF WINDOW EXIST AND THEN FOCUSE THAT ONE
                 
                 self.main.qmdiarea.addSubWindow(self.window)
-
                 self.window.setVisible(True)
 
                 self.window.setWindowTitle( directory[:-1] + " properties: " + itemtext )
+                
 
                 if directory == "Sprites":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
@@ -175,7 +186,14 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Rooms":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
                 else:
-                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))           
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
+
+                
+                if self.nwindows==0:
+                    self.nwindows+=1
+                    self.main.qmdiarea.activeSubWindow().move(0,0)
+                else:
+                    self.main.qmdiarea.activeSubWindow().move(lastposition+QtCore.QPoint(25,25))
 
 
             def GameSettings():
@@ -239,9 +257,17 @@ class TreeWidget(QtGui.QTreeWidget):
                         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
 
                     if name == "Sprites" or name == "Sound" or name == "Backgrounds":
-                        if ChildSource.endswith(".ini"):
+                        if ChildSource.endswith(".ini"):#skips the .ini of sprite information
                             continue
-                        QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
+
+                        
+                        if "-0" in ChildSource[:-4]: #now checking if it's an animated sprite
+                            QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-6]])).setIcon(0,icon)
+                        elif "-" in ChildSource[:-4]:
+                            continue
+                        else:
+                            QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-4]])).setIcon(0,icon)
+                        
                     elif name == "Scripts" or name == "Rooms":
                         QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-3]])).setIcon(0,icon)
                     elif name == "Objects":
@@ -279,7 +305,10 @@ class TreeWidget(QtGui.QTreeWidget):
 
     def add_sprite_section(self, name):
         self.spr_parser.add_section(name[:-4])
-        self.spr_parser.set(name[:-4], 'extension', name[-3:])
+        if name[-3:]=="gif":
+            self.spr_parser.set(name[:-4], 'extension', 'png')
+        else:
+            self.spr_parser.set(name[:-4], 'extension', name[-3:])
         self.spr_parser.set(name[:-4], 'xorig', 0)
         self.spr_parser.set(name[:-4], 'yorig', 0)
 
@@ -307,7 +336,10 @@ class TreeWidget(QtGui.QTreeWidget):
         icon = QtGui.QIcon()
         
         if directory == 'Sprites':
-            icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[directory], name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            if "gif" in name:
+                icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[directory], name[:-4]+"-0.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            else:
+                icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[directory], name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.add_sprite_section(name)
         else:
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[directory])), QtGui.QIcon.Normal, QtGui.QIcon.Off)

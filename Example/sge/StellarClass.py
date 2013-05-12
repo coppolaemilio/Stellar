@@ -115,8 +115,10 @@ class StellarClass(object):
         event_create: Called when the object is created.  It is always
             called after any room start events occurring at the same
             time.
+        event_destroy: Destroy event.
         event_step: Called once each frame.
         event_alarm: Called when an alarm counter reaches 0.
+        event_animation_end: Called when an animation cycle ends.
         event_key_press: Key press event.
         event_key_release: Key release event.
         event_mouse_move: Mouse move event.
@@ -132,8 +134,6 @@ class StellarClass(object):
         event_collision_right: Right collision event.
         event_collision_top: Top collision event.
         event_collision_bottom: Bottom collision event.
-        event_animation_end: Called when an animation cycle ends.
-        event_destroy: Destroy event.
 
     The following alternative events are executed when the game is
     paused in place of the corresponding normal events:
@@ -576,6 +576,10 @@ class StellarClass(object):
         """
         pass
 
+    def event_destroy(self):
+        """Destroy event."""
+        pass
+
     def event_step(self, time_passed):
         """Step event.
 
@@ -590,6 +594,14 @@ class StellarClass(object):
 
         Called when an alarm counter reaches 0.  ``alarm_id`` is the ID
         of the alarm that was set off.
+
+        """
+        pass
+
+    def event_animation_end(self):
+        """Animation End event.
+
+        Called when an animation cycle ends.
 
         """
         pass
@@ -713,18 +725,6 @@ class StellarClass(object):
     def event_collision_bottom(self, other):
         """Bottom collision event."""
         self.event_collision(other)
-
-    def event_animation_end(self):
-        """Animation End event.
-
-        Called when an animation cycle ends.
-
-        """
-        pass
-
-    def event_destroy(self):
-        """Destroy event."""
-        pass
 
     def event_paused_key_press(self, key):
         """Key press event when paused.

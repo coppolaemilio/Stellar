@@ -2,7 +2,7 @@ layers = (sge.BackgroundLayer(fence_sprite, 0, 380, 0, yrepeat=True),)
 background = sge.Background(layers, 0xffffff)
 
 circle = obj_cristal(game.width // 2, game.height // 2)
-circle1= obj_0(20,20)
+circle1= obj_cancel(20,20)
 objects = [circle,circle1]
 
 

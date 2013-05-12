@@ -1,0 +1,2375 @@
+Copyright (C) 2013 Julian Marchant <onpon4@lavabit.com>
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without any warranty.
+
+========================================================================
+
+This file documents the Stellar Game Engine API.  It is extended from
+the documentation strings included within the source code.  Note that
+this manual does not cover extra features or other anomalies in specific
+implementations; for that information, please see the implementation's
+included README file.
+
+
+Contents
+------------------------------------------------------------------------
+
+I. Introduction
+II. SGE Concepts
+  II.A. Events
+  II.B. The Mouse
+  II.C. Colors
+    II.C.1. HTML Color Names
+    II.C.2. RGB(A) Tuples
+    II.C.3. HTML Hex Strings
+    II.C.4. Hexadecimal Integers
+  II.D. Z-Axis
+III. Global Variables and Constants
+IV. Classes
+  IV.A. sge.Game
+    IV.A.1. Constructor Method (sge.Game.__init__)
+    IV.A.2. sge.Game.start
+    IV.A.3. sge.Game.end
+    IV.A.4. sge.Game.pause
+    IV.A.5. sge.Game.unpause
+    IV.A.6. sge.Game.event_game_start
+    IV.A.7. sge.Game.event_game_end
+    IV.A.8. sge.Game.event_step
+    IV.A.9. sge.Game.event_key_press
+    IV.A.10. sge.Game.event_key_release
+    IV.A.11. sge.Game.event_mouse_move
+    IV.A.12. sge.Game.event_mouse_button_press
+    IV.A.13. sge.Game.event_mouse_button_release
+    IV.A.14. sge.Game.event_joystick_axis_move
+    IV.A.15. sge.Game.event_joystick_hat_move
+    IV.A.16. sge.Game.event_joystick_button_press
+    IV.A.17. sge.Game.event_joystick_button_release
+    IV.A.18. sge.Game.event_close
+    IV.A.19. sge.Game.event_mouse_collision
+    IV.A.20. sge.Game.event_mouse_collision_left
+    IV.A.21. sge.Game.event_mouse_collision_right
+    IV.A.22. sge.Game.event_mouse_collision_top
+    IV.A.23. sge.Game.event_mouse_collision_bottom
+    IV.A.24. sge.Game.event_paused_key_press
+    IV.A.25. sge.Game.event_paused_key_release
+    IV.A.26. sge.Game.event_paused_mouse_move
+    IV.A.27. sge.Game.event_paused_mouse_button_press
+    IV.A.28. sge.Game.event_paused_mouse_button_release
+    IV.A.29. sge.Game.event_paused_joystick_axis_move
+    IV.A.30. sge.Game.event_paused_joystick_hat_move
+    IV.A.31. sge.Game.event_paused_joystick_button_press
+    IV.A.32. sge.Game.event_paused_joystick_button_release
+    IV.A.33. sge.Game.event_paused_close
+  IV.B. sge.Sprite
+    IV.B.1. Constructor Method (sge.Sprite.__init__)
+    IV.B.2. sge.Sprite.draw_dot
+    IV.B.3. sge.Sprite.draw_line
+    IV.B.4. sge.Sprite.draw_rectangle
+    IV.B.5. sge.Sprite.draw_ellipse
+    IV.B.6. sge.Sprite.draw_circle
+    IV.B.7. sge.Sprite.draw_sprite
+    IV.B.8. sge.Sprite.draw_text
+    IV.B.9. sge.Sprite.draw_clear
+  IV.C. sge.BackgroundLayer
+    IV.C.1. Constructor Method (sge.BackgroundLayer.__init__)
+  IV.D. sge.Background
+    IV.D.1. Constructor Method (sge.Background.__init__)
+  IV.E. sge.Font
+    IV.E.1. Constructor Method (sge.Font.__init__)
+    IV.E.2. sge.Font.get_size
+  IV.F. sge.Sound
+    IV.F.1. Constructor Method (sge.Sound.__init__)
+    IV.F.2. sge.Sound.play
+    IV.F.3. sge.Sound.stop
+    IV.F.4. sge.Sound.pause
+    IV.F.5. sge.Sound.unpause
+    IV.F.6. sge.Sound.stop_all (static method)
+  IV.G. sge.Music
+    IV.G.1. Constructor Method (sge.Music.__init__)
+    IV.G.2. sge.Music.play
+    IV.G.3. sge.Music.queue
+    IV.G.4. sge.Music.stop
+    IV.G.5. sge.Music.pause
+    IV.G.6. sge.Music.unpause
+    IV.G.7. sge.Music.restart
+    IV.G.8. sge.Music.clear_queue (static method)
+    IV.G.9. sge.Music.stop_all (static method)
+  IV.H. sge.StellarClass
+    IV.H.1. Constructor Method (sge.StellarClass.__init__)
+    IV.H.2. sge.StellarClass.collides
+    IV.H.3. sge.StellarClass.set_alarm
+    IV.H.4. sge.StellarClass.get_alarm
+    IV.H.5. sge.StellarClass.destroy
+    IV.H.6. sge.StellarClass.event_create
+    IV.H.7. sge.StellarClass.event_destroy
+    IV.H.8. sge.StellarClass.event_step
+    IV.H.9. sge.StellarClass.event_alarm
+    IV.H.10. sge.StellarClass.event_animation_end
+    IV.H.11. sge.StellarClass.event_key_press
+    IV.H.12. sge.StellarClass.event_key_release
+    IV.H.13. sge.StellarClass.event_mouse_move
+    IV.H.14. sge.StellarClass.event_mouse_button_press
+    IV.H.15. sge.StellarClass.event_mouse_button_release
+    IV.H.16. sge.StellarClass.event_joystick_axis_move
+    IV.H.17. sge.StellarClass.event_joystick_hat_move
+    IV.H.18. sge.StellarClass.event_joystick_button_press
+    IV.H.19. sge.StellarClass.event_joystick_button_release
+    IV.H.20. sge.StellarClass.event_collision
+    IV.H.21. sge.StellarClass.event_collision_left
+    IV.H.22. sge.StellarClass.event_collision_right
+    IV.H.23. sge.StellarClass.event_collision_top
+    IV.H.24. sge.StellarClass.event_collision_bottom
+    IV.H.25. sge.StellarClass.event_paused_key_press
+    IV.H.26. sge.StellarClass.event_paused_key_release
+    IV.H.27. sge.StellarClass.event_paused_mouse_move
+    IV.H.28. sge.StellarClass.event_paused_mouse_button_press
+    IV.H.29. sge.StellarClass.event_paused_mouse_button_release
+    IV.H.30. sge.StellarClass.event_paused_joystick_axis_move
+    IV.H.31. sge.StellarClass.event_paused_joystick_hat_move
+    IV.H.32. sge.StellarClass.event_paused_joystick_button_press
+    IV.H.33. sge.StellarClass.event_paused_joystick_button_release
+    IV.H.34. sge.StellarClass.create (class method)
+  IV.I. sge.Room
+    IV.I.1. Constructor Method (sge.Room.__init__)
+    IV.I.2. sge.Room.add
+    IV.I.3. sge.Room.start
+    IV.I.4. sge.Room.resume
+    IV.I.5. sge.Room.end
+    IV.I.6. sge.Room.event_room_start
+    IV.I.7. sge.Room.event_room_end
+    IV.I.8. sge.Room.event_step
+    IV.I.9. sge.Room.event_key_press
+    IV.I.10. sge.Room.event_key_release
+    IV.I.11. sge.Room.event_mouse_move
+    IV.I.12. sge.Room.event_mouse_button_press
+    IV.I.13. sge.Room.event_mouse_button_release
+    IV.I.14. sge.Room.event_joystick_axis_move
+    IV.I.15. sge.Room.event_joystick_hat_move
+    IV.I.16. sge.Room.event_joystick_button_press
+    IV.I.17. sge.Room.event_joystick_button_release
+    IV.I.18. sge.Room.event_close
+    IV.I.19. sge.Room.event_paused_key_press
+    IV.I.20. sge.Room.event_paused_key_release
+    IV.I.21. sge.Room.event_paused_mouse_move
+    IV.I.22. sge.Room.event_paused_mouse_button_press
+    IV.I.23. sge.Room.event_puased_mouse_button_release
+    IV.I.24. sge.Room.event_paused_joystick_axis_move
+    IV.I.25. sge.Room.event_paused_joystick_hat_move
+    IV.I.26. sge.Room.event_paused_joystick_button_press
+    IV.I.27. sge.Room.event_paused_joystick_button_release
+    IV.I.28. sge.Room.event_paused_close
+  IV.J. sge.View
+V. Functions
+  V.A. sge.get_key_pressed
+  V.B. sge.get_mouse_button_pressed
+  V.C. sge.get_joystick_axis
+  V.D. sge.get_joystick_hat
+  V.E. sge.get_joystick_button_pressed
+  V.F. sge.get_joysticks
+  V.G. sge.get_joystick_axes
+  V.H. sge.get_joystick_hats
+  V.I. sge.get_joystick_buttons
+
+
+I. Introduction
+------------------------------------------------------------------------
+
+Stellar Game Engine (or "SGE") is a game engine designed for use by
+Stellar.  Its design is loosely based on the proprietary program, Game
+Maker.  The purpose of SGE is to make game development easier, which
+allows more rapid development by experienced game developers and also
+helps less experienced game developers learn how to develop games.
+
+Unlike Game Maker, you have freedom with SGE.  SGE is free software
+(where "free" refers to freedom, not price; see
+<http://gnu.org/philosophy/free-sw.html> for more information).  It is
+released under the GNU Lesser General Public License, which means you
+can modify and redistribute it without restriction, and you can use it
+however you wish.
+
+Although the GNU Lesser General Public license does not require it, we
+encourage you to release your games' code under a free software license,
+such as the GNU General Public License, the Expat License (often called
+the "MIT License"), or the Apache 2.0 License.  Doing so is easy, does
+not negatively affect you, and is highly appreciated as a contribution
+to free software.
+
+
+II. SGE Concepts
+------------------------------------------------------------------------
+
+  II.A. Events
+  ----------------------------------------------------------------------
+
+  Much like Game Maker, SGE uses an event-based system, with events
+  defined by special class methods with names that start with "event_".
+
+  Except in certain special cases, events are handled in an arbitrary
+  order; if Event A and Event B happen at the same time, one
+  implementation might handle Event A first, while another
+  implementation might handle Event B first.  Still another
+  implementation might in theory even handle Event A first one frame,
+  then handle Event B in another.
+
+
+  II.B. The Mouse
+  ----------------------------------------------------------------------
+
+  The mouse is handled somewhat unusually in SGE.  Rather than having
+  functions or variables report the mouse position relative to the
+  screen, the mouse position within the room, calculated based on its
+  position on the screen by SGE, is recorded in a special
+  sge.StellarClass object which represents the mouse.  This mouse object
+  can be found as sge.game.mouse, and it has the special object ID,
+  "mouse".
+
+  The mouse object differs from most sge.StellarClass objects in a few
+  ways.  Its speed variables cannot be manually set, and they always
+  report numbers which correspond to the average motion of the mouse
+  during the last quarter of a second.  Setting sge.game.mouse.visible
+  toggles whether or not the mouse cursor itself is visible, and setting
+  sge.game.mouse.sprite sets the mouse cursor to the sprite assigned.
+
+  In all other ways, the mouse object is exactly the same as all other
+  sge.StellarClass objects.
+
+
+  II.C. Colors
+  ----------------------------------------------------------------------
+
+  Colors can be defined in SGE in a few ways.
+
+    II.C.1. HTML Color Names
+    --------------------------------------------------------------------
+
+    The sixteen basic HTML colors, written as strings, are accepted by
+    SGE.  These are case-insensitive, so "red" is the same as "Red" or
+    "rEd".  The colors are:
+
+    * "white"
+    * "silver"
+    * "gray"
+    * "black"
+    * "red"
+    * "maroon"
+    * "yellow"
+    * "olive"
+    * "lime"
+    * "green"
+    * "aqua"
+    * "teal"
+    * "blue"
+    * "navy"
+    * "fuchsia"
+    * "purple"
+
+
+    II.C.2. RGB(A) Tuples
+    --------------------------------------------------------------------
+
+    A tuple containing three or four values is accepted as a color by
+    SGE.  Each index represents a component of a color: first red, then
+    green, then blue, with the values being integers from 0 to 255.  For
+    example, (255, 128, 0) indicates a color with full red intensity,
+    50% green intensity, and no blue intensity, which is a shade of
+    orange.  Note that the colors combine as colors of light, not colors
+    of pigment.
+
+    The fourth value of the tuple, if specified, indicates the alpha
+    transparency of the color, with the values again being integers from
+    0 to 255.  255 is fully opaque, 0 is fully transparent, and any
+    value in between indicates the amount of transparency; for example,
+    128 is 50% transparent.  If the fourth value is unspecified, it is
+    assumed that the color is fully opaque.
+
+    RGBA tuples are the only way to specify alpha transparency of colors
+    in SGE.  All other methods for indicating color assume full opacity.
+
+
+    II.C.3. HTML Hex Strings
+    --------------------------------------------------------------------
+
+    An HTML hex string is accepted as a color by SGE.  HTML hex strings
+    are in the format "#RRGGBB", where "RR", "GG", and "BB" are replaced
+    with the red, green, and blue components of the color, respectively,
+    in hexadecimal form.  FF (equivalent to 255 in decimal form) is full
+    intensity of the respective color, and 00 (equivalent to 0 in
+    decimal form) is no intensity of the respective color.  For example,
+    "#FF8000" is the same as (255, 128, 0), or orange.
+
+
+    II.C.4. Hexadecimal Integers
+    --------------------------------------------------------------------
+
+    A hexadecimal integer is accepted as a color by SGE.  This should be
+    in the same form as HTML hex strings, but integral.  For example,
+    0xFF8000 is the same as (255, 128, 0), or orange.
+
+
+  II.D. Z-Axis
+  ----------------------------------------------------------------------
+
+  SGE uses a Z-axis attribute to determine where objects are placed in
+  the third dimension.  Objects with a higher Z value are considered to
+  be closer to the viewer.  For example, an object with a Z value of 5
+  is in front of an object with a Z value of 2.
+
+  The Z-axis is only used to determine how to project images when they
+  overlap. In this case, the object which is in front will partially
+  (or, in some cases, fully) cover the other object.
+
+  If two objects with the same Z-axis value overlap, SGE arbitrarily
+  chooses which one to project in front.
+
+
+III. Global Variables and Constants
+------------------------------------------------------------------------
+
+Constants:
+* IMPLEMENTATION: A string identifying the how the engine is implemented
+    (e.g. the name of the graphics library used).
+* ALIGN_LEFT: Flag indicating alignment to the left.
+* ALIGN_CENTER: Flag indicating alignment to the horizontal center.
+* ALIGN_RIGHT: Flag indicating alignment to the right.
+* ALIGN_TOP: Flag indicating alignment to the top.
+* ALIGN_MIDDLE: Flag indicating alignment to the vertical middle.
+* ALIGN_BOTTOM: Flag indicating alignment to the bottom.
+* MOUSE_BUTTON_LEFT: The mouse button number which corresponds with the
+    left mouse button.
+* MOUSE_BUTTON_RIGHT: The mouse button number which corresponds with the
+    right mouse button.
+* MOUSE_BUTTON_MIDDLE: The mouse button number which corresponds with
+    the middle mouse button.
+* MOUSE_BUTTON_WHEEL_UP: The mouse button number which corresponds with
+    rolling the mouse wheel up.
+* MOUSE_BUTTON_WHEEL_DOWN: The mouse button number which corresponds
+    with rolling the mouse wheel down.
+* MOUSE_BUTTON_WHEEL_LEFT: The mouse button number which corresponds
+    with tilting the mouse wheel to the left.
+* MOUSE_BUTTON_WHEEL_RIGHT: The mouse button number which corresponds
+    with tilting the mouse wheel to the right.
+
+Global variables:
+* game: Stores the current game.  If there is no game currently, this
+    variable is set to None.
+* image_directories: A list of directories where images can be found.
+    Default is ./data/images, ./data/sprites, or ./data/backgrounds.
+* font_directories: A list of directories where font files can be found.
+    Default is ./data/fonts.
+* sound_directories: A list of directories where sounds can be found.
+    Default is ./data/sounds.
+* music_directories: A list of directories where music files can be
+    found.  Default is ./data/music.
+
+
+IV. Classes
+------------------------------------------------------------------------
+
+Classes are the heart of SGE's operation.  Most functionality in games
+is best implemented via subclassing SGE's classes.
+
+
+  IV.A. sge.Game
+  ----------------------------------------------------------------------
+
+  This class handles most parts of the game which operate on a global
+  scale, such as global game events.  Before anything else is done with
+  SGE, an object either of this class or of a class derived from this
+  class must be created.
+
+  When an object of this class is created, it is automatically assigned
+  to sge.game.
+
+  Note: Do not create multiple sge.Game objects.  Doing so may cause
+  errors.
+
+  Attributes:
+  * width: The width of the game's display in pixels.
+  * height: The height of the game's display in pixels.
+  * fullscreen: True if the game should be in fullscreen, False
+      otherwise.
+  * scale: A number indicating a fixed scale factor (e.g. 1 for no
+      scaling, 2 for doubled size).  If set to 0, scaling is automatic
+      (causes the game to fit the window or screen).
+  * scale_proportional: If set to True, scaling is always
+      proportional.  If set to False, the image may be stretched to
+      completely fill the game window or screen.  This has no effect
+      unless ``scale`` is 0.
+  * scale_smooth: If set to True, a smooth scaling algorithm will be
+      used, if available.  Otherwise, simple scaling (e.g. pixel
+      doubling) will always be used.  Support for smooth scaling in
+      Stellar Game Engine implementations is optional.  If the
+      implementation used does not support smooth scaling, this option
+      will always be treated as False.
+  * fps: The rate the game should run in frames per second.  Note that
+      this is only the maximum; if the computer is not fast enough, the
+      game may run more slowly.
+  * delta: If set to True, delta timing will be enabled, which adjusts
+      speeds and animation rates if the game cannot run at the specified
+      frame rate.
+  * delta_min: Delta timing can cause the game to be choppy.  This
+      setting limits this by pretending that the frame rate is never
+      lower than this amount, resulting in the game slowing down like
+      normal if it is.
+  * grab_input: If set to True, all input will be locked into the game.
+
+  Read-Only Attributes:
+  * sprites: A dictionary containing all loaded sprites, using their
+      names as the keys.
+  * background_layers: A dictionary containing all loaded background
+      layers, using their sprites' names as the keys.
+  * backgrounds: A dictionary containing all loaded backgrounds, using
+      their unique identifiers as the keys.
+  * fonts: A dictionary containing all loaded fonts, using their names
+      as the keys.
+  * sounds: A dictionary containing all loaded sounds, using their file
+      names as the keys.
+  * music: A dictionary containing all loaded music, using their file
+      names as the keys.
+  * objects: A dictionary containing all sge.StellarClass objects in the
+      game, using their unique identifiers as the keys.
+  * rooms: A list containing all rooms in order of their creation.
+  * current_room: The Room object which is currently active.
+  * mouse: An sge.StellarClass object which represents the mouse cursor.
+      Its ID is "mouse" and its bounding box is one pixel.  Speed
+      variables are determined by averaging all mouse movement during
+      the last quarter of a second.  Assigning to its ``visible``
+      attribute controls whether or not the mouse cursor is shown.
+      Setting its sprite sets the mouse cursor.
+
+
+    IV.A.1. Constructor Method (sge.Game.__init__)
+    --------------------------------------------------------------------
+
+    sge.Game.__init__(self, width=640, height=480, fullscreen=False,
+        scale=0, scale_proportional=True, scale_smooth=False, fps=60,
+        delta=False, delta_min=15)
+
+    All arguments are used to set the respective initial attributes of
+    the object.
+
+
+    IV.A.2. sge.Game.start
+    --------------------------------------------------------------------
+
+    sge.Game.start(self)
+
+    Starts the game in the first room.  This method can also be called
+    at any time during the game to restart the game, resetting
+    everything to its original state.
+
+
+    IV.A.3. sge.Game.end
+    --------------------------------------------------------------------
+
+    sge.Game.end(self)
+
+    Ends the game.  Please use this rather than sys.exit, as some
+    implementations might do some clean-up here.
+
+
+    IV.A.4. sge.Game.pause
+    --------------------------------------------------------------------
+
+    sge.Game.pause(self, sprite=None)
+
+    Pauses the game, showing ``sprite`` (an sge.Sprite object) in the
+    center of the screen.  If ``sprite`` is None, a default image is
+    used instead; the exact image used is implementation-dependent.
+
+    Normal events are not executed while the game is paused.  Instead,
+    events with the same name, but prefixed with "event_paused_" instead
+    of "event_", are executed.  Note that not all events have these
+    alternative "paused" events associated with them.
+
+
+    IV.A.5. sge.Game.unpause
+    --------------------------------------------------------------------
+
+    sge.Game.unpause(self)
+
+    Unpauses the game.
+
+
+    IV.A.6. sge.Game.event_game_start
+    --------------------------------------------------------------------
+
+    sge.Game.event_game_start(self)
+
+    Game Start event.  This event is executed when the game starts.  It
+    is only executed once (it is not executed again when the game
+    restarts) and it is always the very first event executed.
+
+
+    IV.A.7. sge.Game.event_game_end
+    --------------------------------------------------------------------
+
+    sge.Game.event_game_end(self)
+
+    Game End event.  This event is executed when the game ends.  It is
+    only executed once and it is always the very last event executed.
+
+
+    IV.A.8. sge.Game.event_step
+    --------------------------------------------------------------------
+
+    sge.Game.event_step(self, time_passed)
+
+    Step event.  This event is always executed once each frame.
+    ``time_passed`` indicates the number of milliseconds that have
+    passed during the last frame.
+
+
+    IV.A.9. sge.Game.event_key_press
+    --------------------------------------------------------------------
+
+    sge.Game.event_key_press(self, key)
+
+    Key Press event.  This event is executed when a key on the keyboard
+    is pressed.  ``key`` indicates the identifier string of the key that
+    was pressed (see KEYS.txt for a list of all key identifier strings).
+
+
+    IV.A.10. sge.Game.event_key_release
+    --------------------------------------------------------------------
+
+    sge.Game.event_key_release(self, key)
+
+    Key Release event.  This event is executed when a key on the
+    keyboard is released.  ``key`` indicates the identifier string of
+    the key that was released (see KEYS.txt for a list of all key
+    identifier strings).
+
+
+    IV.A.11. sge.Game.event_mouse_move
+    --------------------------------------------------------------------
+
+    sge.Game.event_mouse_move(self, x, y)
+
+    Mouse Move event.  This event is executed when the mouse moves.
+    ``x`` indicates the horizontal relative movement of the mouse, and
+    ``y`` indicates the vertical relative movement of the mouse.
+
+
+    IV.A.12. sge.Game.event_mouse_button_press
+    --------------------------------------------------------------------
+
+    sge.Game.event_mouse_button_press(self, button)
+
+    Mouse Button Press event.  This event is executed when a mouse
+    button is pressed.  ``button`` indicates the number of the button
+    that was pressed.  What button numbers correspond to what buttons
+    can vary among implementations, so ``button`` should be checked
+    against the following constants:
+
+    * sge.MOUSE_BUTTON_LEFT
+    * sge.MOUSE_BUTTON_RIGHT
+    * sge.MOUSE_BUTTON_MIDDLE
+    * sge.MOUSE_BUTTON_WHEEL_UP
+    * sge.MOUSE_BUTTON_WHEEL_DOWN
+    * sge.MOUSE_BUTTON_WHEEL_LEFT
+    * sge.MOUSE_BUTTON_WHEEL_RIGHT
+
+
+    IV.A.13. sge.Game.event_mouse_button_release
+    --------------------------------------------------------------------
+
+    sge.Game.event.mouse_button_release(self, button)
+
+    Mouse Button Release event.  This event is executed when a mouse
+    button is released.  ``button`` indicates the number of the button
+    that was released.  What button numbers correspond to what buttons
+    can vary among implementations, so ``button`` should be checked
+    against the following constants:
+
+    * sge.MOUSE_BUTTON_LEFT
+    * sge.MOUSE_BUTTON_RIGHT
+    * sge.MOUSE_BUTTON_MIDDLE
+    * sge.MOUSE_BUTTON_WHEEL_UP
+    * sge.MOUSE_BUTTON_WHEEL_DOWN
+    * sge.MOUSE_BUTTON_WHEEL_LEFT
+    * sge.MOUSE_BUTTON_WHEEL_RIGHT
+
+
+    IV.A.14. sge.Game.event_joystick_axis_move
+    --------------------------------------------------------------------
+
+    sge.Game.event_joystick_axis_move(self, joystick, axis, value)
+
+    Joystick Axis Move event.  This event is executed when an axis on a
+    joystick changes position.  ``joystick`` indicates the number of the
+    joystick, where 0 is the first joystick.  ``axis`` indicates the
+    number of the axis, where 0 is the first axis.  ``value`` indicates
+    the tilt of the axis, where 0 is in the center, -1 is tilted all the
+    way to the left or up, and 1 is tilted all the way to the right or
+    down.  Note that ``value`` can be any floating-point number between
+    -1 and 1; it is not limited to integral values.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.A.15. sge.Game.event_joystick_hat_move
+    --------------------------------------------------------------------
+
+    sge.Game.event_joystick_hat_move(self, joystick, hat, x, y)
+
+    Joystick HAT Move event.  This event is executed when a HAT switch
+    (also called the POV hat, POV switch, or d-pad) changes position.
+    ``joystick`` indicates the number of the joystick, where 0 is the
+    first joystick.  ``hat`` indicates the number of the HAT, where 0 is
+    the first HAT.  ``x`` indicates the horizontal position of the HAT,
+    where 0 is in the center, -1 is left, and 1 is right.  ``y``
+    indicates the vertical position of the HAT, where 0 is in the
+    center, -1 is up, and 1 is down.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.A.16. sge.Game.event_joystick_button_press
+    --------------------------------------------------------------------
+
+    sge.Game.event_joystick_button_press(self, joystick, button)
+
+    Joystick Button Press event.  This event is executed when a joystick
+    button is pressed.  ``joystick`` indicates the number of the
+    joystick, where 0 is the first joystick.  ``button`` indicates the
+    number of the button that was pressed, where 0 is the first button
+    on the joystick.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.A.17. sge.Game.event_joystick_button_release
+    --------------------------------------------------------------------
+
+    sge.Game.event_joystick_button_release(self, joystick, button)
+
+    Joystick Button Release event.  This event is executed when a
+    joystick button is released.  ``joystick`` indicates the number of
+    the joystick, where 0 is the first joystick.  ``button`` indicates
+    the number of the button that was released, where 0 is the first
+    button on the joystick.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.A.18. sge.Game.event_close
+    --------------------------------------------------------------------
+
+    sge.Game.event_close(self)
+
+    Close event.  This event is executed when the operating system tells
+    the game to close, e.g. when the user presses the close button in
+    the window frame.  It is always called after any
+    sge.Room.event_close occurring at the same time.
+
+
+    IV.A.19. sge.Game.event_mouse_collision
+    --------------------------------------------------------------------
+
+    sge.Game.event_mouse_collision(self, other)
+
+    Default Mouse Collision event.  This event is executed when another
+    object collides with sge.game.mouse and none of the directional
+    collision events are appropriate.  In particular, this event is
+    executed if the collision was already happening in the previous
+    frame, meaning that the object is colliding with the inside of the
+    mouse. In addition, directional mouse collision events cause this
+    event to execute by default if they are not overridden.  ``other``
+    indicates the other object which was collided with.
+
+
+    IV.A.20. sge.Game.event_mouse_collision_left
+    --------------------------------------------------------------------
+
+    sge.Game.event_mouse_collision_left(self, other)
+
+    Left Mouse Collision event.  This event is executed when another
+    object collides with sge.game.mouse from the left.  ``other``
+    indicates the other object which was collided with.
+
+
+    IV.A.21. sge.Game.event_mouse_collision_right
+    --------------------------------------------------------------------
+
+    sge.Game.event_mouse_collision_right(self, other)
+
+    Right Mouse Collision event.  This event is executed when another
+    object collides with sge.game.mouse from the right.  ``other``
+    indicates the other object which was collided with.
+
+
+    IV.A.22. sge.Game.event_mouse_collision_top
+    --------------------------------------------------------------------
+
+    sge.Game.event_mouse_collision_top(self, other)
+
+    Top Mouse Collision event.  This event is executed when another
+    object collides with sge.game.mouse from the top.  ``other``
+    indicates the other object which was collided with.
+
+
+    IV.A.23. sge.Game.event_mouse_collision_bottom
+    --------------------------------------------------------------------
+
+    sge.Game.event_mouse_collision_bottom(self, other)
+
+    Bottom Mouse Collision event.  This event is executed when another
+    object collides with sge.game.mouse from the bottom.  ``other``
+    indicates the other object which was collided with.
+
+
+    IV.A.24. sge.Game.event_paused_key_press
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_key_press(self, key)
+
+    Key Press event when the game is paused.
+
+
+    IV.A.25. sge.Game.event_paused_key_release
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_key_release(self, key)
+
+    Key Release event when the game is paused.
+
+
+    IV.A.26. sge.Game.event_paused_mouse_move
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_mouse_move(self, x, y)
+
+    Mouse Move event when the game is paused.
+
+
+    IV.A.27. sge.Game.event_paused_mouse_button_press
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_mouse_button_press(self, button)
+
+    Mouse Button Press event when the game is paused.
+
+
+    IV.A.28. sge.Game.event_paused_mouse_button_release
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_mouse_button_release
+
+    Mouse Button Release event when the game is paused.
+
+
+    IV.A.29. sge.Game.event_paused_joystick_axis_move
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_joystick_axis_move(self, joystick, axis,
+        value)
+
+    Joystick Axis Move event when the game is paused.
+
+
+    IV.A.30. sge.Game.event_paused_joystick_hat_move
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_joystick_hat_move(self, joystick, hat, x, y)
+
+    Joystick HAT Move event when the game is paused.
+
+
+    IV.A.31. sge.Game.event_paused_joystick_button_press
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_joystick_button_press(self, joystick, button)
+
+    Joystick Button Press event when the game is paused.
+
+
+    IV.A.32. sge.Game.event_paused_joystick_button_release
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_joystick_button_release(self, joystick,
+        button)
+
+    Joystick Button Release event when the game is paused.
+
+
+    IV.A.33. sge.Game.event_paused_close
+    --------------------------------------------------------------------
+
+    sge.Game.event_paused_close(self)
+
+    Close event when the game is paused.
+
+
+  IV.B. sge.Sprite
+  ----------------------------------------------------------------------
+
+  This class stores images and information about how SGE is to use those
+  images.
+
+  What image formats are supported depends on the implementation of SGE,
+  but image formats that are generally a good choice are PNG, JPEG, and
+  uncompressed BMP.  See the implementation's readme for a full list of
+  supported formats.
+
+  Attributes:
+  * width: The width of the sprite in pixels.
+  * height: The height of the sprite in pixels.
+  * origin_x: The horizontal location of the origin (the pixel position
+      in relation to the images to base rendering on), where the left
+      edge of the image is 0 and origin_x increases toward the right.
+  * origin_y: The vertical location of the origin (the pixel position in
+      relation to the images to base rendering on), where the top edge
+      of the image is 0 and origin_y increases toward the bottom.
+  * transparent: True if the image should support transparency, False
+      otherwise.  If the image does not have an alpha channel or if the
+      implementation used does not support alpha transparency, a
+      colorkey will be used, with the transparent color being the color
+      of the top-rightmost pixel.
+  * fps: The suggested rate in frames per second to animate the image
+      at.
+  * bbox_x: The horizontal location of the top-left corner of the
+      suggested bounding box to use with this sprite, where origin_x is
+      0 and bbox_x increases toward the right.
+  * bbox_y: The vertical location of the top-left corner of the
+      suggested bounding box to use with this sprite, where origin_y is
+      0 and bbox_y increases toward the bottom.
+  * bbox_width: The width of the suggested bounding box in pixels.
+  * bbox_height: The height of the suggested bounding box in pixels.
+
+  Read-Only Attributes:
+  * name: The name of the sprite given when it was created.
+
+
+    IV.B.1. Cunstructor Method (sge.Sprite.__init__)
+    --------------------------------------------------------------------
+
+    sge.Sprite.__init__(self, name=None, width=None, height=None,
+        origin_x=0, origin_y=0, transparent=True, fps=60, bbox_x=0,
+        bbox_y=0, bbox_width=None, bbox_height=None)
+
+    ``name`` indicates the base name of the image files.  All remaining
+    arguments are used to set the respective initial attributes of the
+    object.
+
+    The base name is used to find all individual image files which make
+    up this sprite's animation.  First, a file who's name consists only
+    of the base name plus a valid image extension is searched for.  If
+    no such image is available, files with names consisting of the base
+    name followed by either an underscore ("_") or a hyphen ("-") and
+    then a positive integer are searched for, to be used as a single
+    animation with the frames ordered by number (the lowest number is
+    the first frame).  If neither of these methods return any results, a
+    file with names consisting of the base name followed by either
+    "_strip" or "-strip" and then an integer is searched for to be used
+    as an animation; the image is split into a number of sections
+    indicated by the number horizontally, like a horizontal reel.
+
+    The following are all examples of images that will be loaded for a
+    sprite given the base name "foo":
+    * foo.png (single-frame, no animation)
+    * foo-0.png (frame 0; the next frame would be foo-1.png)
+    * foo-strip4.png (split horizontally into four sections)
+
+    The base name can also be None, in which case the sprite will be a
+    fully transparent rectangle at the specified size (with both
+    ``width`` and ``height`` defaulting to 32 if they are set to None).
+    The implementation decides what to assign to the sprite's ``name``
+    attribute in this case, but it will always be a string.
+
+    If no image is found based on any of the above methods and the base
+    name is not None, IOError will be raised.
+
+    If ``width`` or ``height`` is set to None, the respective size will
+    be taken from the largest animation frame.  If ``bbox_width`` or
+    ``bbox_height`` is set to None, it will be taken from ``width`` or
+    ``height``, respectively.
+
+
+    IV.B.2. sge.Sprite.draw_dot
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_dot(self, x, y, color, frame=None)
+
+    Draws a single-pixel dot on this sprite.  ``x`` and ``y`` indicate
+    the location in the sprite to draw the dot, where (0,0) is the
+    origin of the sprite and x and y increase toward the right and
+    bottom, respectively.  ``color`` indicates the color of the dot.
+    ``frame`` indicates the frame of the sprite to draw on, where 0 is
+    the first frame; set to None to draw on all frames.
+
+
+    IV.B.3. sge.Sprite.draw_line
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_line(self, x1, y1, x2, y2, color, thickness=1,
+        ant_alias=False, frame=None)
+
+    Draws a line segment on this sprite.  ``x1``, ``y1``, ``x2``, and
+    ``y2`` indicate the locations in the sprite of the two points
+    between which to draw the line segment, where (0,0) is the origin of
+    the sprite and x and y increase toward the right and bottom,
+    respectively.  ``color`` indicates the color of the line segment.
+    ``thickness`` indicates the thickness of the line segment in pixels.
+    ``anti_alias`` indicates whether or not anti-aliasing should be
+    used, which uses different color shades to make the line appear
+    straighter.  ``frame`` indicates the frame of the sprite to draw on,
+    where 0 is the first frame; set to None to draw on all frames.
+
+    Support for anti-aliasing is optional in Stellar Game Engine
+    implementations.  See the implementation's readme to see if it
+    supports anti-aliasing.  If anti-aliasing is unsupported,
+    ``anti_alias`` will be ignored.
+
+
+    IV.B.4. sge.Sprite.draw_rectangle
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_rectangle(self, x, y, width, height, fill=None,
+        outline=None, outline_thickness=1, frame=None)
+
+    Draws a rectangle on this sprite.  ``x`` and ``y`` indicate the
+    location in the sprite to position the top-left corner of the
+    rectangle, where (0,0) is the origin of the sprite and x and y
+    increase toward the right and bottom, respectively.  ``width`` and
+    ``height`` indicate the size of the rectangle.  ``fill`` indicates
+    the  color of the fill of the rectangle; set to None for no fill.
+    ``outline`` indicates the color of the outline of the rectangle; set
+    to None for no outline.  ``outline_thickness`` indicates the
+    thickness of the outline in pixels (ignored if there is no outline).
+    ``frame`` indicates the frame of the sprite to draw on, where 0 is
+    the first frame; set to None to draw on all frames.
+
+
+    IV.B.5. sge.Sprite.draw_ellipse
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_ellipse(self, x, y, width, height, fill=None,
+        outline=None, outline_thickness=1, anti_alias=False, frame=None)
+
+    Draws an ellipse on this sprite.  ``x`` and ``y`` indicate the
+    location in the sprite to position the top-left corner of the
+    imaginary rectangle containing the ellipse, where (0,0) is the
+    origin of the sprite and x and y increase toward the right and
+    bottom, respectively.  ``width`` and ``height`` indicate the size of
+    the ellipse.  ``fill``indicates the color of the fill of the
+    ellipse; set to None for no fill.  ``outline`` indicates the color
+    of the outline of the ellipse; set to None for no outline.
+    ``outline_thickness`` indicates the thickness of the outline in
+    pixels (ignored if there is no outline).  ``anti_alias`` indicates
+    whether or not anti-aliasing should be used, which uses different
+    color shades to make the ellipse appear more rounded.  ``frame``
+    indicates the frame of the sprite to draw on, where 0 is the first
+    frame; set to None to draw on all frames.
+
+    Support for anti-aliasing is optional in Stellar Game Engine
+    implementations.  See the implementation's readme to see if it
+    supports anti-aliasing.  If anti-aliasing is unsupported,
+    ``anti_alias`` will be ignored.
+
+
+    IV.B.6. sge.Sprite.draw_circle
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_circle(self, x, y, radius, fill=None, outline=None,
+        outline_thickness=1, anti_alias=False, frame=None)
+
+    Draws a circle on this sprite.  ``x`` and ``y`` indicate the
+    location in the sprite to position the center of the circle, where
+    (0,0) is the origin of the sprite and x and y increase toward the
+    right and bottom, respectively.  ``radius`` indicates the radius of
+    the circle in pixels.  ``fill`` indicates the color of the fill of
+    the circle; set to None for no fill.  ``outline`` indicates the
+    color of the outline of the circle; set to None for no outline.
+    ``outline_thickness`` indicates the thickness of the outline in
+    pixels (ignored if there is no outline).  ``anti_alias`` indicates
+    whether or not anti-aliasing should be used, which uses different
+    color shades to make the circle appear more rounded.  ``frame``
+    indicates the frame of the sprite to draw on, where 0 is the first
+    frame; set to None to draw on all frames.
+
+    Support for anti-aliasing is optional in Stellar Game Engine
+    implementations.  See the implementation's readme to see if it
+    supports anti-aliasing.  If anti-aliasing is unsupported,
+    ``anti_alias`` will be ignored.
+
+
+    IV.B.7. sge.Sprite.draw_sprite
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_sprite(self, sprite, image, x, y, frame=None)
+
+    Draws another sprite on this sprite.  ``sprite`` indicates the
+    sprite to draw with.  ``image`` indicates the frame of ``sprite`` to
+    draw ``self``, where 0 is the first frame. ``x`` and ``y`` indicate
+    the location in ``self`` to position the origin of ``sprite``, where
+    (0,0) is the origin of ``self`` and x and y increase toward the
+    right and bottom, respectively.  ``frame`` indicates the frame of
+    ``self`` to draw on, where 0 is the first frame; set to None to draw
+    on all frames.
+
+
+    IV.B.8. sge.Sprite.draw_text
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_text(self, font, text, x, y, width=None,
+        height=None, color="black", halign=sge.ALIGN_LEFT,
+        valign=sge.ALIGN_TOP, anti_alias=True, frame=None)
+
+    Draws text on this sprite.  ``font`` indicates the font to use to
+    draw the text.  ``text`` indicates the text to draw.  ``x`` and
+    ``y`` indicate the location in the sprite to position the imaginary
+    box containing the text, where (0,0) is the origin of the sprite and
+    x and y increase toward the right and bottom, respectively.
+    ``width`` and ``height`` indicate the size of the imaginary box the
+    text is drawn in; set to None to assign the respective size to
+    whatever is needed to contain the text.  ``color`` indicates the
+    color of the text.  ``halign`` indicates the horizontal alignment of
+    the imaginary box containing the text with respect to ``x`` as well
+    as the horizontal alignment of the text itself and can be
+    sge.ALIGN_LEFT, sge.ALIGN_CENTER, or sge.ALIGN_RIGHT.  ``valign``
+    indicates the vertical alignment of the imaginary box containing the
+    text with respect to ``y`` and can be sge.ALIGN_TOP,
+    sge.ALIGN_MIDDLE, or sge.ALIGN_BOTTOM.  ``anti_alias`` indicates
+    whether or not anti- aliasing should be used, which uses different
+    color shades to to make round shapes appear more round and diagonal
+    lines appear more straight.  ``frame`` indicates the frame of the
+    sprite to draw on, where 0 is the first frame; set to None to draw
+    on all frames.
+
+    Text is fitted into the imaginary box much like a word processor; if
+    the text is too long to fit in one line, the line will be
+    automatically split into multiple lines.  After applying this rule,
+    if the text does not fit vertically into the imaginary box, text
+    that doesn't fit will be cut off; from the bottom if ``valign`` is
+    sge.ALIGN_TOP, from the top if ``valign`` is sge.ALIGN_BOTTOM, or
+    equally from the top and the bottom if ``valign`` is
+    sge.ALIGN_MIDDLE.
+
+    Support for anti-aliasing is optional in Stellar Game Engine
+    implementations.  See the implementation's readme to see if it
+    supports anti-aliasing.  If anti-aliasing is unsupported,
+    ``anti_alias`` will be ignored.
+
+
+    IV.B.9. sge.Sprite.draw_clear
+    --------------------------------------------------------------------
+
+    sge.Sprite.draw_clear(self, frame=None)
+
+    Erases everything from frames on this sprite.  ``frame`` indicates
+    the frame of the sprite to clear, where 0 is the first frame; set to
+    None to clear all frames.  Once a frame is cleared, it will be a
+    fully transparent (invisible) rectangle.
+
+    Use this method to re-draw something. For example, you could have a
+    sprite that shows the player's current score; when the score
+    changes, clear the sprite with this method and then draw the new
+    score.
+
+
+  IV.C. sge.BackgroundLayer
+  ----------------------------------------------------------------------
+
+  This class stores a sprite and certain information for a layer of a
+  background.  In particular, it stores the location of the layer,
+  whether the layer tiles horizontally, vertically, or both, and the
+  rate at which it scrolls.
+
+  The attributes xscroll_rate and yscroll_rate indicate the rate that
+  the layer scrolls (or moves) as a factor of the respective movement of
+  the view.  For example, a value of 1 results in the layer scrolling at
+  the same rate as the view, and a value of 2 results in the layer
+  scrolling twice as fast as the view.  By setting different layers to
+  scroll at different rates, you can easily enable a parallax scrolling
+  effect.
+
+  Attributes:
+  * sprite: The sge.Sprite object used for this layer.  It will be
+      animated if it contains multiple frames.
+  * x: The horizontal position in a background to place the sprite's
+      origin, where 0 is the left edge of the background and x increases
+      toward the right.
+  * y: The vertical position in a background to place the sprite's
+      origin, where 0 is the top edge of the background and y increases
+      toward the bottom.
+  * z: The Z-axis position of the layer in the room, where higher
+      values are closer to the viewer.
+  * xscroll_rate: The horizontal speed the layer scrolls at as a factor
+      of the view's movement.
+  * yscroll_rate: The vertical speed the layer scrolls at as a factor of
+      the view's movement.
+  * xrepeat: Whether or not the layer should be repeated (or tiled)
+      horizontally.
+  * yrepeat: Whether or not the layer should be repeated (or tiled)
+      vertically.
+
+
+    IV.C.1. Constructor Method (sge.BackgroundLayer.__init__)
+    --------------------------------------------------------------------
+
+    sge.BackgroundLayer.__init__(self, sprite, x, y, z, xscroll_rate=1,
+        yscroll_rate=1, xrepeat=True, yrepeat=True)
+
+    All arguments are used to set the respective initial attributes of
+    the layer.
+
+
+  IV.D. sge.Background
+  ----------------------------------------------------------------------
+
+  This class stores the layers that make up the background (which
+  contain the information about what images to use and where) as well as
+  the color to use where no image is shown.
+
+  Attributes:
+  * color: The color used in parts of the background where no layer is
+      shown.
+
+  Read-Only Attributes:
+  * id: The unique identifier for this background assigned to it when it
+      was created.
+  * layers: A tuple containing all sge.BackgroundLayer objects used in
+      this background.
+
+
+    IV.D.1. Constructor Method (sge.Background.__init__)
+    --------------------------------------------------------------------
+
+    sge.Background.__init__(self, layers, color, id=None)
+
+    All arguments are used to set the respective initial attributes of
+    the background.  If ``id`` is None, it will be set to an integer not
+    currently used as an ID (the exact number chosen is determined by
+    the implementation and may vary between runs).
+
+
+  IV.E. sge.Font
+  ----------------------------------------------------------------------
+
+  This class stores a font for use by Sprite.draw_text.
+
+  Note that bold and italic rendering could be ugly.  It is better to
+  choose a bold or italic font rather than enabling bold or italic
+  rendering, if possible.
+
+  Attributes:
+  * size: The height of the font in pixels.
+  * underline: Whether or not underlined rendering is enabled.
+  * bold: Whether or not bold rendering is enabled.
+  * italic: Whether or not italic rendering is enabled.
+
+  Read-Only Attributes:
+  * name: The name of the font, as specified when it was created.
+
+
+    IV.E.1. Constructor Method (sge.Font.__init__)
+    --------------------------------------------------------------------
+
+    sge.Font.__init__(self, name=None, size=12, underline=False,
+        bold=False, italic=False)
+
+    ``name`` indicates the name of the font.  This can be either the
+    name of a font file, to be located in one of the directories
+    specified in sge.font_directories, or the name of a system font.  If
+    the specified font does not exist in either form, a default font
+    will be chosen by SGE (the default font can vary between
+    implementations).   ``name`` can also be a list or tuple of fonts to
+    choose from in order of preference.  All remaining arguments are
+    used to set the respective initial attributes of the font.
+
+    Note that it is generally not a good practice to rely on system
+    fonts.  A font you have on your system might not be a font that
+    everyone has on their system.  For example, one common font on
+    Windows systems is Times New Roman, but GNU/Linux systems don't
+    usually have this font, instead having fonts like Liberation Serif
+    or DejaVu Serif.  SGE is supposed to make an attempt to match
+    compatible fonts, but this is not required of SGE implementations,
+    so it should not be relied upon.  Instead, choose a font with a
+    free license (such as the SIL Open Font License or the GNU General
+    Public License) and distribute it with your game.
+
+
+    IV.E.2. sge.Font.get_size
+    --------------------------------------------------------------------
+
+    sge.Font.get_size(self, text, width=None, height=None)
+
+    Returns the size of a certain string of text when rendered.  All
+    arguments correspond with the same arguments from sge.font.render,
+    and the size returned reflects the rendering rules therein.  The
+    value returned is a tuple in the form (width, height).
+
+
+  IV.F. sge.Sound
+  ----------------------------------------------------------------------
+
+  This class stores and plays sound effects.  Note that this is
+  inefficient for large music files; for those, use sge.Music instead.
+
+  What sound formats are supported depends on the implementation of SGE,
+  but sound formats that are generally a good choice are Ogg Vorbis and
+  uncompressed WAV.  See the implementation's readme for a full list of
+  supported formats.
+
+  Attributes:
+  * volume: The volume of the sound in percent (0 for no sound, 100 for
+      max sound).
+  * balance: The balance of the sound effect on stereo speakers.  A
+      value of 0 means centered (an equal amount of play on both
+      speakers), -1 means entirely in the left speaker, and 1 means
+      entirely in the right speaker.
+  * max_play: The maximum instances of this sound playing permitted.
+      Set to 0 for no limit.
+
+  Read-Only Attributes:
+  * fname: The file name of the sound given when it was created.
+  * length: The length of the sound in milliseconds.
+  * playing: The number of instances of this sound playing.
+
+
+    IV.F.1. Constructor Method (sge.Sound.__init__)
+    --------------------------------------------------------------------
+
+    sge.Sound.__init__(self, fname, volume=100, balance=0, max_play=1)
+
+    ``fname`` indicates the name of the sound file (e.g. "mysound.wav")
+    to be located in one of the directories specified in
+    sge.sound_directories.  All remaining arguments set the respective
+    initial attributes of the sound.
+
+
+    IV.F.2. sge.Sound.play
+    --------------------------------------------------------------------
+
+    sge.Sound.play(self, loops=0, maxtime=None, fade_time=None)
+
+    Plays the sound.  ``loops`` indicates the number of extra times to
+    play the sound after it is played the first time; set to None to
+    loop indefinitely.  ``maxtime`` indicates the maximum amount of time
+    to play the sound in milliseconds; set to None for no limit.
+    ``fade_time`` indicates the time in milliseconds over which to fade
+    the sound in; set to 0 or None to immediately play the sound at full
+    volume.
+
+
+    IV.F.3. sge.Sound.stop
+    --------------------------------------------------------------------
+
+    sge.Sound.stop(self, fade_time=None)
+
+    Stops the sound.  ``fade_time`` indicates the time in milliseconds
+    over which to fade the sound out before stopping; set to 0 or None
+    to immediately stop the sound.
+
+
+    IV.F.4. sge.Sound.pause
+    --------------------------------------------------------------------
+
+    sge.Sound.pause(self)
+
+    Pauses playback of the sound.
+
+
+    IV.F.5. sge.Sound.unpause
+    --------------------------------------------------------------------
+
+    sge.Sound.unpause(self)
+
+    Resumes playback of the sound if paused.
+
+
+    IV.F.6. sge.Sound.stop_all (static method)
+    --------------------------------------------------------------------
+
+    sge.Sound.stop_all()
+
+    Stops playback of all sounds.
+
+    This is a static method.
+
+
+  IV.G. sge.Music
+  ----------------------------------------------------------------------
+
+  This class stores and plays music.  Music is very similar to sound
+  effects, but only one music file can be played at a time, and it is
+  more efficient for larger files than sge.Sound.
+
+  What music formats are supported depends on the implementation of SGE,
+  but Ogg Vorbis is generally a good choice.  See the implementation's
+  readme for a full list of supported formats.  You should avoid the
+  temptation to use MP3 files; MP3 is a patent-encumbered format, so
+  many systems do not support it and royalties to the patent holder may
+  be required for commercial use.  There are many programs which can
+  convert your MP3 files to the free Ogg Vorbis format.
+
+  Attributes:
+  * volume: The volume of the music in percent (0 for n sound, 100 for
+      max sound).
+  * balance: The balance of the music on stereo speakers.  A value of 0
+      means centered (an equal amount of play on both speakers), -1
+      means entirely in the left speaker, and 1 means entirely in the
+      right speaker.
+
+  Read-Only Attributes:
+  * fname: The file name of the music given when it was created.
+  * length: The length of the music in milliseconds.
+  * playing: Whether or not the music is playing.
+  * position: The current position (time) on the music in milliseconds.
+
+
+    IV.G.1. Constructor Method (sge.Music.__init__)
+    --------------------------------------------------------------------
+
+    sge.Music.__init__(self, fname, volume=100, balance=0)
+
+    ``fname`` indicates the name of the sound file, to be located in
+    one of the directories specified in ``music_directories``.  All
+    remaining arguments set the respective initial attributes of the
+    music.
+
+
+    IV.G.2. sge.Music.play
+    --------------------------------------------------------------------
+
+    sge.Music.play(self, start=0, loops=0, maxtime=None, fade_time=None)
+
+    Plays the music.  If some music was already playing when this is
+    called, it will be stopped.  ``start`` indicates the number of
+    milliseconds from the beginning to start at.  ``loops`` indicates
+    the number of extra times to play the sound after it is played the
+    first time; set to -1 or None to loop indefinitely.  ``maxtime``
+    indicates the maximum amount of time to play the sound in
+    milliseconds; set to None for no limit.  ``fade_time`` indicates the
+    time in milliseconds over which to fade the sound in; set to 0 or
+    None to immediately play the music at full volume.
+
+
+    IV.G.3. sge.Music.queue
+    --------------------------------------------------------------------
+
+    sge.Music.queue(self, start=0, loops=0, maxtime=None,
+        fade_time=None)
+
+    Queues the music for playback.  This adds the music to a list of
+    music to play in order, after the previous music has finished
+    playing.  All arguments are the
+
+
+    IV.G.4. sge.Music.stop
+    --------------------------------------------------------------------
+
+    sge.Music.stop(self, fade_time=None)
+
+    Stops the music.  ``fade_time`` indicates the time in milliseconds
+    over which to fade the sound out before stopping; set to 0 or None
+    to immediately stop the music.
+
+
+    IV.G.5. sge.Music.pause
+    --------------------------------------------------------------------
+
+    sge.Music.pause(self)
+
+    Pauses playback of the music.
+
+
+    IV.G.6. sge.Music.unpause
+    --------------------------------------------------------------------
+
+    sge.Music.unpause(self)
+
+    Resumes playback of the music if paused.
+
+
+    IV.G.7. sge.Music.clear_queue (static method)
+    --------------------------------------------------------------------
+
+    sge.Music.clear_queue()
+
+    Clears the music queue.
+
+    This is a static method.
+
+
+    IV.G.8. sge.Music.stop_all (static method)
+    --------------------------------------------------------------------
+
+    sge.Music.stop_all()
+
+    Stops playback of any music and clears the queue.
+
+    This is a static method.
+
+
+  IV.H. sge.StellarClass
+  ----------------------------------------------------------------------
+
+  This class is used for game objects, such as the player, enemies,
+  bullets, and the HUD.  Generally, each type of object has its own
+  subclass of sge.StellarClass.
+
+  Attributes:
+  * x: The horizontal position of the object in the room, where the left
+      edge of the room is 0 and x increases toward the right.
+  * y: The vertical position of the object in the room, where the top
+      edge of the room is 0 and y increases toward the bottom.
+  * z: The Z-axis position of the object in the room, where higher
+      values are closer to the viewer.
+  * sprite: The sprite currently in use by this object.  Set to None for
+      no sprite.
+  * visible: Whether or not this object's sprite should be projected
+      onto the screen.
+  * detects_collisions: Whether or not this object should be involved in
+      collisions.  Setting this to False can improve performance if the
+      object doesn't need to detect collisions.
+  * bbox_x: The horizontal position of the top-left corner of the
+      bounding box in relation to x, where 0 is x and bbox_x increases
+      toward the right.  If set to None, the value recommended by the
+      sprite is used.
+  * bbox_y: The vertical position of the top-left corner of the bounding
+      box in relation to y, where 0 is y and bbox_y increases toward the
+      bottom.  If set to None, the value recommended by the sprite is
+      used.
+  * bbox_width: The width of the bounding box in pixels.  If set to
+      None, the value recommended by the sprite is used.
+  * bbox_height: The height of the bounding box in pixels.  If set to
+      None, the value recommended by the sprite is used.
+  * collision_ellipse: Whether or not an ellipse should be used for
+      collision detection instead of a rectangle.
+  * collision_precise: Whether or not precise (pixel-perfect) collision
+      detection should be used.  Note that this can be inefficient and
+      in some cases can lead to collision detection errors.
+  * bbox_left: The position of the left side of the bounding box in the
+      room.
+  * bbox_right: The position of the right side of the bounding box in
+      the room.
+  * bbox_top: The position of the top side of the bounding box in the
+      room.
+  * bbox_bottom: The position of the bottom side of the bounding box in
+      the room.
+  * xvelocity: The velocity of the object toward the right.
+  * yvelocity: The velocity of the object toward the bottom.
+  * speed: The total (directional) speed of the object.
+  * move_direction: The direction of the object's movement in degrees,
+      with 0 being directly to the right and rotation in a positive
+      direction being counter-clockwise.
+  * image_index: The animation frame currently being displayed, with 0
+      being the first one.
+  * image_fps: The animation rate in frames per second.  If set to None,
+      the value recommended by the sprite is used.
+  * image_xscale: The horizontal scale factor for the sprite.
+  * image_yscale: The vertical scale factor for the sprite.
+  * image_rotation: The rotation of the sprite, with rotation in a
+      positive direction being counter-clockwise.
+  * image_alpha: The alpha value applied to the entire image, where 255
+      is the original image, 128, is half the opacity of the original
+      image, 0 is fully transparent, etc.
+  * image_blend: The color to blend with the sprite.  Set to None for no
+      color blending.
+
+  Read-Only Attributes:
+  * id: The unique identifier for this object.
+  * xstart: The initial value of x when the object was created.
+  * ystart: The initial value of y when the object was created.
+  * xprevious: The previous value of x.
+  * yprevious: The previous value of y.
+
+
+    IV.H.1. Constructor Method (sge.StellarClass.__init__)
+    --------------------------------------------------------------------
+
+    sge.StellarClass.__init__(self, x, y, z, id=None, sprite=None,
+        visible=True, detects_collisions=True, bbox_x=None, bbox_y=None,
+        bbox_width=None, bbox_height=None, collision_ellipse=False,
+        collision_precise=False, xvelocity=0, yvelocity=0,
+        image_index=0, image_fps=0, image_xscale=1, image_yscale=1,
+        image_rotation=0, image_alpha=255, image_blend=None)
+
+    All arguments set the respective initial attributes of the object.
+    If ``id`` is None, it will be set to an integer not currently used
+    as an ID (the exact number chosen is implementation-dependent and
+    may not be the same between runs).
+
+
+    IV.H.2. sge.StellarClass.collides
+    --------------------------------------------------------------------
+
+    sge.StellarClass.collides(self, other, x=None, y=None)
+
+    Returns whether or not this object collides with another.  ``other``
+    indicates the object to check for a collision with.  ``other`` can
+    also be a class to check for collisions with.  ``x`` and ``y``
+    indicate the position to check for collisions at.  If set to None,
+    this object's current position will be used.
+
+    The normal collision rules will be used when this method is called.
+    For example, if collision_precise is True, precise collision
+    detection will be used.
+
+
+    IV.H.3. sge.StellarClass.set_alarm
+    --------------------------------------------------------------------
+
+    sge.StellarClass.set_alerm(self, alarm_id, value)
+
+    Sets the alarm with the given ``alarm_id`` at the given ``value``.
+    The alarm will then reduce by 1 each frame (adjusted with delta
+    timing, if enabled) until it reaches 0, at which point event_alarm
+    will be executed with the same ID as was used here.  ``alarm_id``
+    can be any value.  ``value`` should be a number greater than 0.  You
+    can also set ``value`` to None to disable the alarm if it was
+    set previously.
+
+
+    IV.H.4. sge.StellarClass.get_alarm
+    --------------------------------------------------------------------
+
+    sge.StellarClass.get_alarm(self, alarm_id)
+
+    Returns the number of frames (adjusted with delta timing, if
+    enabled) before the alarm event with ``alarm_id`` will execute.  If
+    the alarm has not been set, None will be returned.
+
+
+    IV.H.5. sge.StellarClass.destroy
+    --------------------------------------------------------------------
+
+    sge.StellarClass.destroy(self)
+
+    Destroys the object.
+
+
+    IV.H.6. sge.StellarClass.event_create
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_create(self)
+
+    Create event.  This event is executed when the object is created.
+    It is always executed after any room start events occurring at the
+    same time.
+
+    Note that this event is executed when the object is created in a
+    room, not necessarily when it is first created in Python.  In
+    particular, if you create a StellarClass object normally, it is not
+    created in a room until you add it with sge.Room.add.
+    sge.StellarClass.create does this automatically.  Objects included
+    in a rooms initial objects list are also automatically added.
+
+
+    IV.H.7. sge.StellarClass.event_destroy
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_destroy(self):
+
+    Destroy event.  This event is executed when this object is
+    destroyed.
+
+
+    IV.H.8. sge.StellarClass.event_step
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_step(self, time_passed)
+
+    Step event.  This event is always executed once each frame.
+    ``time_passed`` indicates the number of milliseconds that have
+    passed during the last frame.
+
+
+    IV.H.9. sge.StellarClass.event_alarm
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_alarm(self, alarm_id)
+
+    Alarm event.  This event is executed when an alarm counter reaches
+    0.  ``alarm_id``is the ID of the alarm that was set off.
+
+
+    IV.H.10. sge.StellarClass.event_animation_end
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_animation_end(self)
+
+    Animation End event.  This event is executed when the animation of
+    this object's sprite reaches the end of a cycle (which is the time
+    when animation returns to frame 0).
+
+
+    IV.H.11. sge.StellarClass.event_key_press
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_key_press(self, key)
+
+    Key Press event.  This event is executed when a key on the keyboard
+    is pressed.  ``key`` indicates the identifier string of the key that
+    was pressed (see KEYS.txt for a list of all key identifier strings).
+
+
+    IV.H.12. sge.StellarClass.event_key_release
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_key_release(self, key)
+
+    Key Release event.  This event is executed when a key on the
+    keyboard is released.  ``key`` indicates the identifier string of
+    the key that was released (see KEYS.txt for a list of all key
+    identifier strings).
+
+
+    IV.H.13. sge.StellarClass.event_mouse_move
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_mouse_move(self, x, y)
+
+    Mouse Move event.  This event is executed when the mouse moves.
+    ``x`` indicates the horizontal relative movement of the mouse, and
+    ``y`` indicates the vertical relative movement of the mouse.
+
+
+    IV.H.14. sge.StellarClass.event_mouse_button_press
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_mouse_button_press(self, button)
+
+    Mouse Button Press event.  This event is executed when a mouse
+    button is pressed.  ``button`` indicates the number of the button
+    that was pressed.  What button numbers correspond to what buttons
+    can vary among implementations, so ``button`` should be checked
+    against the following constants:
+
+    * sge.MOUSE_BUTTON_LEFT
+    * sge.MOUSE_BUTTON_RIGHT
+    * sge.MOUSE_BUTTON_MIDDLE
+    * sge.MOUSE_BUTTON_WHEEL_UP
+    * sge.MOUSE_BUTTON_WHEEL_DOWN
+    * sge.MOUSE_BUTTON_WHEEL_LEFT
+    * sge.MOUSE_BUTTON_WHEEL_RIGHT
+
+
+    IV.H.15. sge.StellarClass.event_mouse_button_release
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_mouse_button_release(self, button)
+
+    Mouse Button Release event.  This event is executed when a mouse
+    button is released.  ``button`` indicates the number of the button
+    that was released.  What button numbers correspond to what buttons
+    can vary among implementations, so ``button`` should be checked
+    against the following constants:
+
+    * sge.MOUSE_BUTTON_LEFT
+    * sge.MOUSE_BUTTON_RIGHT
+    * sge.MOUSE_BUTTON_MIDDLE
+    * sge.MOUSE_BUTTON_WHEEL_UP
+    * sge.MOUSE_BUTTON_WHEEL_DOWN
+    * sge.MOUSE_BUTTON_WHEEL_LEFT
+    * sge.MOUSE_BUTTON_WHEEL_RIGHT
+
+
+    IV.H.16. sge.StellarClass.event_joystick_axis_move
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_joystick_axis_move(self, joystick, axis,
+        value)
+
+    Joystick Axis Move event.  This event is executed when an axis on a
+    joystick changes position.  ``joystick`` indicates the number of the
+    joystick, where 0 is the first joystick.  ``axis`` indicates the
+    number of the axis, where 0 is the first axis.  ``value`` indicates
+    the tilt of the axis, where 0 is in the center, -1 is tilted all the
+    way to the left or up, and 1 is tilted all the way to the right or
+    down.  Note that ``value`` can be any floating-point number between
+    -1 and 1; it is not limited to integral values.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.H.17. sge.StellarClass.event_joystick_hat_move
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_joystick_hat_move(self, joystick, hat, x, y)
+
+    Joystick HAT Move event.  This event is executed when a HAT switch
+    (also called the POV hat, POV switch, or d-pad) changes position.
+    ``joystick`` indicates the number of the joystick, where 0 is the
+    first joystick.  ``hat`` indicates the number of the HAT, where 0 is
+    the first HAT.  ``x`` indicates the horizontal position of the HAT,
+    where 0 is in the center, -1 is left, and 1 is right.  ``y``
+    indicates the vertical position of the HAT, where 0 is in the
+    center, -1 is up, and 1 is down.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.H.18. sge.StellarClass.event_joystick_button_press
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_joystick_button_press(self, joystick, button)
+
+    Joystick Button Press event.  This event is executed when a joystick
+    button is pressed.  ``joystick`` indicates the number of the
+    joystick, where 0 is the first joystick.  ``button`` indicates the
+    number of the button that was pressed, where 0 is the first button
+    on the joystick.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.H.19. sge.StellarClass.event_joystick_button_release
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_joystick_button_release(self, joystick,
+        button)
+
+    Joystick Button Release event.  This event is executed when a
+    joystick button is released.  ``joystick`` indicates the number of
+    the joystick, where 0 is the first joystick.  ``button`` indicates
+    the number of the button that was released, where 0 is the first
+    button on the joystick.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.H.20. sge.StellarClass.event_collision
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_collision(self, other)
+
+    Default Collision event.  This event is executed when another object
+    collides with this object and none of the directional collision
+    events are appropriate.  In particular, this event is executed if
+    the collision was already happening in the previous frame, meaning
+    that the object is colliding with the inside of the mouse.  In
+    addition, directional collision events cause this event to execute
+    by default if they are not overridden.  ``other`` indicates the
+    other object which was collided with.
+
+
+    IV.H.21. sge.StellarClass.event_collision_left
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_collision_left(self, other)
+
+    Left Collision event.  This event is executed when another object
+    collides with this object from the left.  ``other`` indicates the
+    other object which was collided with.
+
+
+    IV.H.22. sge.StellarClass.event_collision_right
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_collision_right(self, other)
+
+    Right Collision event.  This event is executed when another object
+    collides with this object from the right.  ``other`` indicates the
+    other object which was collided with.
+
+
+    IV.H.23. sge.StellarClass.event_collision_top
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_collision_top(self, other)
+
+    Top Collision event.  This event is executed when another object
+    collides with this object from the top.  ``other`` indicates the
+    other object which was collided with.
+
+
+    IV.H.24. sge.StellarClass.event_collision_bottom
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_collision_bottom(self, other)
+
+    Bottom Collision event.  This event is executed when another object
+    collides with this object from the bottom.  ``other`` indicates the
+    other object which was collided with.
+
+
+    IV.H.25. sge.StellarClass.event_paused_key_press
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_key_press(self, key)
+
+    Key Press event when the game is paused.
+
+
+    IV.H.26. sge.StellarClass.event_paused_key_release
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_key_release(self, key)
+
+    Key Release event when the game is paused.
+
+
+    IV.H.27. sge.StellarClass.event_paused_mouse_move
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_mouse_move(self, x, y)
+
+    Mouse Move event when the game is paused.
+
+
+    IV.H.28. sge.StellarClass.event_paused_mouse_button_press
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_mouse_button_press(self, button)
+
+    Mouse Button Press event when the game is paused.
+
+
+    IV.H.29. sge.StellarClass.event_paused_mouse_button_release
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_mouse_button_release(self, button)
+
+    Mouse Button Release event when the game is paused.
+
+
+    IV.H.30. sge.StellarClass.event_paused_joystick_axis_move
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_joystick_axis_move(self, joystick,
+        axis, value)
+
+    Joystick Axis Move event when the game is paused.
+
+
+    IV.H.31. sge.StellarClass.event_paused_joystick_hat_move
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_joystick_hat_move(self, joystick, hat,
+        x, y)
+
+    Joystick HAT Move event when the game is paused.
+
+
+    IV.H.32. sge.StellarClass.event_paused_joystick_button_press
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_joystick_button_press(self, joystick,
+        button)
+
+    Joystick Button Press event when the game is paused.
+
+
+    IV.H.33. sge.StellarClass.event_paused_joystick_button_release
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_paused_joystick_button_release(self,
+        joystick, button)
+
+    Joystick Button Release event when the game is paused.
+
+
+    IV.H.34. sge.StellarClass.create (class method)
+    --------------------------------------------------------------------
+
+    sge.StellarClass.create(cls, *args, **kwargs)
+
+    Creates an object of this class in the current room.  All arguments
+    (except ``cls``) are passed to the constructor method of ``cls``.
+
+    This is a class method.
+
+
+  IV.I. sge.Room
+  ----------------------------------------------------------------------
+
+  This class stores the settings and objects found in a room.  Rooms are
+  used to create separate parts of the game, such as levels and menu
+  screens.
+
+  Every game must have at least one room.
+
+  Attributes:
+  * width: The width of the room in pixels.
+  * height: The height of the room in pixels.
+  * views: A list containing all views in the room.
+  * background: The Background object being used.
+
+  Read-Only Attributes:
+  * objects: A tuple containing all StellarClass objects in the room.
+  * room_number: The index of this room in the game, where 0 is the
+      first room.
+
+
+    IV.I.1. Constructor Method (sge.Room.__init__)
+    --------------------------------------------------------------------
+
+    sge.Room.__init__(self, objects=(), width=640, height=480,
+        views=None, background=None)
+
+    All arguments set the respective initial attributes of the room.  If
+    ``views`` is set to None, a new view will be created with x=0, y=0,
+    and all other arguments unspecified, which will become the first
+    view of the room.  If ``background`` is set to None, a new
+    background is created with no layers and the color set to "black".
+
+
+    IV.I.2. sge.Room.add
+    --------------------------------------------------------------------
+
+    sge.Room.add(self, obj)
+
+    Adds a StellarClass object to the room.  ``obj`` is the StellarClass
+    object to add.
+
+
+    IV.I.3. sge.Room.start
+    --------------------------------------------------------------------
+
+    sge.Room.start(self)
+
+    Starts the room.  If the room has been changed, it will be reset to
+    its original state.
+
+
+    IV.I.4. sge.Room.resume
+    --------------------------------------------------------------------
+
+    sge.Room.resume(self)
+
+    Continues the room from where it left off.  If the room is already
+    in its original state, this method behaves in the same way as
+    sge.Room.start.
+
+
+    IV.I.5. sge.Room.end
+    --------------------------------------------------------------------
+
+    sge.Room.end(self, next_room=None, resume=True):
+
+    Ends the current room.  ``next_room`` indicates the room number of
+    the room to go to next; if set to None, the room after this one is
+    chosen.  ``resume`` indicates whether or not to resume the next room
+    instead of restarting it.  If the room chosen as the next room does
+    not exist, the game is ended.
+
+    This triggers this room's ``event_room_end`` and resets the state of
+    this room.
+
+
+    IV.I.6. sge.Room.event_room_start
+    --------------------------------------------------------------------
+
+    sge.Room.event_room_start(self)
+
+    Room Start event.  This event is executed when the room starts.  It
+    is always called after any game start events and before any object
+    create events occurring at the same time.
+
+
+    IV.I.7. sge.Room.event_room_end
+    --------------------------------------------------------------------
+
+    sge.Room.event_room_end(self)
+
+    Room End event.  This event is executed when the room ends.  It is
+    always called before any game end events occurring at the same time.
+
+
+    IV.I.8. sge.Room.event_step
+    --------------------------------------------------------------------
+
+    sge.Room.event_step(self, time_passed)
+
+    Step event.  This event is always executed once each frame.
+    ``time_passed`` indicates the number of milliseconds that have
+    passed during the last frame.
+
+
+    IV.I.9. sge.Room.event_key_press
+    --------------------------------------------------------------------
+
+    sge.Room.event_key_press(self, key)
+
+    Key Press event.  This event is executed when a key on the keyboard
+    is pressed.  ``key`` indicates the identifier string of the key that
+    was pressed (see KEYS.txt for a list of all key identifier strings).
+
+
+    IV.I.10. sge.Room.event_key_release
+    --------------------------------------------------------------------
+
+    sge.StellarClass.event_key_release(self, key)
+
+    Key Release event.  This event is executed when a key on the
+    keyboard is released.  ``key`` indicates the identifier string of
+    the key that was released (see KEYS.txt for a list of all key
+    identifier strings).
+
+
+    IV.I.11. sge.Room.event_mouse_move
+    --------------------------------------------------------------------
+
+    sge.Room.event_mouse_move(self, x, y)
+
+    Mouse Move event.  This event is executed when the mouse moves.
+    ``x`` indicates the horizontal relative movement of the mouse, and
+    ``y`` indicates the vertical relative movement of the mouse.
+
+
+    IV.I.12. sge.Room.event_mouse_button_press
+    --------------------------------------------------------------------
+
+    sge.Room.event_mouse_button_press(self, button)
+
+    Mouse Button Press event.  This event is executed when a mouse
+    button is pressed.  ``button`` indicates the number of the button
+    that was pressed.  What button numbers correspond to what buttons
+    can vary among implementations, so ``button`` should be checked
+    against the following constants:
+
+    * sge.MOUSE_BUTTON_LEFT
+    * sge.MOUSE_BUTTON_RIGHT
+    * sge.MOUSE_BUTTON_MIDDLE
+    * sge.MOUSE_BUTTON_WHEEL_UP
+    * sge.MOUSE_BUTTON_WHEEL_DOWN
+    * sge.MOUSE_BUTTON_WHEEL_LEFT
+    * sge.MOUSE_BUTTON_WHEEL_RIGHT
+
+
+    IV.I.13. sge.Room.event_mouse_button_release
+    --------------------------------------------------------------------
+
+    sge.Room.event_mouse_button_release(self, button)
+
+    Mouse Button Release event.  This event is executed when a mouse
+    button is released.  ``button`` indicates the number of the button
+    that was released.  What button numbers correspond to what buttons
+    can vary among implementations, so ``button`` should be checked
+    against the following constants:
+
+    * sge.MOUSE_BUTTON_LEFT
+    * sge.MOUSE_BUTTON_RIGHT
+    * sge.MOUSE_BUTTON_MIDDLE
+    * sge.MOUSE_BUTTON_WHEEL_UP
+    * sge.MOUSE_BUTTON_WHEEL_DOWN
+    * sge.MOUSE_BUTTON_WHEEL_LEFT
+    * sge.MOUSE_BUTTON_WHEEL_RIGHT
+
+
+    IV.I.14. sge.Room.event_joystick_axis_move
+    --------------------------------------------------------------------
+
+    sge.Room.event_joystick_axis_move(self, joystick, axis, value)
+
+    Joystick Axis Move event.  This event is executed when an axis on a
+    joystick changes position.  ``joystick`` indicates the number of the
+    joystick, where 0 is the first joystick.  ``axis`` indicates the
+    number of the axis, where 0 is the first axis.  ``value`` indicates
+    the tilt of the axis, where 0 is in the center, -1 is tilted all the
+    way to the left or up, and 1 is tilted all the way to the right or
+    down.  Note that ``value`` can be any floating-point number between
+    -1 and 1; it is not limited to integral values.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.I.15. sge.Room.event_joystick_hat_move
+    --------------------------------------------------------------------
+
+    sge.Room.event_joystick_hat_move(self, joystick, hat, x, y)
+
+    Joystick HAT Move event.  This event is executed when a HAT switch
+    (also called the POV hat, POV switch, or d-pad) changes position.
+    ``joystick`` indicates the number of the joystick, where 0 is the
+    first joystick.  ``hat`` indicates the number of the HAT, where 0 is
+    the first HAT.  ``x`` indicates the horizontal position of the HAT,
+    where 0 is in the center, -1 is left, and 1 is right.  ``y``
+    indicates the vertical position of the HAT, where 0 is in the
+    center, -1 is up, and 1 is down.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.I.16. sge.Room.event_joystick_button_press
+    --------------------------------------------------------------------
+
+    sge.Room.event_joystick_button_press(self, joystick, button)
+
+    Joystick Button Press event.  This event is executed when a joystick
+    button is pressed.  ``joystick`` indicates the number of the
+    joystick, where 0 is the first joystick.  ``button`` indicates the
+    number of the button that was pressed, where 0 is the first button
+    on the joystick.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.I.17. sge.Room.event_joystick_button_release
+    --------------------------------------------------------------------
+
+    sge.Room.event_joystick_button_release(self, joystick, button)
+
+    Joystick Button Release event.  This event is executed when a
+    joystick button is released.  ``joystick`` indicates the number of
+    the joystick, where 0 is the first joystick.  ``button`` indicates
+    the number of the button that was released, where 0 is the first
+    button on the joystick.
+
+    Support for joysticks in SGE implementations is optional.
+
+
+    IV.I.18. sge.Room.event_close
+    --------------------------------------------------------------------
+
+    sge.Room.event_close(self)
+
+    Close event.  This event is executed when the operating system tells
+    the game to close, e.g. when the user presses the close button in
+    the window frame.  It is always before after any
+    sge.Game.event_close occurring at the same time.
+
+
+    IV.I.19. sge.Room.event_paused_key_press
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_key_press(self, key)
+
+    Key Press event when the game is paused.
+
+
+    IV.I.20. sge.Room.event_paused_key_release
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_key_release(self, key)
+
+    Key Release event when the game is paused.
+
+
+    IV.I.21. sge.Room.event_paused_mouse_move
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_mouse_move(self, x, y)
+
+    Mouse Move event when the game is paused.
+
+
+    IV.I.22. sge.Room.event_paused_mouse_button_press
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_mouse_button_press(self, button)
+
+    Mouse Button Press event when the game is paused.
+
+
+    IV.I.23. sge.Room.event_paused_mouse_button_release
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_mouse_button_release(self, button)
+
+    Mouse Button Release event when the game is paused.
+
+
+    IV.I.24. sge.Room.event_paused_joystick_axis_move
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_joystick_axis_move(self, joystick, axis,
+        value)
+
+    Joystick Axis Move event when the game is paused.
+
+
+    IV.I.25. sge.Room.event_paused_joystick_hat_move
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_joystick_hat_move(self, joystick, hat, x, y)
+
+    Joystick HAT Move event when the game is paused.
+
+
+    IV.I.26. sge.Room.event_paused_joystick_button_press
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_joystick_button_press(self, joystick, button)
+
+    Joystick Button Press event when the game is paused.
+
+
+    IV.I.27. sge.Room.event_paused_joystick_button_release
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_joystick_button_release(self, joystick,
+        button)
+
+    Joystick Button Release event when the game is paused.
+
+
+    IV.I.28. sge.Room.event_paused_close
+    --------------------------------------------------------------------
+
+    sge.Room.event_paused_close(self)
+
+    Close event when the game is paused.
+
+
+  IV.J. sge.View
+  ----------------------------------------------------------------------
+
+  This class controls what the player sees in a room at any given time.
+  Multiple views can exist in a room, and this can be taken advantage
+  for a split-screen effect.
+
+  Attributes:
+  * x: The horizontal position of the top-left corner of the view in the
+      room, where the left edge of the room is 0 and x increases toward
+      the right.
+  * y: The vertical position of the top-left corner of the view in the
+      room, where the top edge of the room is 0 and y increases toward
+      the bottom.
+  * xport: The horizontal position of the top-left corner of the view on
+      the screen, where the left edge of the screen is 0 and xport
+      increases toward the right.
+  * yport: The vertical position of the top-left corner of the view on
+      the screen, where the top edge of the screen is 0 and yport
+      increases toward the bottom.
+  * width: The width of the view in pixels.
+  * height: The height of the view in pixels.
+
+
+    IV.J.1. Constructor Method (sge.View.__init__)
+    --------------------------------------------------------------------
+
+    sge.View.__init__(self, x, y, xport=0, yport=0, width=None,
+        height=None)
+
+    All arguments set the respective initial attributes of the room.  If
+    ``width`` or ``height`` is set to None, the respective size will be
+    set such that the view takes up all of the space that it can (i.e.
+    game.width - xport or game.height - yport).
+
+
+V. Functions
+------------------------------------------------------------------------
+
+
+  V.A. sge.get_key_pressed
+  ----------------------------------------------------------------------
+
+  sge.get_key_pressed(key)
+
+  Returns whether or not a given key is pressed.  ``key`` indicates the
+  identifier string of the key to check.
+
+
+  V.B. sge.get_mouse_button_pressed
+  ----------------------------------------------------------------------
+
+  sge.get_mouse_button_pressed(button)
+
+  Returns whether or not a given mouse button is pressed.  ``button``
+  indicates the mouse button number to check.  What button numbers
+  correspond to what buttons can vary among implementations, so
+  ``button`` should be checked against the following constants:
+
+  * sge.MOUSE_BUTTON_LEFT
+  * sge.MOUSE_BUTTON_RIGHT
+  * sge.MOUSE_BUTTON_MIDDLE
+  * sge.MOUSE_BUTTON_WHEEL_UP
+  * sge.MOUSE_BUTTON_WHEEL_DOWN
+  * sge.MOUSE_BUTTON_WHEEL_LEFT
+  * sge.MOUSE_BUTTON_WHEEL_RIGHT
+
+
+  V.C. sge.get_joystick_axis
+  ----------------------------------------------------------------------
+
+  sge.get_joystick_axis(joystick, axis)
+
+  Returns the position of a joystick axis.  ``joystick`` indicates the
+  number of the joystick to check, where 0 is the first joystick.
+  ``axis`` indicates the number of the axis to check, where 0 is the
+  first axis of the joystick.
+
+  The returned value is a float from -1 to 1, where 0 is centered, -1 is
+  all the way to the left or up, and 1 is all the way to the right or
+  down.  If the joystick or axis requested does not exist, 0 is
+  returned.
+
+  Support for joysticks in SGE implementations is optional.
+
+
+  V.D. sge.get_joystick_hat
+  ----------------------------------------------------------------------
+
+  sge.get_joystick_hat(joystick, hat)
+
+  Returns the position of a joystick HAT switch (also called the POV
+  hat, POV switch, or d-pad).  ``joystick`` indicates the number of the
+  joystick to check, where 0 is the first joystick.  ``hat`` indicates
+  the number of the HAT to check, where 0 is the first HAT of the
+  joystick.
+
+  The returned value is a tuple in the form (x, y), where is is the
+  horizontal position and y is the vertical position.  Both x and y can
+  only be 0 (centered), -1 (left or up), or 1 (right or down).  If the
+  joystick or HAT requested does not exist, (0, 0) is returned.
+
+  Support for joysticks in SGE implementations is optional.
+
+
+  V.E. sge.get_joystick_button_pressed
+  ----------------------------------------------------------------------
+
+  sge.get_joystick_button_pressed(joystick, button)
+
+  Returns whether or not the given button is pressed.  ``joystick``
+  indicates the number of the joystick to check, where 0 is the first
+  joystick.  ``button`` indicates the number of the button to check,
+  where 0 is the first button of the joystick.  If the joystick or
+  button requested does not exist, False is returned.
+
+  Support for joysticks in SGE implementations is optional.
+
+
+  V.F. sge.get_joysticks
+  ----------------------------------------------------------------------
+
+  sge.get_joysticks()
+
+  Returns the number of joysticks available.
+
+  Support for joysticks in SGE implementations is optional.
+
+
+  V.G. sge.get_joystick_axes
+  ----------------------------------------------------------------------
+
+  sge.get_joystick_axes(joystick)
+
+  Returns the number of axes available on a joystick.  ``joystick``
+  indicates the number of the joystick to check, where 0 is the first
+  joystick.  If the given joystick does not exist, 0 will be returned.
+
+  Support for joysticks in SGE implementations is optional.
+
+
+  V.H. sge.get_joystick_hats
+  ----------------------------------------------------------------------
+
+  sge.get_joystick_hats(joystick)
+
+  Returns the number of HAT switches (also called POV hats, POV
+  switches, or d-pads) available on a joystick.  ``joystick`` indicates
+  the number of the joystick to check, where 0 is the first joystick.
+  If the given joystick does not exist, 0 will be returned.
+
+  Support for joysticks in SGE implementations is optional.
+
+
+  V.I. sge.get_joystick_buttons
+  ----------------------------------------------------------------------
+
+  sge.get_joystick_buttons(joystick)
+
+  Returns the number of buttons available on a joystick.  ``joystick``
+  indicates the number of the joystick to check, where 0 is the first
+  joystick.  If the given joystick does not exist, 0 will be returned.
+
+  Support for joysticks in SGE implementations is optional.
+

@@ -31,6 +31,7 @@ class Start(QtGui.QWidget):
     def __init__(self, main,parent=None):
         super(Start, self).__init__(parent)
         self.main = main
+        self.main.showMaximized()
         self.initUI()
 
     def initUI(self):
