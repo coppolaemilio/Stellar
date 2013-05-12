@@ -260,8 +260,8 @@ class TreeWidget(QtGui.QTreeWidget):
                         if ChildSource.endswith(".ini"):#skips the .ini of sprite information
                             continue
 
-                        print (ChildSource[:-4])
-                        if "-0" in ChildSource[:-4]:
+                        
+                        if "-0" in ChildSource[:-4]: #now checking if it's an animated sprite
                             QtGui.QTreeWidgetItem(self.Parent[name], StringList([ChildSource[:-6]])).setIcon(0,icon)
                         elif "-" in ChildSource[:-4]:
                             continue
@@ -305,7 +305,10 @@ class TreeWidget(QtGui.QTreeWidget):
 
     def add_sprite_section(self, name):
         self.spr_parser.add_section(name[:-4])
-        self.spr_parser.set(name[:-4], 'extension', name[-3:])
+        if name[-3:]=="gif":
+            self.spr_parser.set(name[:-4], 'extension', 'png')
+        else:
+            self.spr_parser.set(name[:-4], 'extension', name[-3:])
         self.spr_parser.set(name[:-4], 'xorig', 0)
         self.spr_parser.set(name[:-4], 'yorig', 0)
 
@@ -333,7 +336,10 @@ class TreeWidget(QtGui.QTreeWidget):
         icon = QtGui.QIcon()
         
         if directory == 'Sprites':
-            icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[directory], name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            if "gif" in name:
+                icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[directory], name[:-4]+"-0.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            else:
+                icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[directory], name)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.add_sprite_section(name)
         else:
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[directory])), QtGui.QIcon.Normal, QtGui.QIcon.Off)

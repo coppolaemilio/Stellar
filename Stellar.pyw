@@ -37,8 +37,11 @@ import inspect
 import subprocess
 import shutil
 import platform
+import string
 
 from PyQt4 import QtCore, QtGui
+
+from PIL import Image
 
 import cfg
 from preferences import PreferencesDialog
@@ -423,9 +426,39 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
         def include_into_project(source, name, path=None):
             
-            if source == "Sprites" or source == "Sound" or source == "Backgrounds":
+            if source == "Sound" or source == "Backgrounds":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(path, os.path.join(self.dirname, source, name))
+            elif source== "Sprites":
+                if path != os.path.join(self.dirname, source, name):
+                    shutil.copy(path, os.path.join(self.dirname, source, name))
+                    if ".gif" in path:
+                        filename=os.path.join(self.dirname, source, name)
+                        im = Image.open(filename)
+                        filename= string.split(filename,".")
+                        def iter_frames(im):
+                            try:
+                                i= 0
+                                while 1:
+                                    im.seek(i)
+                                    imframe = im.copy()
+                                    if i == 0: 
+                                        palette = imframe.getpalette()
+                                    else:
+                                        imframe.putpalette(palette)
+                                    yield imframe
+                                    i += 1
+                            except EOFError:
+                                pass
+                        iter_frames(im)
+                        
+                        for i, frame in enumerate(iter_frames(im)):
+                            frame.save(filename[0]+'-%d.png' % i,**frame.info)
+
+                        del im
+                        os.remove(os.path.join(self.dirname, source, name))
+                        
+                    
             elif source== "Objects":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(self.obj_template_file, os.path.join(self.dirname, source, name+".ini"))
