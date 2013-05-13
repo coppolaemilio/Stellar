@@ -310,7 +310,7 @@ class SpriteGUI(QtGui.QWidget):
     def ok(self):
         self.close()
         icon = str(self.qleSprite.text())
-        if self.icon is not icon:
+        if self.icon != icon:
             self.tree.spr_parser.remove_section(self.icon)
             self.tree.spr_parser.add_section(icon)
 
@@ -319,7 +319,7 @@ class SpriteGUI(QtGui.QWidget):
             out_fname = os.path.join(self.dirname, 'Sprites', "%s.%s" % 
                                         (icon, self.extension)) 
 
-            #self.image_handle.close()
+            self.image_handle.close()
             os.rename(in_fname, out_fname)
             self.icon = str(self.qleSprite.text())
 
