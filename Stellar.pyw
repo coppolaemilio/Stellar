@@ -311,7 +311,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                         QtGui.QMessageBox.Ok)
                     return"""
         else:
-            project = project + ".py"
+            project += ".py"
             
         self.dirname = os.path.dirname(project)
         self.fname = os.path.basename(project)
