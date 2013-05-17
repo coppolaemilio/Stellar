@@ -46,6 +46,11 @@ class SpriteGUI(QtGui.QWidget):
         except:
             self.xorig = 0
             self.yorig = 0
+
+        try:
+            self.framenumber = int(self.tree.spr_parser.get(self.icon, 'framenumber'))
+        except:
+            self.framenumber = 0
         
         try:
             self.image_handle = open(self.image_file+"."+self.extension, 'rb')
@@ -59,7 +64,6 @@ class SpriteGUI(QtGui.QWidget):
                 if self.icon in f:
                     self.frames += 1
 
-        self.framenumber=0
         self.img = Image.open(self.image_handle)
         self.width, self.height = self.img.size
         self.format = self.extension
@@ -81,14 +85,16 @@ class SpriteGUI(QtGui.QWidget):
         self.connect(self.BtnNext,QtCore.SIGNAL("clicked()"),self.nextframe)
         self.BtnNext.setIcon(QtGui.QIcon(os.path.join('Data','nextimg.png')))
         
-        self.ShowImage = QtGui.QLabel("0")
+        self.ShowImage = QtGui.QLabel(str(self.framenumber))
         #self.connect(self.ShowImage,QtCore.SIGNAL("textChanged()"),self.previewframe)
         
         self.BtnPrev = QtGui.QPushButton()
         self.BtnPrev.clicked.connect(self.previousframe)
-        self.BtnPrev.setEnabled(False)
-        if self.frames==1:
+        if self.framenumber == self.frames-1 or self.frames == 1:
             self.BtnNext.setEnabled(False)
+        
+        if self.framenumber == 0:
+            self.BtnPrev.setEnabled(False)
         self.BtnPrev.setIcon(QtGui.QIcon(os.path.join('Data','previmg.png')))
 
         self.ShowFrame = QtGui.QFrame()
@@ -326,6 +332,7 @@ class SpriteGUI(QtGui.QWidget):
         self.tree.spr_parser.set(self.icon, 'xorig', str(self.EdirXorig.text()))
         self.tree.spr_parser.set(self.icon, 'yorig', str(self.EdirYorig.text()))
         self.tree.spr_parser.set(self.icon, 'extension', self.extension)
+        self.tree.spr_parser.set(self.icon, 'framenumber', str(self.ShowImage.text()))
 
         self.tree.write_sprites()
 
