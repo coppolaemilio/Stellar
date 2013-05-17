@@ -45,7 +45,6 @@ from roomgui import RoomGUI
 from backgroundgui import BackgroundGUI
 
 
-
 class TreeWidget(QtGui.QTreeWidget):
     def __init__(self, main):
         super(TreeWidget, self).__init__(main)
@@ -152,7 +151,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 try:
                     lastposition = self.main.qmdiarea.activeSubWindow().pos ()
                 except:
-                    lastpositions = QtCore.QPoint(-32,-32)
+                    lastposition = QtCore.QPoint(-25,-25)
 
                 if directory == "Sprites":
                     self.window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
@@ -170,6 +169,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.window = RoomGUI(self.main,itemtext, self.main.dirname, self)
 
                 #ADD CHECK IF WINDOW EXIST AND THEN FOCUSE THAT ONE
+
                 
                 self.main.qmdiarea.addSubWindow(self.window)
                 self.window.setVisible(True)
