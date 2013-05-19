@@ -325,6 +325,7 @@ class TreeWidget(QtGui.QTreeWidget):
     def add_font_section(self, name):
         self.fnt_parser.add_section(name)
         self.fnt_parser.set(name, 'font', '')
+        self.fnt_parser.set(name, 'fontindex', '')
         self.fnt_parser.set(name, 'size', '')
         self.fnt_parser.set(name, 'bold', 'False')
         self.fnt_parser.set(name, 'italic', 'False')

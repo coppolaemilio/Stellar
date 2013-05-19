@@ -36,12 +36,13 @@ class FontGUI(QtGui.QWidget):
         self.tree = tree
 
         self.font = self.tree.fnt_parser.get(self.name, 'font')
+        self.fontindex = self.tree.fnt_parser.get(self.name, 'fontindex')
         self.size = self.tree.fnt_parser.get(self.name, 'size')
         self.bold = self.tree.fnt_parser.get(self.name, 'bold')
         self.italic = self.tree.fnt_parser.get(self.name, 'italic')
         self.antialiasing = self.tree.fnt_parser.get(self.name, 'antialiasing')
 
-        if self.font == '': self.font = 'Arial'
+        #if self.font == '': self.font = 'Arial'
         if self.size == '': self.size = 11
 
         self.initUI()
@@ -56,6 +57,12 @@ class FontGUI(QtGui.QWidget):
         self.nameEdit = QtGui.QLineEdit(self.name)
         self.fontLabel = QtGui.QLabel('Font:')
         self.fontBox = QtGui.QFontComboBox()
+        try:
+            self.fontBox.setCurrentIndex(int(self.fontindex))
+        except:
+            print("Error: No font index found.")
+
+        self.fontBox.setCurrentFont(QtGui.QFont(str(self.fontBox.currentText())))
         self.fontBox.activated.connect(self.onChanged)    
         self.sizeLabel = QtGui.QLabel('Size:')
         self.sizeEdit = QtGui.QSpinBox()
@@ -77,7 +84,7 @@ class FontGUI(QtGui.QWidget):
         self.connect(self.testtext,QtCore.SIGNAL("textChanged()"),self.onChanged)
         self.previewtext = QtGui.QTextEdit('A text. 1234567890')
         self.previewtext.setReadOnly(True)
-        self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), 10, True) )
+        self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), int(self.size), True) )
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
         self.BtnOK.clicked.connect(self.ok)
@@ -146,7 +153,10 @@ class FontGUI(QtGui.QWidget):
 
             self.name = str(self.nameEdit.text())
 
+        print (self.fontBox.currentIndex())
         self.tree.fnt_parser.set(name, 'font', self.fontBox.currentText())
+        self.tree.fnt_parser.set(name, 'fontindex', self.fontBox.currentIndex())
+        
         self.tree.fnt_parser.set(name, 'size', self.sizeEdit.value())
         self.tree.fnt_parser.set(name, 'bold', bool(self.boldLabel.checkState()))
         self.tree.fnt_parser.set(name, 'italic', bool(self.ItalicLabel.checkState()))
