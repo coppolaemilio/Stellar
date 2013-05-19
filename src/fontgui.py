@@ -61,7 +61,7 @@ class FontGUI(QtGui.QWidget):
         self.fontBox.activated.connect(self.onChanged)    
         self.sizeLabel = QtGui.QLabel('Size:')
         self.sizeEdit = QtGui.QSpinBox()
-        self.sizeEdit.setValue(self.size)
+        self.sizeEdit.setValue(int(self.size))
         self.sizeEdit.valueChanged.connect(self.onChanged)
         self.boldLabel = QtGui.QCheckBox('Bold')
         self.boldLabel.setEnabled(False)
@@ -143,11 +143,11 @@ class FontGUI(QtGui.QWidget):
 
             self.name = str(self.nameEdit.text())
 
-        self.snd_parser.set(name, 'font', self.fontBox.currentText())
-        self.snd_parser.set(name, 'size', self.sizeEdit.value())
-        self.snd_parser.set(name, 'bold', 'False')
-        self.snd_parser.set(name, 'italic', 'False')
-        self.snd_parser.set(name, 'antialiasing', 'False')
+        self.tree.fnt_parser.set(name, 'font', self.fontBox.currentText())
+        self.tree.fnt_parser.set(name, 'size', self.sizeEdit.value())
+        self.tree.fnt_parser.set(name, 'bold', 'False')
+        self.tree.fnt_parser.set(name, 'italic', 'False')
+        self.tree.fnt_parser.set(name, 'antialiasing', 'False')
 
         self.tree.write_fonts()
 
