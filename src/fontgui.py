@@ -17,8 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 from __future__ import division
 from __future__ import absolute_import
 from __future__ import print_function
@@ -64,11 +62,16 @@ class FontGUI(QtGui.QWidget):
         self.sizeEdit.setValue(int(self.size))
         self.sizeEdit.valueChanged.connect(self.onChanged)
         self.boldLabel = QtGui.QCheckBox('Bold')
-        self.boldLabel.setEnabled(False)
         self.ItalicLabel = QtGui.QCheckBox('Italic')
-        self.ItalicLabel.setEnabled(False)
         self.antiAliLabel = QtGui.QCheckBox('Anti-Aliasing')
-        self.antiAliLabel.setEnabled(False)
+        
+        if self.bold=="True":
+            self.boldLabel.setChecked(True)
+        if self.italic=="True":
+            self.ItalicLabel.setChecked (True)
+        if self.antialiasing=="True":
+            self.antiAliLabel.setChecked (True)
+
         self.testtext = QtGui.QTextEdit('A text. 1234567890')
         #self.testtext.textChanged.connect(self.onChanged)
         self.connect(self.testtext,QtCore.SIGNAL("textChanged()"),self.onChanged)
@@ -145,9 +148,9 @@ class FontGUI(QtGui.QWidget):
 
         self.tree.fnt_parser.set(name, 'font', self.fontBox.currentText())
         self.tree.fnt_parser.set(name, 'size', self.sizeEdit.value())
-        self.tree.fnt_parser.set(name, 'bold', 'False')
-        self.tree.fnt_parser.set(name, 'italic', 'False')
-        self.tree.fnt_parser.set(name, 'antialiasing', 'False')
+        self.tree.fnt_parser.set(name, 'bold', bool(self.boldLabel.checkState()))
+        self.tree.fnt_parser.set(name, 'italic', bool(self.ItalicLabel.checkState()))
+        self.tree.fnt_parser.set(name, 'antialiasing', bool(self.antiAliLabel.checkState()))
 
         self.tree.write_fonts()
 
