@@ -115,7 +115,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
         self.expanded = {'Sprites' : False, 'Sound' : False, 'Backgrounds' : False, 'Fonts' : False, 'Scripts' : False,
                          'Objects' : False, 'Rooms' : False}
-        self.fname = "<New game>"
+        self.fname = "<New project>"
         self.dirname = ''
         self.setTitle(self.fname)
         self.center()
@@ -246,7 +246,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         else:
             self.qmdiarea.setViewMode(self.qmdiarea.SubWindowView)
 
-
     def preferencesopen(self):
         prefs = PreferencesDialog(self)
         
@@ -260,8 +259,11 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         print("To do")
 
     def aboutStellar(self):
-        about = QtGui.QMessageBox.information(self, 'About Stellar',
-            "<center><b>Stellar</b> is an open-source program inspired in 'Game Maker' for <b>Pygame/Python</b> development.<br/><br/>    The goal is to have a program to design your own games using easy-to-learn drag-and-drop actions and different easy tools for begginers.<br/>    When you become more experienced, you will have the possibility of writing and editing your game with the full flexibility given by <b>Python/Pygame</b>.<br/><br/>    This is an incomplete version. Currently, it has almost nothing, but I would love to be helped by anyone interested in the project.<br/><br/>    You are free to distribute the games you create with <b>Stellar</b> in any way you like. You can even sell them.<br/>     This of course assumes that the sprites, images, and sounds you use can be distributed or sold as well.<br/><HR><br/>  You can contribute to the project on our Github:<br/><a href=\'https://github.com/Coppolaemilio/stellar'>Stellar on Git</a></center><br/><br/><center>	<b>Stellar is distributed under the GNU General Public License</b><br/> (c)2012-2013 Emilio Coppola", QtGui.QMessageBox.Ok)
+        fname = os.path.join('Data','aboutstellar.html')
+        with open(fname, 'r') as f:
+            data = f.read()
+            f.close()
+        about = QtGui.QMessageBox.information(self, 'About Stellar', data, QtGui.QMessageBox.Ok)
             
     def closeEvent(self, event):
         

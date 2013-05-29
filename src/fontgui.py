@@ -63,7 +63,8 @@ class FontGUI(QtGui.QWidget):
             print("Error: No font index found.")
 
         self.fontBox.setCurrentFont(QtGui.QFont(str(self.fontBox.currentText())))
-        self.fontBox.activated.connect(self.onChanged)    
+        #self.fontBox.currentFontChanged.connect(self.onChanged)
+        
         self.sizeLabel = QtGui.QLabel('Size:')
         self.sizeEdit = QtGui.QSpinBox()
         self.sizeEdit.setValue(int(self.size))
@@ -79,10 +80,10 @@ class FontGUI(QtGui.QWidget):
         if self.antialiasing=="True":
             self.antiAliLabel.setChecked (True)
 
-        self.testtext = QtGui.QTextEdit('A text. 1234567890')
+        self.testtext = QtGui.QTextEdit('!\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
         #self.testtext.textChanged.connect(self.onChanged)
-        self.connect(self.testtext,QtCore.SIGNAL("textChanged()"),self.onChanged)
-        self.previewtext = QtGui.QTextEdit('A text. 1234567890')
+        
+        self.previewtext = QtGui.QTextEdit('!\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
         self.previewtext.setReadOnly(True)
         self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), int(self.size), True) )
         self.BtnOK = QtGui.QPushButton('OK')
@@ -134,15 +135,18 @@ class FontGUI(QtGui.QWidget):
         self.LastWidget.setLayout(self.spritesplitter)
         self.ContainerGrid.addWidget(self.LastWidget)
         self.setLayout(self.ContainerGrid)
+
+        #self.connect(self.testtext,QtCore.SIGNAL("textChanged()"),self.onChanged)
+        QtCore.QObject.connect(self.testtext, QtCore.SIGNAL("textChanged()"), self.onChanged)
+        QtCore.QObject.connect(self.fontBox, QtCore.SIGNAL("currentFontChanged(QFont)"), self.previewtext.setCurrentFont)
+        self.onChanged()
         
     def onChanged(self):
+        print('changed')
         self.previewtext.setPlainText(self.testtext.toPlainText())
         self.previewtext.setFontPointSize(self.sizeEdit.value())
         self.previewtext.setFontFamily(self.fontBox.currentText())
         
-        
-    def AddEvent(self):
-        eventdialog = Events(self)
         
     def ok(self):
         self.close()
@@ -153,7 +157,7 @@ class FontGUI(QtGui.QWidget):
 
             self.name = str(self.nameEdit.text())
 
-        print (self.fontBox.currentIndex())
+
         self.tree.fnt_parser.set(name, 'font', self.fontBox.currentText())
         self.tree.fnt_parser.set(name, 'fontindex', self.fontBox.currentIndex())
         
