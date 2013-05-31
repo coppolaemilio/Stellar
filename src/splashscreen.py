@@ -96,8 +96,6 @@ class Start(QtGui.QWidget):
 		
         p4_vertical.addLayout(self.grid1)
 
-        
-
         #-----------------
         self.name = QtGui.QLabel('Project Name: ')
         self.nameEdit = QtGui.QLineEdit()
@@ -115,7 +113,6 @@ class Start(QtGui.QWidget):
         self.btn_New.setGeometry(25, 75, 100, 50)
         QtCore.QObject.connect(self.btn_New, QtCore.SIGNAL('clicked()'), self.CreateProject)
 
-        
         self.grid = QtGui.QGridLayout()
         self.grid.setSpacing(15)
         self.grid.addWidget(self.name, 2, 0)
@@ -131,7 +128,6 @@ class Start(QtGui.QWidget):
         self.btn_Open.setGeometry(150, 75, 100, 50)
         QtCore.QObject.connect(self.btn_Open, QtCore.SIGNAL('clicked()'), self.OpenFile)
         p2_vertical.addWidget(self.btn_Open)
-        
 
         self.te = QtGui.QTextEdit()
         f = open(os.path.join("Data", "releasenotes.txt"), 'r')

@@ -332,8 +332,7 @@ class ObjectGUI(QtGui.QWidget):
 
     def initUI(self):
         #Groupbox Container-----------------------------------
-        self.ContainerGrid = QtGui.QGridLayout(self)
-        self.ContainerGrid.setMargin (0)
+        
  
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
@@ -442,17 +441,23 @@ class ObjectGUI(QtGui.QWidget):
         self.actionToolbar.addAction(self.commentAction)   
         #---
         self.objectsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
-        self.FirstWidget.setMaximumWidth (170)
-        self.objectsplitter.addWidget(self.FirstWidget)
-        self.SecondWidget.setMaximumWidth (170)
-        self.objectsplitter.addWidget(self.SecondWidget)
-        self.SecondWidget.setMaximumWidth (200)
-        self.objectsplitter.addWidget(self.ThirdWidget)
+        self.FirstWidget.setMaximumWidth (160)
+        self.SecondWidget.setMaximumWidth (130)
+        #self.ThirdWidget.setMaximumWidth (200)
         self.actionToolbar.setMaximumWidth (32)
+        self.objectsplitter.addWidget(self.FirstWidget)
+        self.objectsplitter.addWidget(self.SecondWidget)
+        self.objectsplitter.addWidget(self.ThirdWidget)
         self.objectsplitter.addWidget(self.actionToolbar)
+        self.objectsplitter.setSizes([160,160,10,32])
+        
 
+        self.ContainerGrid = QtGui.QGridLayout(self)
+        self.ContainerGrid.setMargin (0)
         self.ContainerGrid.addWidget(self.objectsplitter)
         self.setLayout(self.ContainerGrid)
+
+        
 
         self.refreshSprites()
         self.readObjectEvents()
@@ -470,7 +475,6 @@ class ObjectGUI(QtGui.QWidget):
 
     
     def readObjectEvents(self):
-
         self.eventstree.clear()
         self.currentfile = os.path.join(self.dirname,"Objects",self.FileName+".ini")
         self.config.read(self.currentfile)
@@ -483,7 +487,6 @@ class ObjectGUI(QtGui.QWidget):
         else:
             self.SpriteCombo.setCurrentIndex (index)
 
-        
         for event in EventList:
             if self.config.has_section(event):
                 self.AddToEventList(event.replace('Event',''))

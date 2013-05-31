@@ -18,15 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
-Stellar
-"""
-
 from __future__ import division
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
-
 
 import sys
 sys.path.append("src")
@@ -61,10 +56,7 @@ class QMdiAreaW(QtGui.QMdiArea):
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setStyle(QtGui.QStyleFactory.create('Windows'))
 
-
-
 class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiArea):
-    
     def __init__(self):
         super(Stellar, self).__init__()
         self.Names = ('Sprites', 'Sound', 'Backgrounds', 'Fonts', 'Scripts', 'Objects', 'Rooms')
@@ -82,14 +74,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.initUI()
         
     def initUI(self):
-        
         #Saving where you opened the program for opening a new window in the future
         self.stellardir = inspect.getfile(inspect.currentframe())
         dirname, filename = os.path.split(os.path.abspath(self.stellardir))
         self.pref = "preferences.pyw"
         self.stellarnew = "Stellar.pyw"
         
-
         self.sge_file = os.path.join(dirname, "Data","SGE", "sge.py")
         self.obj_template_file= os.path.join(dirname, "Data","SGE", "objecttemplate.ini")
         
@@ -123,6 +113,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
         self.splitter1.addWidget(self.tree)
         self.splitter1.addWidget(self.qmdiarea)
+        self.splitter1.setSizes([200,800])
         self.splitter1.setStretchFactor(1, 1)
         self.splitter1.setStyle(QtGui.QStyleFactory.create('Windows'))
         self.setCentralWidget(self.splitter1)
@@ -171,7 +162,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         return action
         
     def initBars(self, dictActions):
-        
         def getAction(dictActions, action):
             for key in dictActions.keys():
                 if action == key:
@@ -209,7 +199,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         addBar(toolbar, [ None, 'project', 'fsave', 'load', '|', 'build', 'share', '|',\
                                 'play', 'playDebug', 'terminal', '|', 'sprite', 'sound', 'background',\
                                 'font', 'script', 'object', 'room', '|', 'about' ] )
-
 
     def terminal(self):
         if sys.platform.startswith('linux'):
@@ -266,20 +255,13 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         about = QtGui.QMessageBox.information(self, 'About Stellar', data, QtGui.QMessageBox.Ok)
             
     def closeEvent(self, event):
-        
-        reply = QtGui.QMessageBox.question(self, "Exit Stellar", "Save Python File before Exit?",
+        reply = QtGui.QMessageBox.question(self, "Exit Stellar", "Save project before Exit?",
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
             fname = str(self.fname)
             self.setTitle(fname)
             fname = os.path.join(self.dirname, fname)
-            # TODO: generate program
-
-            #with open(fname, 'w') as f:
-            #    data = self.textEdit.toPlainText()
-            #    print(data)
-            #    f.write(data)
             event.accept()
         elif reply == QtGui.QMessageBox.No:
             event.accept()
@@ -292,7 +274,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
     def openProject(self, project=None):
         if project == None:
-            project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Game',
+            project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open existing project',
                         '', self.tr("Python files (*.py *.pyw)")))
             
             if project == '':
@@ -302,7 +284,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                     "this project doesn't exist or has been removed",
                 QtGui.QMessageBox.Ok)
                 return
-            
 
             """for folder in self.subfolders:
                 if folder == 'Build':
@@ -317,7 +298,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             
         self.dirname = os.path.dirname(project)
         self.fname = os.path.basename(project)
-        
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
@@ -340,8 +320,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         webbrowser.open("http://www.pygame.org/news.html")
             
     def createProject(self, dirname, file):
-        
-        
         project = os.path.join(dirname, file+".py")
         
         if not os.path.exists(dirname):
@@ -378,7 +356,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
     def savefile(self):
         project = str(QtGui.QFileDialog.getSaveFileName(self, 'Save project as...',
                             self.dirname, self.tr("Python files (*.py *.pyw)")))
-
         if project == "":
             return
         else:
@@ -398,17 +375,14 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             cfg.recentproject = project
             with open('config.ini', 'w') as configfile:
                 cfg.config.write(configfile)
-
             
     def fsavefile(self):
         print("To do")
- 
-        
+
     def rungame(self):
         GameRunner(self.dirname, self.fname)
         
     def addSource(self, source):
-        
         def get_name(source, name):
             number = 0
             prefix = name
@@ -427,7 +401,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             return name
             
         def include_into_project(source, name, path=None):
-            
             if source == "Sound" or source == "Backgrounds":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(path, os.path.join(self.dirname, source, name))
@@ -464,7 +437,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             elif source== "Objects":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(self.obj_template_file, os.path.join(self.dirname, source, name+".ini"))
-                
                     
             elif source == "Scripts" or source == "Rooms":
                 f = open(os.path.join(self.dirname, source, name+".py"), 'w')
@@ -473,11 +445,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
             self.tree.addChild(source,name)
             self.Sources[source].append(name)
         
-        
         def add_source(source, prefix):
             name = get_name(source, prefix)
             include_into_project(source, name)
-            
             
         files = ""
         if source == "Sprites" or source == "Sound" or source == "Backgrounds":
@@ -517,16 +487,15 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         
     def addFont(self):
         self.addSource("Fonts")
-        
+
     def addScript(self):
         self.addSource("Scripts")
-        
+
     def addObject(self):
         self.addSource("Objects")
-        
+
     def addRoom(self):
         self.addSource("Rooms")
-         
 
     def center(self):
         qr = self.frameGeometry()
@@ -534,14 +503,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-      
 def main():
     app = QtGui.QApplication(sys.argv)
     #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
     st = Stellar()
     sys.exit(app.exec_())
-    
 
-
-if __name__ == '__main__':
-    main()
+main()

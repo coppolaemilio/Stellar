@@ -185,6 +185,9 @@ class TreeWidget(QtGui.QTreeWidget):
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))
                 elif directory == "Rooms":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
+                elif directory == "Objects":
+                    self.main.qmdiarea.activeSubWindow().setGeometry(0, 0, 520, 380)
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
                 else:
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
 

@@ -37,7 +37,7 @@ if sys.version_info.major == 2:
 import cfg
 
 fontconfig = cfg.get('colors', 'font', 'Monospace')
-sizeconfig = cfg.get('colors', 'size', 10)
+sizeconfig = cfg.get('colors', 'size', 11)
 backgroundcolor = cfg.get('colors', 'background', 0xFFFFFF)
 actualline = cfg.get('colors', 'actualline', 0xFFE4E4)
 fontcolor = cfg.get('colors', 'fontcolor', 0x000000)
@@ -51,9 +51,11 @@ class SimplePythonEditor(QsciScintilla):
         super(SimplePythonEditor, self).__init__(parent)
         # Set the default font
         font = QtGui.QFont()
-        font.setFamily(fontconfig)
-        font.setFixedPitch(False)
+        font.setFamily('DejaVu Sans Mono')
+        font.setStyleHint(QtGui.QFont.Monospace)
+        font.setFixedPitch(True)
         font.setPointSize(int(sizeconfig))
+
         self.setFont(font)
         self.setMarginsFont(font)
         # Margin 0 is used for line numbers
@@ -86,7 +88,7 @@ class SimplePythonEditor(QsciScintilla):
         # courier.
         #
         lexer = QsciLexerPython()
-        lexer.setDefaultFont(font)
+        lexer.setFont(font)
         lexer.setDefaultColor(QtGui.QColor(str(fontcolor)))
         lexer.setDefaultPaper(QtGui.QColor(str(backgroundcolor)))
         self.setLexer(lexer)
