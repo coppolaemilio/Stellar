@@ -331,9 +331,7 @@ class ObjectGUI(QtGui.QWidget):
         self.initUI()     
 
     def initUI(self):
-        #Groupbox Container-----------------------------------
-        
- 
+        #Groupbox Container----------------------------------
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
         self.BnewSprite = QtGui.QPushButton("New")
@@ -341,8 +339,6 @@ class ObjectGUI(QtGui.QWidget):
         self.SpriteCombo = QtGui.QComboBox()
         self.SpriteCombo.addItem('<no sprite>')
         self.SpriteCombo.activated[str].connect(self.changeSprite)
-    
-        #self.SpriteCombo.addItems(self.tree.main.Sources["Sprites"][:-3])
         self.SpriteFrame = QtGui.QGroupBox("Sprite")
         
         self.spritelayout = QtGui.QGridLayout()
@@ -443,7 +439,6 @@ class ObjectGUI(QtGui.QWidget):
         self.objectsplitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
         self.FirstWidget.setMaximumWidth (160)
         self.SecondWidget.setMaximumWidth (130)
-        #self.ThirdWidget.setMaximumWidth (200)
         self.actionToolbar.setMaximumWidth (32)
         self.objectsplitter.addWidget(self.FirstWidget)
         self.objectsplitter.addWidget(self.SecondWidget)
@@ -451,17 +446,19 @@ class ObjectGUI(QtGui.QWidget):
         self.objectsplitter.addWidget(self.actionToolbar)
         self.objectsplitter.setSizes([160,160,10,32])
         
-
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
         self.ContainerGrid.addWidget(self.objectsplitter)
         self.setLayout(self.ContainerGrid)
 
-        
-
         self.refreshSprites()
         self.readObjectEvents()
-        
+
+    def updatetreeicon(self):
+        currentsprite = self.config.get('data', 'sprite', 0)
+        #sprite_icon=str(currentsprite)+".png"
+        #self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join(self.dirname,"Sprites",sprite_icon)))
+
     def refreshSprites(self):
         self.SpriteCombo.clear()
         self.SpriteCombo.addItem('<no sprite>')
@@ -472,8 +469,7 @@ class ObjectGUI(QtGui.QWidget):
         self.config.set('data', 'sprite', newsprite)
         with open(self.currentfile, 'wb') as self.configfile:
             self.config.write(self.configfile)
-
-    
+        
     def readObjectEvents(self):
         self.eventstree.clear()
         self.currentfile = os.path.join(self.dirname,"Objects",self.FileName+".ini")

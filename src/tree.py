@@ -175,7 +175,6 @@ class TreeWidget(QtGui.QTreeWidget):
                 self.window.setVisible(True)
 
                 self.window.setWindowTitle( directory[:-1] + " properties: " + itemtext )
-                
 
                 if directory == "Sprites":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
@@ -186,18 +185,16 @@ class TreeWidget(QtGui.QTreeWidget):
                 elif directory == "Rooms":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
                 elif directory == "Objects":
-                    self.main.qmdiarea.activeSubWindow().setGeometry(0, 0, 520, 380)
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
+                    self.main.qmdiarea.activeSubWindow().setGeometry(0, 0, 520, 380)
                 else:
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
 
-                
                 if self.nwindows==0:
                     self.nwindows+=1
                     self.main.qmdiarea.activeSubWindow().move(0,0)
                 else:
                     self.main.qmdiarea.activeSubWindow().move(lastposition+QtCore.QPoint(25,25))
-
 
             def GameSettings():
                 print ("hola")
@@ -256,6 +253,12 @@ class TreeWidget(QtGui.QTreeWidget):
                     icon = QtGui.QIcon()
                     if name == "Sprites" or name == "Backgrounds":
                         icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path[name], ChildSource)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    elif name =="Objects":
+                        self.config = configparser.ConfigParser()
+                        self.config.read(os.path.join(self.Path[name], ChildSource))
+                        currentsprite = self.config.get('data', 'sprite', 0)
+                        currentsprite = str(currentsprite)+".png"
+                        icon.addPixmap(QtGui.QPixmap(os.path.join(self.Path["Sprites"], currentsprite)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                     else:
                         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
 
