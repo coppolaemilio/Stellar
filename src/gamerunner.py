@@ -32,12 +32,12 @@ import ConfigParser
 from PyQt4 import QtGui, QtCore
 
 class GameRunner(object):
-    def __init__(self, dirname, fname):
+    def __init__(self, dirname, fname, template_file, obj_template_file):
         self.dirname = dirname
         self.fname = fname
         print self.dirname
-        self.template_file = os.path.join(self.dirname, "..","Data","SGE", "gametemplate.py")
-        self.obj_template_file = os.path.join(self.dirname,"..", "Data","SGE", "objecttemplate.py")
+        self.template_file = template_file
+        self.obj_template_file = obj_template_file
 
 
         self.createandrun()

@@ -80,7 +80,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.pref = "preferences.pyw"
         self.stellarnew = "Stellar.pyw"
         
-        self.sge_file = os.path.join(dirname, "Data","SGE", "sge.py")
+        self.sge_folder = os.path.join(dirname, "Data","SGE", "sge")
         self.obj_template_file= os.path.join(dirname, "Data","SGE", "objecttemplate.ini")
         
         actions = self.initActions()
@@ -333,7 +333,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         f = open(project, 'w+')
         f.write('# this file was created with Stellar')
         f.close()
-        shutil.copy(self.sge_file, dirname)
+        shutil.copytree(self.sge_folder, dirname)
         #shutil.copy(self.template_file, project)
         
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
@@ -380,7 +380,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         print("To do")
 
     def rungame(self):
-        GameRunner(self.dirname, self.fname)
+        self.template_file = os.path.join(self.stellardir, "..","Data","SGE", "gametemplate.py")
+        self.obj_template_file = os.path.join(self.stellardir,"..", "Data","SGE", "objecttemplate.py")
+        GameRunner(self.dirname, self.fname, self.template_file, self.obj_template_file)
         
     def addSource(self, source):
         def get_name(source, name):
