@@ -509,6 +509,7 @@ def main():
     app = QtGui.QApplication(sys.argv)
     #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
     st = Stellar()
+    #st.setStyleSheet("*{color:white;background-color:rgb(20,20,20);}") just testing colors :) might add in the future
     sys.exit(app.exec_())
 
 main()

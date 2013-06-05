@@ -335,7 +335,10 @@ class ObjectGUI(QtGui.QWidget):
         self.LblName = QtGui.QLabel('Name:')
         self.nameEdit = QtGui.QLineEdit(self.FileName)
         self.BnewSprite = QtGui.QPushButton("New")
+        self.BnewSprite.clicked.connect(self.newSpriteEvent)
+
         self.BeditSprite = QtGui.QPushButton("Edit")
+        self.BeditSprite.clicked.connect(self.EditSpriteEvent)
         self.SpriteCombo = QtGui.QComboBox()
         self.SpriteCombo.addItem('<no sprite>')
         self.SpriteCombo.activated[str].connect(self.changeSprite)
@@ -357,9 +360,13 @@ class ObjectGUI(QtGui.QWidget):
         self.NameFrame.setLayout(self.namelayout)
         
         self.cbvisible = QtGui.QCheckBox('Visible', self)
+        self.cbvisible.stateChanged.connect(self.changeVisible)
         self.cbsolid = QtGui.QCheckBox('Solid', self)
+        self.cbsolid.setEnabled(False)
         self.cbpersis = QtGui.QCheckBox('Persistent', self)
+        self.cbpersis.setEnabled(False)
         self.LblDepth = QtGui.QLabel('Z:')
+
         self.depthEdit = QtGui.QLineEdit("0")
         self.LblParent = QtGui.QPushButton("Parent:")
         self.ParentEdit = QtGui.QComboBox()
@@ -466,6 +473,11 @@ class ObjectGUI(QtGui.QWidget):
             self.SpriteCombo.addItem(sprite[:-4])
 
     def changeSprite(self,newsprite):
+        if self.SpriteCombo.currentIndex()!=0:
+            print (self.SpriteCombo.currentIndex())
+            self.BeditSprite.setEnabled(True)
+        else:
+            self.BeditSprite.setEnabled(False)
         self.config.set('data', 'sprite', newsprite)
         with open(self.currentfile, 'wb') as self.configfile:
             self.config.write(self.configfile)
@@ -475,20 +487,48 @@ class ObjectGUI(QtGui.QWidget):
         self.currentfile = os.path.join(self.dirname,"Objects",self.FileName+".ini")
         self.config.read(self.currentfile)
         
+        visibleornot = self.config.get('data', 'visible', 0)
+        if visibleornot=='true':
+            self.cbvisible.setCheckState(2)
+        else:
+            self.cbvisible.setCheckState(0)
+
         currentsprite = self.config.get('data', 'sprite', 0)
         index = self.SpriteCombo.findText(currentsprite)
         if index==-1:
             #QtGui.QMessageBox.warning(self, "Error.", 'The sprite named "'+currentsprite+'" does not exist.',QtGui.QMessageBox.Ok)
             self.SpriteCombo.setCurrentIndex(0)
+            self.BeditSprite.setEnabled(False)
         else:
             self.SpriteCombo.setCurrentIndex (index)
+            if index!=0:
+                self.BeditSprite.setEnabled(True)
+            else:
+                self.BeditSprite.setEnabled(False)
 
         for event in EventList:
             if self.config.has_section(event):
                 self.AddToEventList(event.replace('Event',''))
 
         self.readObjectActions()
-        
+
+    def newSpriteEvent(self):
+        self.main.addSprite()
+        self.refreshSprites()
+
+    def EditSpriteEvent(self):
+        currentsprite = self.config.get('data', 'sprite', 0)
+        self.tree.DoEvent(currentsprite)
+
+    def changeVisible(self):
+        if self.cbvisible.checkState()==0:
+            self.config.set('data', 'visible', 'false')
+        else:
+            self.config.set('data', 'visible', 'true')
+
+        with open(self.currentfile, 'wb') as self.configfile:
+                self.config.write(self.configfile)
+
     def readObjectActions(self):
         #Opens and read the object information
         self.actionstree.clear()
