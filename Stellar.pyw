@@ -54,9 +54,8 @@ class QMdiAreaW(QtGui.QMdiArea):
         self.setBackground (QtGui.QBrush(QtGui.QPixmap(os.path.join("Data", "background.png"))))
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.setStyle(QtGui.QStyleFactory.create('Windows'))
 
-class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiArea):
+class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
     def __init__(self):
         super(Stellar, self).__init__()
         self.Names = ('Sprites', 'Sound', 'Backgrounds', 'Fonts', 'Scripts', 'Objects', 'Rooms')
@@ -66,7 +65,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         for i in self.Names:
             self.subfolders.append(i)
         self.subfolders.append('Build')
-        
         
         for i in self.Names:
             self.Sources[i] = []
@@ -97,9 +95,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.qmdiarea.setTabsMovable(True)
         self.qmdiarea.setActivationOrder (1)
         
-        self.initWindow()
-
-    def initWindow(self):
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         
@@ -115,7 +110,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         self.splitter1.addWidget(self.qmdiarea)
         self.splitter1.setSizes([200,800])
         self.splitter1.setStretchFactor(1, 1)
-        self.splitter1.setStyle(QtGui.QStyleFactory.create('Windows'))
         self.setCentralWidget(self.splitter1)
         
     def initActions(self):
@@ -242,14 +236,14 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         newprojectdialog = NewProjectDialog(self)
         
     def setTitle(self, name):
-        self.setWindowTitle('%s - Stellar %s'% (name.replace(".py", ""), cfg.__version__))
+        name=name.split(".")
+        self.setWindowTitle('%s - Stellar %s'% (name[0], cfg.__version__))
 
     def Build(self):
         print("To do")
 
     def aboutStellar(self):
-        fname = os.path.join('Data','aboutstellar.html')
-        with open(fname, 'r') as f:
+        with open(os.path.join('Data','aboutstellar.html'), 'r') as f:
             data = f.read()
             f.close()
         about = QtGui.QMessageBox.information(self, 'About Stellar', data, QtGui.QMessageBox.Ok)
@@ -259,9 +253,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
-            fname = str(self.fname)
-            self.setTitle(fname)
-            fname = os.path.join(self.dirname, fname)
             event.accept()
         elif reply == QtGui.QMessageBox.No:
             event.accept()
@@ -335,7 +326,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         f.close()
         shutil.copytree(self.sge_folder, dirname)
         #shutil.copy(self.template_file, project)
-        
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
         f.close()
 
@@ -350,7 +340,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTextEdit,QtGui.QTreeWidget, QtGui.QMdiAre
         with open('config.ini', 'w') as configfile:
             cfg.config.write(configfile)
 
-        self.setWindowTitle('%s - Stellar %s'% (file.replace(".py", ""), cfg.__version__))
+        self.setTitle(file)
+        #self.setWindowTitle('%s - Stellar %s'% (file.replace(".py", ""), cfg.__version__))
         
         
     def savefile(self):
