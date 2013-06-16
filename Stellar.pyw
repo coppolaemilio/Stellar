@@ -75,6 +75,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         #Saving where you opened the program for opening a new window in the future
         self.stellardir = inspect.getfile(inspect.currentframe())
         dirname, filename = os.path.split(os.path.abspath(self.stellardir))
+        self.tempdir = os.path.join(dirname, 'temp')
         self.pref = "preferences.pyw"
         self.stellarnew = "Stellar.pyw"
         
@@ -276,19 +277,28 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                 QtGui.QMessageBox.Ok)
                 return
 
-            """for folder in self.subfolders:
+            for folder in self.subfolders:
                 if folder == 'Build':
                     continue
                 elif not os.path.exists(os.path.join(os.path.dirname(project), folder)):
                     QtGui.QMessageBox.question(self, "Project is broken",
                         "Project is broken or doesn't contain important folders",
                         QtGui.QMessageBox.Ok)
-                    return"""
+                    continue
         else:
             project += ".py"
             
+
         self.dirname = os.path.dirname(project)
         self.fname = os.path.basename(project)
+        self.foldertemp = self.fname.split(".")[0]
+        self.foldertemp = os.path.join(self.tempdir,self.foldertemp)
+
+        try:
+            shutil.rmtree(self.foldertemp)  #Removing previous temporal folders
+        except:
+            print ("[!] No previous temp folder.")
+        shutil.copytree(self.dirname, self.foldertemp)#Copy the project folder to work on the temp folder
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
