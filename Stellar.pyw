@@ -254,8 +254,12 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No, QtGui.QMessageBox.Cancel)
 
         if reply == QtGui.QMessageBox.Yes:
+            shutil.rmtree(os.path.join(os.path.dirname(self.foldertemp),
+                        self.fname.split(".")[0]))#Delete the project folder on the temp folder
             event.accept()
         elif reply == QtGui.QMessageBox.No:
+            shutil.rmtree(self.dirname)
+            shutil.copytree(os.path.join(os.path.dirname(self.foldertemp),self.fname.split(".")[0]), self.dirname)
             shutil.rmtree(os.path.join(os.path.dirname(self.foldertemp),self.fname.split(".")[0]))#Delete the project folder on the temp folder
             event.accept()
         else:
