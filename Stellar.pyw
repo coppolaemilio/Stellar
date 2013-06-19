@@ -256,6 +256,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         if reply == QtGui.QMessageBox.Yes:
             event.accept()
         elif reply == QtGui.QMessageBox.No:
+            shutil.rmtree(os.path.join(os.path.dirname(self.foldertemp),self.fname.split(".")[0]))#Delete the project folder on the temp folder
             event.accept()
         else:
             event.ignore()
@@ -265,6 +266,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         self.closeallwindows()
         
     def openProject(self, project=None):
+        
         if project == None:
             project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open existing project',
                         '', self.tr("Python files (*.py *.pyw)")))
@@ -287,6 +289,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                     continue
         else:
             project += ".py"
+            
             
 
         self.dirname = os.path.dirname(project)

@@ -1,1 +1,0 @@
-self.velocidad = 3
