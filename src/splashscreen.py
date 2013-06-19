@@ -199,11 +199,9 @@ class Start(QtGui.QWidget):
         #RECENT FILE--
         self.recentp = cfg.recentproject
         self.dirname = os.path.dirname(self.recentp)
-        self.main.fname = os.path.basename(self.recentp)
-        self.main.dirname = self.dirname
-        self.main.setTitle(self.main.fname)
 
-        self.main.clearSources()
+        path = os.path.join(self.dirname, self.recentp)
+        self.main.openProject(path)
 
         self.close()
         
