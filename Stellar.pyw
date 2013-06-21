@@ -127,7 +127,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         
         action['load'] = newAction('Open...', 'folder.png', self.openFile, 'Open Game.', 'Ctrl+O')
         action['save'] = newAction('Save Game As...', 'save.png', self.savefile, 'Save Game As...', 'Ctrl+Shift+S')
-        action['fsave'] = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S', False)
+        action['fsave'] = newAction('Save', 'save.png', self.fsavefile, 'Save Game', 'Ctrl+S')
         
         action['share'] = newAction('Share', 'publish.png', self.sharegame, 'Share your creations with the community!')
         action['build'] = newAction('Build', 'build.png', self.Build, 'Build game.', '', False)
@@ -270,11 +270,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         self.closeallwindows()
         
     def openProject(self, project=None):
-        
         if project == None:
             project = str(QtGui.QFileDialog.getOpenFileName(self, 'Open existing project',
                         '', self.tr("Python files (*.py *.pyw)")))
-            
             if project == '':
                 return
             elif not os.path.isfile(project):
@@ -282,7 +280,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                     "this project doesn't exist or has been removed",
                 QtGui.QMessageBox.Ok)
                 return
-
             for folder in self.subfolders:
                 if folder == 'Build':
                     continue
@@ -293,8 +290,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                     continue
         else:
             project += ".py"
-            
-            
 
         self.dirname = os.path.dirname(project)
         self.fname = os.path.basename(project)
@@ -385,7 +380,13 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                 cfg.config.write(configfile)
             
     def fsavefile(self):
-        print("To do")
+        self.dirname = os.path.dirname(cfg.recentproject)
+        self.foldertemp = os.path.join(self.tempdir,self.foldertemp)
+        print ("[>]Saving at "+str(self.dirname)+".")
+        shutil.rmtree(os.path.join(os.path.dirname(self.foldertemp),
+                        self.fname.split(".")[0]))#Delete the project folder on the temp folder
+        shutil.copytree(self.dirname, self.foldertemp)#Copy the project folder to work on the temp folder
+        print ("[>]Done.")
 
     def rungame(self):
         self.template_file = os.path.join(self.stellardir, "..","Data","SGE", "gametemplate.py")
