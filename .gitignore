@@ -36,5 +36,3 @@ nosetests.xml
 .project
 .pydevproject
 build/
-
-config.ini
