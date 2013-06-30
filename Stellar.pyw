@@ -340,7 +340,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         try:
             shutil.copytree(self.sge_folder, dirname)
         except OSError:
-            print ("Error copying sge_fodler.")
+            QtGui.QMessageBox.question(self, "Could not copy sge folder",
+                "sge directory could not be copied",
+            QtGui.QMessageBox.Ok)
         
         #shutil.copy(self.template_file, project)
         
