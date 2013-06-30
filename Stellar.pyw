@@ -336,8 +336,17 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         f = open(project, 'w+')
         f.write('# this file was created with Stellar')
         f.close()
-        shutil.copytree(self.sge_folder, dirname)
+        
+        try:
+            shutil.copytree(self.sge_folder, dirname)
+        except OSError:
+            QtGui.QMessageBox.question(self, "Could not copy sge folder",
+                "sge directory could not be copied",
+            QtGui.QMessageBox.Ok)
+        
         #shutil.copy(self.template_file, project)
+        
+        
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
         f.close()
 
