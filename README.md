@@ -10,26 +10,22 @@ You are free to distribute the games you create with <b>Stellar</b> in any way y
 This of course assumes that the sprites, images, and sounds you use can be distributed or sold as well.
 
 ## Dependencies
-* Python 2.x +
-* Pygame
-* PyQt 4
-* PIL
-* pyscintilla2
-
-On Ubuntu based:<br/>
-`sudo apt-get install python-qscintilla2 python-imaging python2.7 python-pygame python-qt4`
-
-On Windows based:<br />
-<b>Be sure to download the Python 2.x compatible versions of each dependency, not the Python 3 versions</b>
 * [Python 2.x +](http://www.python.org/getit/)
 * [Pygame](http://www.pygame.org/download.shtml)
 * [PyQt 4](http://www.riverbankcomputing.com/software/pyqt/download) 
 * [PIL](http://www.pythonware.com/products/pil/)
 * [pyscintilla2](http://www.riverbankcomputing.com/software/qscintilla/download) 
 
+On Ubuntu based:<br/>
+`sudo apt-get install python-qscintilla2 python-imaging python2.7 python-pygame python-qt4`
+
+On Windows based:<br />
+Download and install the dependencies listed above. Be sure to install the Python 2.x versions, not Python 3 versions.
 
 ## Running
 Run Stellar via the following command (Windows/Ubuntu): `$ python Stellar.pyw`
+
+If you're not sure where to begin, Click "Open Project" -> "Open Existing File" -> Select "/Stellar/Example/Example.py"  
 
 ## Contributing
 If you don't know how GitHub contributing works see our [tutorial guide](http://stellarpygame.blogspot.com/p/we-need-your-help.html)
