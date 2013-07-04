@@ -43,12 +43,22 @@ class SoundGUI(QtGui.QWidget):
         self.edit_volume = self.volume
         
         pygame.mixer.init()
-        #self.sound_handle = open(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)), 'rb')
         
-        #self.sound = pygame.mixer.music.load(self.sound_handle)
-        self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)))
+        self.sound_file = os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension))
+        self.sound_handle = None
+        self.sound = None
+        
+        #load sound file via handle
+        self.LoadSound()
+        
+        #loading the file this way caused a leak, which led to problems with renaming/deleting the file
+        #a handle needs to be created and closed in order for other functions to work properly
+        #self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)))
+        
         self.initUI()
-        #self.sound_handle.close()
+        
+        #close the Sound, only load it when its needed.
+        self.CloseSound()
         
     def initUI(self):
 
@@ -213,12 +223,25 @@ class SoundGUI(QtGui.QWidget):
         self.edit_volume = value + 100
         self.LblMusic.setText("%s %d %s " %("Volume is set to",value+100, "percent "))
 
+    def LoadSound(self):
+        if self.sound is None:
+            self.sound_handle = open(self.sound_file, 'rb')
+            self.sound = pygame.mixer.Sound(self.sound_handle)
+        
+    def CloseSound(self):
+        if self.sound:
+            self.sound_handle.close()
+            self.sound = None
+    
     def PlaySound(self):
-        pygame.mixer.music.play()
-
+        self.LoadSound()
+        self.sound.play()
+        
     def StopSound(self):
-        pygame.mixer.music.stop()
-
+        if self.sound is not None:
+            self.sound.stop()
+            
+        
     def SaveSound(self):
         self.fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Sound', 
                 '', self.tr("Sound (*.ogg *.wav)"))
@@ -228,17 +251,47 @@ class SoundGUI(QtGui.QWidget):
 
     def ok(self):
         snd = str(self.qleSound.text())
+        # if file had a new name, go through renaming process
         if str(self.FileName) != snd:
+            #close sound, can't be renamed if in use by another process
+            self.CloseSound()
+            
+            #hyphens result in problems, convert them to underscores           
+            snd = snd.replace('-', '_')
+            
+            #increment name automatically if section already exists            
+            new_snd = snd
+            i = 0
+            while self.tree.snd_parser.has_section(new_snd):
+                i += 1
+                new_snd = snd + '_' + str(i)
+            
+            snd = new_snd
+            
+            #update soundconfig
             self.tree.snd_parser.remove_section(self.FileName)
             self.tree.snd_parser.add_section(snd)
 
+            # get old and new filename for rename
             in_fname = os.path.join(self.dirname, 'Sound', "%s.%s" %
                                     (self.FileName, self.extension))
             out_fname = os.path.join(self.dirname, 'Sound', "%s.%s" % 
-                                        (snd, self.extension)) 
-
-            os.rename(in_fname, out_fname)
-            self.FileName = str(self.qleSound.text())
+                                    (snd, self.extension)) 
+            
+            #rename the sound file
+            try:
+                os.rename(in_fname, out_fname)
+            except OSError as exc:
+                QtGui.QMessageBox.question(self, "File could not be renamed",
+                    "File could not be rename: "+exc.strerror,
+                    QtGui.QMessageBox.Ok)
+           
+            #update current object with new sound file
+            self.FileName = str(snd)
+            
+            self.sound_file = os.path.join(self.dirname, "Sound", "%s.%s"%
+                (self.FileName, self.extension))
+                
 
         self.tree.snd_parser.set(self.FileName, 'extension', self.extension)
 
@@ -250,6 +303,10 @@ class SoundGUI(QtGui.QWidget):
         self.tree.write_sound()
 
         self.main.updatetree()
+        
+        #if sound is still open, close it - it's not needed
+        self.CloseSound()
+        
         self.main.qmdiarea.activeSubWindow().close()
             
     def ShowMe(self):
