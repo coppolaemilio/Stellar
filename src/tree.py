@@ -145,7 +145,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 
     def DoEvent(self, itemtext=False):
         def openWindow(directory, itemtext=None):
-            if itemtext ==None:
+            if itemtext == None:
                 itemtext = str(item.text(0))
                 if item.parent().text(0) != directory:
                     return
@@ -156,19 +156,19 @@ class TreeWidget(QtGui.QTreeWidget):
                 lastposition = QtCore.QPoint(-25,-25)
 
             if directory == "Sprites":
-                self.window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = SpriteGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Backgrounds":
-                self.window = BackgroundGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = BackgroundGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Sound":
-                self.window = SoundGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = SoundGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Fonts":
-                self.window = FontGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = FontGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Scripts":
-                self.window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = ScriptGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Objects":
-                self.window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = ObjectGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Rooms":
-                self.window = RoomGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = RoomGUI(self.main, itemtext, self.main.dirname, self)
 
             #ADD CHECK IF WINDOW EXIST AND THEN FOCUSE THAT ONE
 

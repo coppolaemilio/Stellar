@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 import sys
 sys.path.append("src")
 
+import errno
 import os
 import webbrowser
 import inspect
@@ -339,13 +340,23 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         
         try:
             shutil.copytree(self.sge_folder, dirname)
-        except OSError:
-            QtGui.QMessageBox.question(self, "Could not copy sge folder",
-                "sge directory could not be copied",
-            QtGui.QMessageBox.Ok)
+        except OSError as exc: 
+            # File already exists
+            if exc.errno == errno.EEXIST:
+                QtGui.QMessageBox.question(self, "Destination for sge_folder already exists",
+                    "Destination for sge_folder already exists",
+                    QtGui.QMessageBox.Ok)
+            # The directory does not exist
+            if exc.errno == errno.ENOENT:
+                QtGui.QMessageBox.question(self, "Destination for sge_folder does not exist",
+                    "Destination for sge_folder does not exist",
+                    QtGui.QMessageBox.Ok)
+            else:
+                QtGui.QMessageBox.question(self, "sge_folder could not be copied, unknown reason",
+                    "sge_folder could not be copied, unknown reason",
+                    QtGui.QMessageBox.Ok)
         
         #shutil.copy(self.template_file, project)
-        
         
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
         f.close()
