@@ -44,7 +44,7 @@ Any feedback is welcome!
 
 ![stellar](https://dl.dropbox.com/u/31195548/Stellar/stellarpreview.png)
 
-Icon set by Fatcow Web Hosting (http://www.fatcow.com/free-icons) License: CC Attribution 3.0
-Sounds in Example Project by Freesound.org (http://www.freesound.org) License: CC0 1.0 Universal
+Icon set by Fatcow Web Hosting (http://www.fatcow.com/free-icons) License: CC Attribution 3.0<br />
+Sounds in Example Project by Freesound.org (http://www.freesound.org) License: CC0 1.0 Universal<br />
 
 (c) 2012 - infinity, Emilio Coppola
