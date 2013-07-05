@@ -47,6 +47,7 @@ class SoundGUI(QtGui.QWidget):
         self.sound_file = os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension))
         self.sound_handle = None
         self.sound = None
+        self.channel = None #active Channel sound may be playing in
         
         #load sound file via handle
         self.LoadSound()
@@ -60,8 +61,12 @@ class SoundGUI(QtGui.QWidget):
         #close the Sound, only load it when its needed.
         self.CloseSound()
         
+    #clean up after self, if window is closed or terminated
+    def closeEvent(self, event):
+        self.StopSound()
+        self.CloseSound()
+    
     def initUI(self):
-
         #Groupbox Container-----------------------------------
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
@@ -80,6 +85,7 @@ class SoundGUI(QtGui.QWidget):
 
         self.BtnStop = QtGui.QPushButton()
         self.BtnStop.setIcon(QtGui.QIcon('Data/stopsound.png'))
+        self.BtnStop.setEnabled(False)
         self.BtnStop.clicked.connect(self.StopSound)
 
         self.BtnSave = QtGui.QPushButton('Save Sound')
@@ -118,20 +124,24 @@ class SoundGUI(QtGui.QWidget):
         self.PanBox.setObjectName("groupBox")
         self.PanBox.setStyle(QtGui.QStyleFactory.create('Plastique'))
         self.PanBox.setTitle("Pan")
+        self.PanBox.setMinimumWidth(150)
 
-        self.pan = QtGui.QSlider(QtCore.Qt.Horizontal)
-        self.pan.setEnabled(False)
-        self.pan.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.pan.setRange(-50,51)
-        self.pan.valueChanged[int].connect(self.changeValuePan)
-
+        self.PanSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.PanSlider.setEnabled(True)
+        self.PanSlider.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.PanSlider.setRange(-50,50)
+        self.PanSlider.setValue(self.pan)
+        self.PanSlider.valueChanged[int].connect(self.changeValuePan)
+        
         self.LblPan = QtGui.QLabel()
-        self.LblPan.setText('Music is Centered') 
         self.LblPan.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
+        #set Pan Label Text based on pan value
+        self.changeValuePan(self.pan)
+        
         self.panlayout = QtGui.QGridLayout()
         self.panlayout.setMargin(0)
-        self.panlayout.addWidget(self.pan,1,0)
+        self.panlayout.addWidget(self.PanSlider,1,0)
         self.panlayout.addWidget(self.LblPan,2,0)
         self.PanBox.setLayout(self.panlayout) 
 
@@ -142,15 +152,18 @@ class SoundGUI(QtGui.QWidget):
         self.MusicBox.setTitle("Volume")
 
         self.Music = QtGui.QSlider(QtCore.Qt.Horizontal)
-        self.Music.setEnabled(False)
-        self.Music.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.Music.setRange(-100,0)
+        self.Music.setEnabled(True)
+        self.Music.setFocusPolicy(QtCore.Qt.NoFocus) 
+        self.Music.setRange(0,100)
+        self.Music.setValue(self.volume)
         self.Music.valueChanged[int].connect(self.changeValueMusic)
 
         self.LblMusic = QtGui.QLabel() 
-        self.LblMusic.setText('Volume is set to 100 percent') 
         self.LblMusic.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter) 
 
+        #change label text based on actual volume
+        self.changeValueMusic(self.volume)
+        
         self.musiclayout = QtGui.QGridLayout()
         self.musiclayout.setMargin(0)
         self.musiclayout.addWidget(self.Music,1,0)
@@ -207,21 +220,35 @@ class SoundGUI(QtGui.QWidget):
         
         self.setLayout(self.ContainerGrid)
         
- 
     def changeValuePan(self, value):
         self.edit_pan = value
-        if (value)<0:
-            NewValue = abs(value)
-            self.LblPan.setText("%d %s " %(NewValue*2, " percent to the left"))
-        elif (value)>1:
-            NewValue = abs(value-1)
-            self.LblPan.setText("%d %s " %(NewValue*2, " percent to the right"))
+        
+        #convert self.pan into channel volumes using y = -x/100 + 1/2
+        left = float(-self.edit_pan)/100.0 + .5
+        right = 1 - left
+                
+        if left != right:
+            self.LblPan.setText("%d%s, %d%s" %(left*100, "% Left", right*100, "% Right"))
         else:
             self.LblPan.setText("%s " %("Music is Centered"))
 
+        #save changed value to config
+        self.pan = self.edit_pan
+        self.tree.snd_parser.set(self.FileName, 'pan', self.pan)
+        
+        #if sound is playing, update it with new information
+        self.SetSoundVolume()
+
     def changeValueMusic(self, value):
-        self.edit_volume = value + 100
-        self.LblMusic.setText("%s %d %s " %("Volume is set to",value+100, "percent "))
+        self.edit_volume = value
+        self.LblMusic.setText("%s %d%s " %("Volume is set to", value, "% "))
+        
+        #save changed value to config
+        self.volume = self.edit_volume
+        self.tree.snd_parser.set(self.FileName, 'volume', self.volume)
+        
+        #if sound is playing, update it with new information
+        self.SetSoundVolume()
 
     def LoadSound(self):
         if self.sound is None:
@@ -233,14 +260,48 @@ class SoundGUI(QtGui.QWidget):
             self.sound_handle.close()
             self.sound = None
     
+    def SetSoundVolume(self):
+        #calculate volume of sound based on pan, volume
+        if self.channel is not None:
+            if self.channel.get_busy():
+            
+                #convert self.pan into channel volumes using y = -x/100 + 1/2
+                left = float(-self.pan)/100.0 + .5
+                right = 1 - left
+                
+                #adjust left and right pan by the overall volume
+                left = left * (self.volume)/100
+                right = right * (self.volume)/100
+                
+                self.channel.set_volume(left, right)
+    
     def PlaySound(self):
         self.LoadSound()
-        self.sound.play()
         
-    def StopSound(self):
-        if self.sound is not None:
-            self.sound.stop()
+        playSound = False
+        
+        if self.channel is None:
+            playSound = True
+        else:
+            if not self.channel.get_busy():
+                playSound = True
+        
+        if playSound:
+            self.channel = self.sound.play(-1)
             
+            #update sound's volume/pan
+            self.SetSoundVolume()
+                            
+            #disable play button when sound is playing
+            self.BtnPlay.setEnabled(False)
+            self.BtnStop.setEnabled(True)
+    
+    def StopSound(self):
+        if self.channel.get_busy():
+            self.channel.stop()
+            self.sound.stop()
+            self.BtnPlay.setEnabled(True)
+            self.BtnStop.setEnabled(False)
         
     def SaveSound(self):
         self.fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Sound', 
@@ -253,6 +314,9 @@ class SoundGUI(QtGui.QWidget):
         snd = str(self.qleSound.text())
         # if file had a new name, go through renaming process
         if str(self.FileName) != snd:
+            #if sound is playing, stop it
+            self.StopSound()
+            
             #close sound, can't be renamed if in use by another process
             self.CloseSound()
             
