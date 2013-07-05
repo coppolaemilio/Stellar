@@ -46,5 +46,6 @@ Any feedback is welcome!
 
 Icon set by Fatcow Web Hosting (http://www.fatcow.com/free-icons) License: CC Attribution 3.0<br />
 Sounds in Example Project by Freesound.org (http://www.freesound.org) License: CC0 1.0 Universal<br />
+Backgrounds in Example Proejct by OpenGameArt.org (http://www.opengameart.org/) License: CC0<br />
 
 (c) 2012 - infinity, Emilio Coppola
