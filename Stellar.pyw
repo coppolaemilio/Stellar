@@ -290,7 +290,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                         QtGui.QMessageBox.Ok)
                     continue
         else:
-            project += ".py"
+            #add .py to project path if it's not already there
+            if project[-3:] != '.py':
+                project += ".py"
 
         self.dirname = os.path.dirname(project)
         self.fname = os.path.basename(project)
@@ -301,7 +303,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
             shutil.rmtree(self.foldertemp)  #Removing previous temporal folders
         except:
             print ("[!] No previous temp folder.")
-        shutil.copytree(self.dirname, self.foldertemp)#Copy the project folder to work on the temp folder
+            
+       #Copy the project folder into temp folder to work on without saving changes
+        shutil.copytree(self.dirname, self.foldertemp)
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
