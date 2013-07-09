@@ -292,7 +292,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                     continue
         else:
             #add .py to project path if it's not already there
-            if project[-3:] != '.py':
+            if not project.endswith('.py'):
                 project += ".py"
 
         self.dirname = os.path.dirname(project)
