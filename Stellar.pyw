@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 import sys
 sys.path.append("src")
 
+import errno
 import os
 import webbrowser
 import inspect
@@ -199,7 +200,8 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         if sys.platform.startswith('linux'):
             os.system('(cd .;$TERM; )'.format(self.dirname))
         elif sys.platform.startswith('win'):
-            os.system('start /d {0} cmd'.format(os.path.normpath(self.dirname)))
+            print('start /d "{0}" cmd'.format(os.path.normpath(self.dirname)))
+            os.system('start /d "{0}" cmd'.format(os.path.normpath(self.dirname)))
 
     def updatetree(self):
         self.tree.clear()
@@ -289,7 +291,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
                         QtGui.QMessageBox.Ok)
                     continue
         else:
-            project += ".py"
+            #add .py to project path if it's not already there
+            if not project.endswith('.py'):
+                project += ".py"
 
         self.dirname = os.path.dirname(project)
         self.fname = os.path.basename(project)
@@ -300,7 +304,9 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
             shutil.rmtree(self.foldertemp)  #Removing previous temporal folders
         except:
             print ("[!] No previous temp folder.")
-        shutil.copytree(self.dirname, self.foldertemp)#Copy the project folder to work on the temp folder
+            
+       #Copy the project folder into temp folder to work on without saving changes
+        shutil.copytree(self.dirname, self.foldertemp)
 
         cfg.config.set('stellar', 'recentproject', project.encode('utf-8'))
         cfg.recentproject = project
@@ -339,13 +345,23 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         
         try:
             shutil.copytree(self.sge_folder, dirname)
-        except OSError:
-            QtGui.QMessageBox.question(self, "Could not copy sge folder",
-                "sge directory could not be copied",
-            QtGui.QMessageBox.Ok)
+        except OSError as exc: 
+            # File already exists
+            if exc.errno == errno.EEXIST:
+                QtGui.QMessageBox.question(self, "Destination for sge_folder already exists",
+                    "Destination for sge_folder already exists",
+                    QtGui.QMessageBox.Ok)
+            # The directory does not exist
+            if exc.errno == errno.ENOENT:
+                QtGui.QMessageBox.question(self, "Destination for sge_folder does not exist",
+                    "Destination for sge_folder does not exist",
+                    QtGui.QMessageBox.Ok)
+            else:
+                QtGui.QMessageBox.question(self, "sge_folder could not be copied, unknown reason",
+                    "sge_folder could not be copied, unknown reason",
+                    QtGui.QMessageBox.Ok)
         
         #shutil.copy(self.template_file, project)
-        
         
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
         f.close()

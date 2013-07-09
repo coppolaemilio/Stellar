@@ -145,59 +145,80 @@ class TreeWidget(QtGui.QTreeWidget):
                 
     def DoEvent(self, itemtext=False):
         def openWindow(directory, itemtext=None):
-            if itemtext ==None:
+            if itemtext == None:
                 itemtext = str(item.text(0))
                 if item.parent().text(0) != directory:
                     return
 
             try:
-                lastposition = self.main.qmdiarea.activeSubWindow().pos ()
+                lastposition = self.main.qmdiarea.activeSubWindow().pos()
             except:
                 lastposition = QtCore.QPoint(-25,-25)
 
             if directory == "Sprites":
-                self.window = SpriteGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = SpriteGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Backgrounds":
-                self.window = BackgroundGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = BackgroundGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Sound":
-                self.window = SoundGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = SoundGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Fonts":
-                self.window = FontGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = FontGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Scripts":
-                self.window = ScriptGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = ScriptGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Objects":
-                self.window = ObjectGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = ObjectGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Rooms":
-                self.window = RoomGUI(self.main,itemtext, self.main.dirname, self)
+                self.window = RoomGUI(self.main, itemtext, self.main.dirname, self)
 
-            #ADD CHECK IF WINDOW EXIST AND THEN FOCUSE THAT ONE
-
-                
-            self.main.qmdiarea.addSubWindow(self.window)
+            #Check for existing window to focus on, if not create one
+            windowTitle = directory[:-1] + " properties: " + itemtext
+            
+            windowList = self.main.qmdiarea.subWindowList()
+            
+            existingWindowFound = False
+            
+            #TODO: loops through windows checking for matching title, 
+            #gotta be a better way to find existing window
+            for existingWindow in windowList: 
+                if (existingWindow.windowTitle() == windowTitle):
+                    self.window = existingWindow
+                    self.main.qmdiarea.setActiveSubWindow(self.window)
+                    existingWindowFound = True
+                    break
+            
+            #create a new window, if one doesn't exist
+            if not existingWindowFound:
+                self.window.setWindowTitle( windowTitle )
+                self.main.qmdiarea.addSubWindow(self.window)
+                self.nwindows += 1 #creating a new window, increment window count
+            
+            #new or old, make the window visible
             self.window.setVisible(True)
+            
+            #if window is new, set icon/geometry
+            if not existingWindowFound:
+                if directory == "Sprites":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
+                elif directory == "Sound":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
+                elif directory == "Scripts":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))
+                elif directory == "Rooms":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
+                elif directory == "Objects":
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
+                    self.main.qmdiarea.activeSubWindow().setGeometry(0, 0, 520, 380)
+                else:
+                    self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
 
-            self.window.setWindowTitle( directory[:-1] + " properties: " + itemtext )
-
-            if directory == "Sprites":
-                self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
-            elif directory == "Sound":
-                self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
-            elif directory == "Scripts":
-                self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))
-            elif directory == "Rooms":
-                self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'room.png')))
-            elif directory == "Objects":
-                self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
-                self.main.qmdiarea.activeSubWindow().setGeometry(0, 0, 520, 380)
-            else:
-                self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', self.ImageName[directory[:-1] + 's'])))
-
-            if self.nwindows==0:
-                self.nwindows+=1
-                self.main.qmdiarea.activeSubWindow().move(0,0)
-            else:
+            #move window to proper location on screen
+            if self.nwindows == 1: #first window
+                self.main.qmdiarea.activeSubWindow().move(0,0) #show in top left corner
+            elif (not existingWindowFound): #new window, but not first window
                 self.main.qmdiarea.activeSubWindow().move(lastposition+QtCore.QPoint(25,25))
-
+            else: #old window
+                pass #keep in last known position 
+                
             def GameSettings():
                 print ("hola")
 

@@ -6,3 +6,4 @@ Other contributors:
 Martin Jablecnik (Applemann on GitHub)
 Marek Suppa (mrshu on GitHub, @mr__shu on twitter)
 Christopher Weigle (avarisclari on GitHub, @avarisclari on Twitter)
+Nicholas Pickering (2nickpick on GitHub)
