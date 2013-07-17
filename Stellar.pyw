@@ -59,7 +59,7 @@ class QMdiAreaW(QtGui.QMdiArea):
 class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
     def __init__(self):
         super(Stellar, self).__init__()
-        self.Names = ('Sprites', 'Sound', 'Backgrounds', 'Fonts', 'Scripts', 'Objects', 'Rooms')
+        self.Names = ('Sprites', 'Sounds', 'Backgrounds', 'Fonts', 'Scripts', 'Objects', 'Rooms')
         self.Sources = {}
         
         self.subfolders = []
@@ -100,7 +100,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         self.setGeometry(0, 0, 800, 600)
         self.setWindowIcon(QtGui.QIcon(os.path.join('Data', 'icon.png')))
         
-        self.expanded = {'Sprites' : False, 'Sound' : False, 'Backgrounds' : False, 'Fonts' : False, 'Scripts' : False,
+        self.expanded = {'Sprites' : False, 'Sounds' : False, 'Backgrounds' : False, 'Fonts' : False, 'Scripts' : False,
                          'Objects' : False, 'Rooms' : False}
         self.fname = "<New project>"
         self.dirname = ''
@@ -200,7 +200,6 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         if sys.platform.startswith('linux'):
             os.system('(cd .;$TERM; )'.format(self.dirname))
         elif sys.platform.startswith('win'):
-            print('start /d "{0}" cmd'.format(os.path.normpath(self.dirname)))
             os.system('start /d "{0}" cmd'.format(os.path.normpath(self.dirname)))
 
     def updatetree(self):
@@ -366,7 +365,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         f = open(os.path.join(self.dirname, u"Sprites", u"spriteconfig.ini"), 'w+')
         f.close()
 
-        f = open(os.path.join(self.dirname, u"Sound", u"soundconfig.ini"), 'w+')
+        f = open(os.path.join(self.dirname, u"Sounds", u"soundconfig.ini"), 'w+')
         f.close()
 
         f = open(os.path.join(self.dirname, u"Fonts", u"fontconfig.ini"), 'w+')
@@ -437,7 +436,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
             return name
             
         def include_into_project(source, name, path=None):
-            if source == "Sound" or source == "Backgrounds":
+            if source == "Sounds" or source == "Backgrounds":
                 if path != os.path.join(self.dirname, source, name):
                     shutil.copy(path, os.path.join(self.dirname, source, name))
             elif source== "Sprites":
@@ -486,10 +485,10 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
             include_into_project(source, name)
             
         files = ""
-        if source == "Sprites" or source == "Sound" or source == "Backgrounds":
+        if source == "Sprites" or source == "Sounds" or source == "Backgrounds":
             if source == "Sprites" or source == "Backgrounds":
                 files = "Image file (*.png *.gif *.jpg)"
-            elif source == "Sound":
+            elif source == "Sounds":
                 files = "Sound file (*.ogg *.wav)"
         else:
             if source == "Scripts":
@@ -516,7 +515,7 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
         self.addSource("Sprites")
         
     def addSound(self):  
-        self.addSource("Sound")
+        self.addSource("Sounds")
         
     def addBackground(self):
         self.addSource("Backgrounds")

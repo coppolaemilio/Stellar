@@ -113,7 +113,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     reply = QtGui.QMessageBox.question(self, "Confirm", 'You are about to delete "'+itemtext+'". This will be permanent. Continue?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         os.remove(os.path.join(self.main.dirname, directory, itemtext+".png"))
-                elif directory == "Sound":
+                elif directory == "Sounds":
                     print ("TODO")
                 elif directory == "Fonts":
                     print ("TODO")
@@ -159,7 +159,7 @@ class TreeWidget(QtGui.QTreeWidget):
                 self.window = SpriteGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Backgrounds":
                 self.window = BackgroundGUI(self.main, itemtext, self.main.dirname, self)
-            elif directory == "Sound":
+            elif directory == "Sounds":
                 self.window = SoundGUI(self.main, itemtext, self.main.dirname, self)
             elif directory == "Fonts":
                 self.window = FontGUI(self.main, itemtext, self.main.dirname, self)
@@ -199,7 +199,7 @@ class TreeWidget(QtGui.QTreeWidget):
             if not existingWindowFound:
                 if directory == "Sprites":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sprite.png')))
-                elif directory == "Sound":
+                elif directory == "Sounds":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'sound.png')))
                 elif directory == "Scripts":
                     self.main.qmdiarea.activeSubWindow().setWindowIcon(QtGui.QIcon(os.path.join('Data', 'script.png')))
@@ -240,7 +240,7 @@ class TreeWidget(QtGui.QTreeWidget):
         itemtext = str(item.text(0))
         if itemtext == "Sprites":
             self.main.addSprite()
-        elif itemtext == "Sound":
+        elif itemtext == "Sounds":
             self.main.addSound()
         elif itemtext == "Backgrounds":
             self.main.addBackground()
@@ -293,7 +293,7 @@ class TreeWidget(QtGui.QTreeWidget):
                     else:
                         icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[name])), QtGui.QIcon.Normal, QtGui.QIcon.Off)               
 
-                    if name == "Sprites" or name == "Sound" or name == "Backgrounds":
+                    if name == "Sprites" or name == "Sounds" or name == "Backgrounds":
                         if ChildSource.endswith(".ini"):#skips the .ini of sprite information
                             continue
 
@@ -321,7 +321,7 @@ class TreeWidget(QtGui.QTreeWidget):
         self.spr_parser.read(os.path.join(self.main.dirname, 'Sprites', 'spriteconfig.ini'))
 
         self.snd_parser = configparser.RawConfigParser()
-        self.snd_parser.read(os.path.join(self.main.dirname, 'Sound', 'soundconfig.ini'))
+        self.snd_parser.read(os.path.join(self.main.dirname, 'Sounds', 'soundconfig.ini'))
 
         self.fnt_parser = configparser.RawConfigParser()
         self.fnt_parser.read(os.path.join(self.main.dirname, 'Fonts', 'fontconfig.ini'))
@@ -333,7 +333,7 @@ class TreeWidget(QtGui.QTreeWidget):
             self.spr_parser.write(configfile)
 
     def write_sound(self):
-        with open(os.path.join(self.main.dirname, 'Sound', 'soundconfig.ini'), 'w') as configfile:
+        with open(os.path.join(self.main.dirname, 'Sounds', 'soundconfig.ini'), 'w') as configfile:
             self.snd_parser.write(configfile)
 
     def write_fonts(self):
@@ -381,7 +381,7 @@ class TreeWidget(QtGui.QTreeWidget):
             self.add_sprite_section(name)
         else:
             icon.addPixmap(QtGui.QPixmap(os.path.join("Data", self.ImageName[directory])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            if directory == 'Sound':
+            if directory == 'Sounds':
                 self.add_sound_section(name)
             elif directory == 'Fonts':
                 self.add_font_section(name)

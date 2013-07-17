@@ -8,8 +8,8 @@ import os
 #Paths
 sge.image_directories = [os.path.join('Sprites'),os.path.join('Backgrounds')]
 sge.font_directories = [os.path.join('Fonts')]
-sge.sound_directories = [os.path.join('Sound')]
-sge.music_directories = [os.path.join('Sound')]
+sge.sound_directories = [os.path.join('Sounds')]
+sge.music_directories = [os.path.join('Sounds')]
 
 
 #Game Class

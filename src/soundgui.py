@@ -44,7 +44,7 @@ class SoundGUI(QtGui.QWidget):
         
         pygame.mixer.init()
         
-        self.sound_file = os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension))
+        self.sound_file = os.path.join(self.dirname, "Sounds", "%s.%s"%(self.FileName, self.extension))
         self.sound_handle = None
         self.sound = None
         self.channel = None #active Channel sound may be playing in
@@ -54,7 +54,7 @@ class SoundGUI(QtGui.QWidget):
         
         #loading the file this way caused a leak, which led to problems with renaming/deleting the file
         #a handle needs to be created and closed in order for other functions to work properly
-        #self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)))
+        #self.sound = pygame.mixer.music.load(os.path.join(self.dirname, "Sounds", "%s.%s"%(self.FileName, self.extension)))
         
         self.initUI()
         
@@ -308,7 +308,7 @@ class SoundGUI(QtGui.QWidget):
                 '', self.tr("Sound (*.ogg *.wav)"))
 
         if self.fname !='':
-            shutil.copy(os.path.join(self.dirname, "Sound", "%s.%s"%(self.FileName, self.extension)), self.fname)
+            shutil.copy(os.path.join(self.dirname, "Sounds", "%s.%s"%(self.FileName, self.extension)), self.fname)
 
     def ok(self):
         snd = str(self.qleSound.text())
@@ -337,9 +337,9 @@ class SoundGUI(QtGui.QWidget):
             self.tree.snd_parser.add_section(snd)
 
             # get old and new filename for rename
-            in_fname = os.path.join(self.dirname, 'Sound', "%s.%s" %
+            in_fname = os.path.join(self.dirname, 'Sounds', "%s.%s" %
                                     (self.FileName, self.extension))
-            out_fname = os.path.join(self.dirname, 'Sound', "%s.%s" % 
+            out_fname = os.path.join(self.dirname, 'Sounds', "%s.%s" % 
                                     (snd, self.extension)) 
             
             #rename the sound file
@@ -353,7 +353,7 @@ class SoundGUI(QtGui.QWidget):
             #update current object with new sound file
             self.FileName = str(snd)
             
-            self.sound_file = os.path.join(self.dirname, "Sound", "%s.%s"%
+            self.sound_file = os.path.join(self.dirname, "Sounds", "%s.%s"%
                 (self.FileName, self.extension))
                 
 
