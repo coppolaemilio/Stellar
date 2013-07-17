@@ -36,12 +36,14 @@ class SoundGUI(QtGui.QWidget):
 
         self.extension = self.tree.snd_parser.get(self.FileName, 'extension')
 
-        self.volume = int(self.tree.snd_parser.get(self.FileName, 'volume'))
         self.pan = int(self.tree.snd_parser.get(self.FileName, 'pan'))
+        self.volume = int(self.tree.snd_parser.get(self.FileName, 'volume'))
+        self.background_music = self.tree.snd_parser.get(self.FileName, 'background_music') == "True"
 
         self.edit_pan = self.pan
         self.edit_volume = self.volume
-        
+        self.edit_background_music = self.background_music
+
         pygame.mixer.init()
         
         self.sound_file = os.path.join(self.dirname, "Sounds", "%s.%s"%(self.FileName, self.extension))
@@ -108,12 +110,15 @@ class SoundGUI(QtGui.QWidget):
         self.OptionsBox.setTitle("Options")
 
         self.RadioSound = QtGui.QRadioButton("Normal Sound")
-        self.RadioSound.setEnabled(False)
-        self.RadioSound.toggle()
-        
+        self.RadioSound.clicked.connect(self.backgroundMusicOff)
         self.RadioMusic = QtGui.QRadioButton("Background Music")
-        self.RadioMusic.setEnabled(False)
+        self.RadioMusic.clicked.connect(self.backgroundMusicOn)
         
+        if self.background_music:
+            self.RadioMusic.toggle()
+        else:
+            self.RadioSound.toggle()
+
         self.optionslayout = QtGui.QGridLayout()
         self.optionslayout.setMargin(0)
         self.optionslayout.addWidget(self.RadioSound,1,0)
@@ -250,6 +255,18 @@ class SoundGUI(QtGui.QWidget):
         #if sound is playing, update it with new information
         self.SetSoundVolume()
 
+    def backgroundMusicOff(self):
+        self.changeValueBackgroundMusic(False)
+    
+    def backgroundMusicOn(self):
+        self.changeValueBackgroundMusic(True)
+
+    def changeValueBackgroundMusic(self, value):
+        self.edit_background_music = value
+
+        self.background_music = self.edit_background_music
+        self.tree.snd_parser.set(self.FileName, 'background_music', self.background_music)
+
     def LoadSound(self):
         if self.sound is None:
             self.sound_handle = open(self.sound_file, 'rb')
@@ -297,11 +314,12 @@ class SoundGUI(QtGui.QWidget):
             self.BtnStop.setEnabled(True)
     
     def StopSound(self):
-        if self.channel.get_busy():
-            self.channel.stop()
-            self.sound.stop()
-            self.BtnPlay.setEnabled(True)
-            self.BtnStop.setEnabled(False)
+        if self.channel:
+            if self.channel.get_busy():
+                self.channel.stop()
+                self.sound.stop()
+                self.BtnPlay.setEnabled(True)
+                self.BtnStop.setEnabled(False)
         
     def SaveSound(self):
         self.fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Sound', 
@@ -361,8 +379,10 @@ class SoundGUI(QtGui.QWidget):
 
         self.pan = self.edit_pan
         self.volume = self.edit_volume
+        self.background_music = self.edit_background_music
         self.tree.snd_parser.set(self.FileName, 'pan', self.pan)
         self.tree.snd_parser.set(self.FileName, 'volume', self.volume)
+        self.tree.snd_parser.set(self.FileName, 'background_music', self.background_music)
 
         self.tree.write_sound()
 
