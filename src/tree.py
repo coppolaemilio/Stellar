@@ -356,6 +356,7 @@ class TreeWidget(QtGui.QTreeWidget):
         self.snd_parser.set(name[:-4], 'extension', name[-3:])
         self.snd_parser.set(name[:-4], 'volume', '0')
         self.snd_parser.set(name[:-4], 'pan', '0')
+        self.snd_parser.set(name[:-4], 'background_music', 'False')
 
         self.write_sound()
 
