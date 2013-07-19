@@ -26,6 +26,7 @@ import sys
 import os
 import shutil
 from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QFont
 
 class FontGUI(QtGui.QWidget):
     def __init__(self, main, name, dirname, tree):
@@ -38,9 +39,9 @@ class FontGUI(QtGui.QWidget):
         self.font = self.tree.fnt_parser.get(self.name, 'font')
         self.fontindex = self.tree.fnt_parser.get(self.name, 'fontindex')
         self.size = self.tree.fnt_parser.get(self.name, 'size')
-        self.bold = self.tree.fnt_parser.get(self.name, 'bold')
-        self.italic = self.tree.fnt_parser.get(self.name, 'italic')
-        self.antialiasing = self.tree.fnt_parser.get(self.name, 'antialiasing')
+        self.bold = self.tree.fnt_parser.get(self.name, 'bold') == 'True'
+        self.italic = self.tree.fnt_parser.get(self.name, 'italic') == 'True' 
+        self.antialiasing = self.tree.fnt_parser.get(self.name, 'antialiasing') == 'True'
 
         #if self.font == '': self.font = 'Arial'
         if self.size == '': self.size = 11
@@ -70,15 +71,15 @@ class FontGUI(QtGui.QWidget):
         self.sizeEdit.setValue(int(self.size))
         self.sizeEdit.valueChanged.connect(self.onChanged)
         self.boldLabel = QtGui.QCheckBox('Bold')
+        self.boldLabel.clicked.connect(self.onChanged)
         self.ItalicLabel = QtGui.QCheckBox('Italic')
+        self.ItalicLabel.clicked.connect(self.onChanged)
         self.antiAliLabel = QtGui.QCheckBox('Anti-Aliasing')
+        self.antiAliLabel.clicked.connect(self.onChanged)
         
-        if self.bold=="True":
-            self.boldLabel.setChecked(True)
-        if self.italic=="True":
-            self.ItalicLabel.setChecked (True)
-        if self.antialiasing=="True":
-            self.antiAliLabel.setChecked (True)
+        self.boldLabel.setChecked(self.bold)
+        self.ItalicLabel.setChecked(self.italic)
+        self.antiAliLabel.setChecked(self.antialiasing)
 
         self.testtext = QtGui.QTextEdit('!\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
         #self.testtext.textChanged.connect(self.onChanged)
@@ -86,6 +87,7 @@ class FontGUI(QtGui.QWidget):
         self.previewtext = QtGui.QTextEdit('!\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
         self.previewtext.setReadOnly(True)
         self.previewtext.setCurrentFont( QtGui.QFont(self.fontBox.currentText(), int(self.size), True) )
+        
         self.BtnOK = QtGui.QPushButton('OK')
         self.BtnOK.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
         self.BtnOK.clicked.connect(self.ok)
@@ -142,12 +144,25 @@ class FontGUI(QtGui.QWidget):
         self.onChanged()
         
     def onChanged(self):
-        print('changed')
+        self.bold = bool(self.boldLabel.checkState())
+        self.italic = bool(self.ItalicLabel.checkState())
+        self.antialiasing = bool(self.antiAliLabel.checkState())
+
+        if self.bold:
+            self.previewtext.setFontWeight(QFont.Bold)
+        else:
+            self.previewtext.setFontWeight(QFont.Normal)
+        
+        self.previewtext.setFontItalic(self.italic) 
+
         self.previewtext.setPlainText(self.testtext.toPlainText())
         self.previewtext.setFontPointSize(self.sizeEdit.value())
         self.previewtext.setFontFamily(self.fontBox.currentText())
-        
-        
+
+        self.tree.fnt_parser.set(self.name, 'bold', self.bold)
+        self.tree.fnt_parser.set(self.name, 'italic', self.italic)
+        self.tree.fnt_parser.set(self.name, 'antialiasing', self.antialiasing)
+
     def ok(self):
         self.close()
         name = str(self.nameEdit.text())

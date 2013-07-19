@@ -90,8 +90,8 @@ class Start(QtGui.QWidget):
         self.grid1.setSpacing(15)
         self.grid1.addWidget(self.Spacer, 1, 0)
         self.grid1.addWidget(self.buttonnew, 1, 1)
-        self.grid1.addWidget(self.buttonwebsite, 3, 1)
         self.grid1.addWidget(self.buttonrec, 2, 1)
+        self.grid1.addWidget(self.buttonwebsite, 3, 1)
         self.grid1.addWidget(self.Spacer1, 3, 3)
 		
         p4_vertical.addLayout(self.grid1)
