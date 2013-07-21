@@ -57,6 +57,7 @@ def save():
         config.write(configfile)
 
 __version__ = get('stellar', 'version', VERSION)
+__sge_version__ = get('stellar', 'sge_version', 'False')
 recentproject = get('stellar', 'recentproject', '')
 codeeditor = get('stellar', 'codeeditor', '')
 soundeditor = get('stellar', 'soundeditor', '')

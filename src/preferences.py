@@ -48,12 +48,17 @@ class PreferencesDialog(QtGui.QDialog):
         tab_widget = QtGui.QTabWidget() 
         tab1 = QtGui.QWidget() 
         tab2 = QtGui.QWidget()
+        tab3 = QtGui.QWidget()
          
         p1_vertical = QtGui.QVBoxLayout(tab1) 
         p2_vertical = QtGui.QVBoxLayout(tab2)
+        p3_vertical = QtGui.QVBoxLayout(tab3)
          
         tab_widget.addTab(tab1, "Editors") 
         tab_widget.addTab(tab2, "General")
+        tab_widget.addTab(tab3, "Game Engine")
+
+        # Editors Tab ----------
 
         self.ContainerBox = QtGui.QGroupBox(self)
 
@@ -102,9 +107,25 @@ class PreferencesDialog(QtGui.QDialog):
         self.button_sound.setGeometry(280,65,40,21)
         self.button_sound.clicked.connect(self.soundeditor)
 
-        #--------------------------------------------------
-        
         p1_vertical.addWidget(self.ContainerBox)
+
+        # General Tab Contents -----------------
+
+        self.ResolutionBox = QtGui.QGroupBox(self)
+        self.full = QtGui.QCheckBox('Set the resolution of the screen', self.ResolutionBox)
+        self.full.move(16, 16)
+        p2_vertical.addWidget(self.ResolutionBox)
+
+        # Game Engine Tab Contents -------------
+
+        self.GameEngineBox = QtGui.QGroupBox("Updates", self)
+        self.GameEngineBox.setGeometry(16, 16, 330, 100)
+        self.button_update_game_engine = QtGui.QPushButton("Check for Game Engine Updates", self.GameEngineBox)
+        self.button_update_game_engine.clicked.connect(main.updateGameEngine)
+        self.button_update_game_engine.move(16, 20)
+        p3_vertical.addWidget(self.GameEngineBox) 
+
+        # Preferences Dialog Box ---------------
 
         okButton = QtGui.QPushButton("OK")
         okButton.setIcon(QtGui.QIcon(os.path.join('Data', 'accept.png')))
@@ -118,11 +139,6 @@ class PreferencesDialog(QtGui.QDialog):
         hbox.addStretch(1)
         hbox.addWidget(okButton)
         hbox.addWidget(cancelButton)
-
-        self.ResolutionBox = QtGui.QGroupBox(self)
-        self.full = QtGui.QCheckBox('Set the resolution of the screen', self.ResolutionBox)
-        self.full.move(16, 16)
-        p2_vertical.addWidget(self.ResolutionBox)
 
         vbox = QtGui.QVBoxLayout()
         vbox.addWidget(tab_widget) 
@@ -187,7 +203,7 @@ class PreferencesDialog(QtGui.QDialog):
             self.inp_soundeditor.setText(name)
         else:
             self.usebuilt_sound.setChecked(True)
-                
+
     def okbutton(self):
         if self.useexternal_code.isChecked():
             cfg.set('stellar', 'codeeditor', str(self.inp_codeeditor.text()))

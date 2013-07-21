@@ -234,6 +234,13 @@ class Stellar(QtGui.QMainWindow,QtGui.QTreeWidget, QtGui.QMdiArea):
     def preferencesopen(self):
         prefs = PreferencesDialog(self)
         
+    def updateGameEngine(self):
+        import urllib, zipfile
+        sge = urllib.urlretrieve('https://github.com/Coppolaemilio/StellarGameEngine/archive/master.zip')
+        sge_zip = zipfile.ZipFile(sge, 'r')
+        print(sge_zip)
+        #print(current_game_engine.fp)
+
     def newproject(self):
         newprojectdialog = NewProjectDialog(self)
         
