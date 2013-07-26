@@ -21,7 +21,6 @@ from PyQt4 import QtCore, QtGui
 import os, webbrowser
 import cfg
 from dialogs import NewProjectDialog
-
 import sys
 if sys.version_info.major == 2:
     str = unicode

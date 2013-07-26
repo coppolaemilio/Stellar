@@ -1,0 +1,116 @@
+	
+
+    {
+        "classes": {
+            "Game": {
+                "class_attributes": {},
+                "class_methods": {},
+                "methods": {
+                    "event_quit": {
+                        "arguments": ["self"],
+                        "code": "Game/event_quit.py"
+                    }
+                },
+                "parent": "sge.Game",
+                "static_methods": {}
+            },
+            "SpamClass": {
+                "class_attributes": {},
+                "class_methods": {},
+                "methods": {
+                    "__init__": {
+                        "arguments": [
+                            "self",
+                            "x",
+                            "y",
+                            "my_spam_arg",
+                            "z=0",
+                            "image_index=0",
+                            "**kwargs"
+                        ],
+                        "code": "SpamClass/__init__.py"
+                    },
+                    "event_collision": {
+                        "arguments": ["self", "other"],
+                        "code": "SpamClass/event_collision.py"
+                    }
+                },
+                "parent": "sge.StellarClass",
+                "static_methods": {}
+            },
+            "EggsClass": {
+                "class_attributes": {
+                    "bacon": "42"
+                },
+                "class_methods": {
+                    "my_class_method": {
+                        "arguments": [
+                            "cls",
+                            "my_arg"
+                        ],
+                        "code": "EggsClass/my_class_method.py"
+                    }
+                },
+                "methods": {},
+                "parent": "sge.StellarClass",
+                "static_methods": {}
+            }
+        },
+        "constants": {
+            "SPAM": "42",
+            "EGG": "\"We got egg and bacon; egg, sausage and bacon...\"",
+            "SAUSAGE": "3.7",
+            "MEAL": "(SPAM, EGG, SAUSAGE, \"bacon\")"
+        },
+        "fonts": {
+            "my_font": {
+                "name": "MyFont.ttf",
+                "size": 12,
+                "underline": false,
+                "bold": false,
+                "italic": false
+            },
+            "my_system_font": {
+                "name": "Times New Roman",
+                "size": 16,
+                "underline": true,
+                "bold": false,
+                "italic": false
+            }
+        },
+        "functions": {
+            "my_foo_function": {
+                "arguments": [],
+                "code": "my_foo_function.py"
+            }
+        },
+        "global_variables": {
+            "foo": "0",
+            "bar": "\"abcdefg\""
+        },
+        "modules": [
+            "os",
+            "sys",
+            "eggs",
+            "module_with_really_excessively_long_name as spam"
+        ],
+        "options": {
+            "copyright_date": "20XX-2XXX",
+            "copyright_holder": "Joe Schmoe",
+            "delta": false,
+            "delta_min": 15,
+            "fps": 60,
+            "fullscreen": false,
+            "grab_input": false,
+            "license_header": "This is the license text used at the beginning of this game file.\nThis is line two of that text.\nThis is line 3.\n\nThis is the second paragraph.",
+            "name": "MyGame",
+            "resolution": [640, 480],
+            "scale": 0,
+            "scale_proportional": true,
+            "scale_smooth": false,
+            "window_icon": null,
+            "window_text": null
+        }
+       
+    }
+
