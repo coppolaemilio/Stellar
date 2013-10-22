@@ -107,6 +107,9 @@ class MainWindow(QtGui.QMainWindow):
 
     def editChild(self):
         f=self.treeWidget.currentItem().text(0)
+        if f=="Constants":
+            print "Open dialog here :)"
+            return
         parent=self.treeWidget.currentItem().parent().text(0)
         if parent=="Functions":
             ftype=".py"
