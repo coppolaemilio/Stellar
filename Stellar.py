@@ -1,3 +1,23 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright (C) 2012, 2014 Emilio Coppola
+#
+# This file is part of Stellar.
+#
+# Stellar is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Stellar is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
+
 import os, sys, json
 import sip
 sip.setapi('QVariant', 2)
@@ -8,7 +28,6 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__()
 
         self.treeWidget = QtGui.QTreeWidget()
-        self.treeWidget.header().setResizeMode(QtGui.QHeaderView.Stretch)
         self.treeWidget.setHeaderLabel("Project")
         self.setCentralWidget(self.treeWidget)
 
@@ -46,6 +65,8 @@ class MainWindow(QtGui.QMainWindow):
         decoded_data=json.loads(open(fileName,'r').read())
         self.format_main_response(decoded_data)
 
+        self.statusBar().showMessage("File loaded", 2000)
+
     def format_main_response(self, json_string):
         for key, value in json_string.iteritems():
             #print key
@@ -64,8 +85,6 @@ class MainWindow(QtGui.QMainWindow):
                     self.item = self.item.parent()
 
                 self.item = self.item.parent()
-
-        self.statusBar().showMessage("File loaded", 2000)
 
     def createChildItem(self, Name):
         if self.item:
@@ -101,5 +120,5 @@ if __name__ == "__main__":
     mainWin = MainWindow()
     mainWin.show()
     mainWin.open()
-    mainWin.raise_()
+    mainWin.raise_() #Making the window get focused on OSX
     sys.exit(app.exec_())
