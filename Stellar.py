@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, sys, json
+import os, sys, json, subprocess
 import sip
 sip.setapi('QVariant', 2)
 from PyQt4 import QtCore, QtGui
@@ -48,6 +48,7 @@ class MainWindow(QtGui.QMainWindow):
         self.bookmarkIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_FileIcon))
         self.contentsIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_FileDialogContentsView))
 
+        self.connect (self.treeWidget, QtCore.SIGNAL ("itemDoubleClicked(QTreeWidgetItem*, int)"), self.editChild)
 
         self.statusBar().showMessage("Ready")
 
@@ -71,16 +72,17 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar().showMessage("File loaded", 2000)
 
     def format_main_response(self, json_string):
+        #Start reading the index file
         for key, value in json_string.iteritems():
-            #print key
             if key=='Classes' or key=='Functions':
                 self.addChild(key, self.folderIcon, False)
                 
                 for val in value:
                     self.addChild(val, self.bookmarkIcon, True)
 
-                self.item = self.item.parent() #This line closes the folder
+                self.item = self.item.parent() #This line closes the key child
 
+        #Adding shortcuts to settings
         self.addChild("Constants", self.contentsIcon, True)
         self.addChild("Game Information", self.contentsIcon, True)
         self.addChild("Global Game Settings", self.contentsIcon, True)
@@ -92,12 +94,23 @@ class MainWindow(QtGui.QMainWindow):
             childItem = QtGui.QTreeWidgetItem(self.treeWidget)
         childItem.setData(0, QtCore.Qt.UserRole, text)
         self.item = childItem
-        self.item.setFlags(self.item.flags() | QtCore.Qt.ItemIsEditable)
+        #self.item.setFlags(self.item.flags() | QtCore.Qt.ItemIsEditable)
         self.item.setIcon(0, icon)
         self.item.setText(0, text)
         self.treeWidget.setItemExpanded(self.item, False)
         if closed:
             self.item = self.item.parent()
+
+
+    def editChild(self):
+        f=self.treeWidget.currentItem().text(0)
+        parent=self.treeWidget.currentItem().parent().text(0)
+        if parent=="Functions":
+            ftype=".py"
+        elif parent=="Classes":
+            ftype=".json"
+        fileName = os.path.join("example", str(self.treeWidget.currentItem().parent().text(0)) , str(self.treeWidget.currentItem().text(0))+ftype)
+        print fileName
 
     def saveAs(self):
         pass
