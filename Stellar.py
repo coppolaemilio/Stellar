@@ -23,6 +23,9 @@ import sip
 sip.setapi('QVariant', 2)
 from PyQt4 import QtCore, QtGui
 
+sys.path.append("tools")
+import constantspanel
+
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -108,7 +111,7 @@ class MainWindow(QtGui.QMainWindow):
     def editChild(self):
         f=self.treeWidget.currentItem().text(0)
         if f=="Constants":
-            print "Open dialog here :)"
+            constantsdialog = constantspanel.ConstantsPanel(self, self)
             return
         parent=self.treeWidget.currentItem().parent().text(0)
         if parent=="Functions":

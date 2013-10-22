@@ -35,5 +35,5 @@ class ConstantsPanel(QtGui.QDialog):
     def __init__(self, main, parent):
         super(ConstantsPanel, self).__init__(parent)
         self.main = main
-        self.filename = self.main.filename
+        self.fname = self.main.fname
               
