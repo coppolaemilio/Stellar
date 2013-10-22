@@ -70,7 +70,7 @@ class MainWindow(QtGui.QMainWindow):
     def format_main_response(self, json_string):
         for key, value in json_string.iteritems():
             #print key
-            if key=='classes':
+            if key=='Classes' or key=='Functions':
                 self.item = self.createChildItem(key)
                 self.item.setFlags(self.item.flags() | QtCore.Qt.ItemIsEditable)
                 self.item.setIcon(0, self.folderIcon)

@@ -1,0 +1,19 @@
+{
+    "EggsClass": {
+        "class_attributes": {
+            "bacon": "42"
+        },
+        "class_methods": {
+            "my_class_method": {
+                "arguments": [
+                    "cls",
+                    "my_arg"
+                ],
+                "code": "EggsClass/my_class_method.py"
+            }
+        },
+        "methods": {},
+        "parent": "sge.StellarClass",
+        "static_methods": {}
+    }
+}
