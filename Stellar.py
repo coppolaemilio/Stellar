@@ -40,11 +40,14 @@ class MainWindow(QtGui.QMainWindow):
 
         self.folderIcon = QtGui.QIcon()
         self.bookmarkIcon = QtGui.QIcon()
+        self.contentsIcon = QtGui.QIcon()
         self.folderIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_DirClosedIcon),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.folderIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_DirOpenIcon),
                 QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.bookmarkIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_FileIcon))
+        self.contentsIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_FileDialogContentsView))
+
 
         self.statusBar().showMessage("Ready")
 
@@ -71,30 +74,30 @@ class MainWindow(QtGui.QMainWindow):
         for key, value in json_string.iteritems():
             #print key
             if key=='Classes' or key=='Functions':
-                self.item = self.createChildItem(key)
-                self.item.setFlags(self.item.flags() | QtCore.Qt.ItemIsEditable)
-                self.item.setIcon(0, self.folderIcon)
-                self.item.setText(0, key)
-                self.treeWidget.setItemExpanded(self.item, False)
+                self.addChild(key, self.folderIcon, False)
                 
                 for val in value:
-                    self.item = self.createChildItem(value)
-                    self.item.setFlags(self.item.flags() | QtCore.Qt.ItemIsEditable)
-                    self.item.setIcon(0, self.bookmarkIcon)
-                    self.item.setText(0, val)
-                    self.item = self.item.parent()
+                    self.addChild(val, self.bookmarkIcon, True)
 
-                self.item = self.item.parent()
+                self.item = self.item.parent() #This line closes the folder
 
-    def createChildItem(self, Name):
+        self.addChild("Constants", self.contentsIcon, True)
+        self.addChild("Game Information", self.contentsIcon, True)
+        self.addChild("Global Game Settings", self.contentsIcon, True)
+
+    def addChild(self, text, icon, closed):
         if self.item:
             childItem = QtGui.QTreeWidgetItem(self.item)
         else:
             childItem = QtGui.QTreeWidgetItem(self.treeWidget)
-
-        childItem.setData(0, QtCore.Qt.UserRole, Name)
-        return childItem
-
+        childItem.setData(0, QtCore.Qt.UserRole, text)
+        self.item = childItem
+        self.item.setFlags(self.item.flags() | QtCore.Qt.ItemIsEditable)
+        self.item.setIcon(0, icon)
+        self.item.setText(0, text)
+        self.treeWidget.setItemExpanded(self.item, False)
+        if closed:
+            self.item = self.item.parent()
 
     def saveAs(self):
         pass
