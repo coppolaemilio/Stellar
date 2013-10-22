@@ -122,7 +122,7 @@ class MainWindow(QtGui.QMainWindow):
         self.saveAsAct = QtGui.QAction("&Save As...", self, shortcut="Ctrl+S",
                 triggered=self.saveAs)
 
-        self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+X",
+        self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+Q",
                 triggered=self.close)
 
     def createMenus(self):
