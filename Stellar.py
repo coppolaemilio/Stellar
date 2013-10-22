@@ -27,6 +27,9 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        self.fname = ""
+        self.dirname = ""
+
         self.treeWidget = QtGui.QTreeWidget()
         self.treeWidget.setHeaderLabel("Project")
         self.setCentralWidget(self.treeWidget)
