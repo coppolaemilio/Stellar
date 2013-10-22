@@ -26,12 +26,8 @@ Run Stellar via the following command (Windows/Ubuntu): `$ python Stellar.py`
 ## Contributing
 If you don't know how GitHub contributing works see our [tutorial guide](http://stellarpygame.blogspot.com/p/we-need-your-help.html)
 
-Along with pull request you can add your name to authors.txt
-
 Our contributors here:
 * [graphs](https://github.com/Coppolaemilio/Stellar/graphs/contributors)
-* [authors.txt](https://github.com/Coppolaemilio/Stellar/blob/master/AUTHORS.txt)
-
 
 <b>You can talk with us on freenode IRC [#stellar](http://webchat.freenode.net/?channels=stellar)<b>
 
