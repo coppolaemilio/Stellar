@@ -1,13 +1,3 @@
-import json
-json_data = open("C:\\Users\\Loremi\\Documents\\GitHub\\Stellar\\NewExample\\NewExample.JSON")
- 
-# the value returned from json.load is a Python dictionary.
-data = json.load(json_data)
-json_data.close()
- 
-# Get the data you want, by navigating the structure using standard python.
-print data["classes"]["Game"]["methods"]["event_quit"]
-
 {
     "classes": {
         "Game": {
