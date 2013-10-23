@@ -36,4 +36,9 @@ class ConstantsPanel(QtGui.QDialog):
         super(ConstantsPanel, self).__init__(parent)
         self.main = main
         self.fname = self.main.fname
+
+        self.InitUI()
+
+    def InitUI(self):
+        pass
               
