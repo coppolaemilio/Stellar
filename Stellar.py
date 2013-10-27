@@ -24,7 +24,9 @@ sip.setapi('QVariant', 2)
 from PyQt4 import QtCore, QtGui
 
 sys.path.append("tools")
+import fonteditor
 import constantspanel
+import stj
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
@@ -63,16 +65,19 @@ class MainWindow(QtGui.QMainWindow):
 
     def open(self):
         self.statusBar().showMessage("Opening project...")
-        fileName = QtGui.QFileDialog.getOpenFileName(self,
-                "Open Project File", QtCore.QDir.currentPath(),
-                "Project Files (*.JSON)")
-        #fileName=os.path.join("example","example.JSON")
+        #self.fname = QtGui.QFileDialog.getOpenFileName(self,
+        #        "Open Project File", QtCore.QDir.currentPath(),
+        #        "Project Files (*.JSON)")
+        self.fname=os.path.join("Example","example.JSON")
 
-        if not fileName:
+        if not self.fname:
             return
         self.treeWidget.clear()
         
-        decoded_data=json.loads(open(fileName,'r').read())
+        #self.dec_dat = stj.StellarJSON(self.fname)
+        #print str(self.dec_dat)
+
+        decoded_data=json.loads(open(self.fname,'r').read())
         self.format_main_response(decoded_data)
 
         self.statusBar().showMessage("File loaded", 2000)
@@ -80,7 +85,7 @@ class MainWindow(QtGui.QMainWindow):
     def format_main_response(self, json_string):
         #Start reading the index file
         for key, value in json_string.iteritems():
-            if key=='Classes' or key=='Functions':
+            if key=='Classes' or key=='Functions' or key =='Fonts':
                 self.addChild(key, self.folderIcon, False)
                 
                 for val in value:
@@ -114,11 +119,21 @@ class MainWindow(QtGui.QMainWindow):
             constantsdialog = constantspanel.ConstantsPanel(self, self)
             return
         parent=self.treeWidget.currentItem().parent().text(0)
+        target=str(self.treeWidget.currentItem().text(0))
         if parent=="Functions":
             ftype=".py"
         elif parent=="Classes":
             ftype=".json"
-        fileName = os.path.join("example", str(self.treeWidget.currentItem().parent().text(0)) , str(self.treeWidget.currentItem().text(0))+ftype)
+        elif parent=="Sprites":
+            ftype=".png"
+        elif parent=="Sound":
+            ftype=".ogg"
+        elif parent=="Fonts":
+            fontdialog = fonteditor.FontEditor(self, self, target)
+            fontdialog.show()
+            return
+
+        fileName = os.path.join("example", str(self.treeWidget.currentItem().parent().text(0)) , target + ftype)
         print fileName
 
     def saveAs(self):
