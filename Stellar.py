@@ -68,7 +68,7 @@ class MainWindow(QtGui.QMainWindow):
         #self.fname = QtGui.QFileDialog.getOpenFileName(self,
         #        "Open Project File", QtCore.QDir.currentPath(),
         #        "Project Files (*.JSON)")
-        self.fname=os.path.join("Example","Example.JSON")
+        self.fname = os.path.join("Example","Example.JSON")
 
         if not self.fname:
             return
@@ -77,7 +77,7 @@ class MainWindow(QtGui.QMainWindow):
         #self.dec_dat = stj.StellarJSON(self.fname)
         #print str(self.dec_dat)
 
-        decoded_data=json.loads(open(self.fname,'r').read())
+        decoded_data = json.loads(open(self.fname,'r').read())
         self.format_main_response(decoded_data)
 
         self.statusBar().showMessage("File loaded", 2000)
