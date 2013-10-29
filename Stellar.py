@@ -68,7 +68,7 @@ class MainWindow(QtGui.QMainWindow):
         #self.fname = QtGui.QFileDialog.getOpenFileName(self,
         #        "Open Project File", QtCore.QDir.currentPath(),
         #        "Project Files (*.JSON)")
-        self.fname=os.path.join("Example","example.JSON")
+        self.fname=os.path.join("Example","Example.JSON")
 
         if not self.fname:
             return
