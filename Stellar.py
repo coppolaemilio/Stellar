@@ -35,9 +35,14 @@ class MainWindow(QtGui.QMainWindow):
         self.fname = ""
         self.dirname = ""
 
+        self.qmdiarea = QtGui.QMdiArea()
         self.treeWidget = QtGui.QTreeWidget()
         self.treeWidget.setHeaderLabel("Project")
-        self.setCentralWidget(self.treeWidget)
+
+        self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
+        self.splitter.addWidget(self.treeWidget)
+        self.splitter.addWidget(self.qmdiarea)
+        self.setCentralWidget(self.splitter)
 
         self.createActions()
         self.createMenus()
