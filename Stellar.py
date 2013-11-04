@@ -144,6 +144,7 @@ class MainWindow(QtGui.QMainWindow):
         f=self.treeWidget.currentItem().text(0)
         if f=="Constants":
             constantsdialog = constantspanel.ConstantsPanel(self, self)
+            constantsdialog.show()
             return
         parent=self.treeWidget.currentItem().parent().text(0)
         target=str(self.treeWidget.currentItem().text(0))
