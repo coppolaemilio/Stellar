@@ -33,6 +33,6 @@ Our contributors here:
 
 Any feedback is welcome!
 
-![stellar](https://dl.dropbox.com/u/31195548/Stellar/stellarpreview.png)
+![stellar](https://dl.dropboxusercontent.com/u/31195548/Stellar/Screenshot%202013-11-04%2023.32.16.png)
 
 (c) 2012 - infinity, Emilio Coppola

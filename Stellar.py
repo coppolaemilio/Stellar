@@ -39,6 +39,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.qmdiarea = QtGui.QMdiArea()
         self.qmdiarea.setViewMode(self.qmdiarea.TabbedView)
+        self.qmdiarea.setTabsClosable(True)
+        self.qmdiarea.setTabsMovable(True)
         self.treeWidget = QtGui.QTreeWidget()
         self.treeWidget.setHeaderLabel("Project")
 
