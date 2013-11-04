@@ -19,6 +19,7 @@
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
 import os, sys, json, subprocess
+import xml.etree.ElementTree as ET
 import sip
 sip.setapi('QVariant', 2)
 from PyQt4 import QtCore, QtGui
@@ -66,24 +67,31 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar().showMessage("Ready")
 
         self.setWindowTitle("Stellar")
-        self.resize(300, 320)
+        self.resize(640, 480)
 
     def open(self):
         self.statusBar().showMessage("Opening project...")
+<<<<<<< HEAD
         #self.fname = QtGui.QFileDialog.getOpenFileName(self,
         #        "Open Project File", QtCore.QDir.currentPath(),
         #        "Project Files (*.JSON)")
         self.fname = os.path.join("Example","Example.json")
+=======
+        self.fname = QtGui.QFileDialog.getOpenFileName(self,
+                "Open Project File", QtCore.QDir.currentPath(),
+                "Project Files (*.JSON *.gmx)")
+        #self.fname = os.path.join("Example","Example.JSON")
+>>>>>>> Added GM:Studio import
 
         if not self.fname:
             return
         self.treeWidget.clear()
-        
-        #self.dec_dat = stj.StellarJSON(self.fname)
-        #print str(self.dec_dat)
 
-        decoded_data = json.loads(open(self.fname,'r').read())
-        self.format_main_response(decoded_data)
+        if ".gmx" in self.fname:
+            self.importgmxproject(self.fname)
+        else:
+            decoded_data = json.loads(open(self.fname,'r').read())
+            self.format_main_response(decoded_data)
 
         self.statusBar().showMessage("File loaded", 2000)
 
@@ -102,6 +110,28 @@ class MainWindow(QtGui.QMainWindow):
         self.addChild("Constants", self.contentsIcon, True)
         self.addChild("Game Information", self.contentsIcon, True)
         self.addChild("Global Game Settings", self.contentsIcon, True)
+
+    def importgmxproject(self, file):
+        root = ET.parse(file).getroot()
+        for child in root:
+            for dr in ["scripts", "objects", "rooms"]:
+                if child.tag==dr:
+                    self.addChild(child.tag, self.folderIcon, False)
+                    self.scan_sub_xml(child,child.tag)
+                    self.item = self.item.parent() #This line closes the key child
+        self.addChild("Constants", self.contentsIcon, True)
+        self.addChild("Game Information", self.contentsIcon, True)
+        self.addChild("Global Game Settings", self.contentsIcon, True)
+
+    def scan_sub_xml(self, key, name):
+        child = key
+        for key in key.findall(name[:-1]):
+            self.addChild(key.text.replace(name+"\\", ""), self.bookmarkIcon, True)
+        for key in child.findall(name):
+            val = key.get('name')
+            self.addChild(val, self.folderIcon, False)
+            self.scan_sub_xml(key,name)
+            self.item = self.item.parent() #This line closes the key child
 
     def addChild(self, text, icon, closed):
         if self.item:
