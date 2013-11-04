@@ -26,6 +26,7 @@ from PyQt4 import QtCore, QtGui
 
 sys.path.append("tools")
 import fonteditor
+import scripteditor
 import constantspanel
 import stj
 
@@ -148,21 +149,21 @@ class MainWindow(QtGui.QMainWindow):
             return
         parent=self.treeWidget.currentItem().parent().text(0)
         target=str(self.treeWidget.currentItem().text(0))
-        if parent=="Functions":
-            ftype=".py"
-        elif parent=="Classes":
-            ftype=".json"
-        elif parent=="Sprites":
-            ftype=".png"
-        elif parent=="Sound":
-            ftype=".ogg"
-        elif parent=="Fonts":
+        if parent=="Fonts":
             fontdialog = fonteditor.FontEditor(self, self, target)
             fontdialog.show()
             return
+        if ".gml" in target:
+            pathtofile = os.path.join(os.path.dirname(str(self.fname)), "scripts", target)
+            self.window = scripteditor.ScriptEditor(self, self, target, pathtofile)
+            self.window.setWindowTitle(target)
+            self.qmdiarea.addSubWindow(self.window)
+            self.window.setVisible(True)
+            return
 
-        fileName = os.path.join("example", str(self.treeWidget.currentItem().parent().text(0)) , target + ftype)
-        print fileName
+
+        #fileName = os.path.join("example", str(self.treeWidget.currentItem().parent().text(0)) , target + ftype)
+        #print fileName
 
     def saveAs(self):
         pass
