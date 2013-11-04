@@ -70,10 +70,6 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(640, 480)
 
     def open(self):
-<<<<<<< HEAD
-        self.statusBar().showMessage("Opening project...")
-=======
->>>>>>> ed798fd6d46589b955bcb0ce1f51a97f62ffcd1f
         self.fname = QtGui.QFileDialog.getOpenFileName(self,
                 "Open Project File", QtCore.QDir.currentPath(),
                 "Project Files (*.JSON *.gmx)")
