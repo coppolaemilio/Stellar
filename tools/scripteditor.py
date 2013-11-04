@@ -35,23 +35,37 @@ class ScriptEditor(QtGui.QDialog):
     def __init__(self, main, parent, name, filename):
         super(ScriptEditor, self).__init__(parent)
         self.main = main
+
+        if os.path.exists(os.path.join('..','images')):
+        	img_path=os.path.join('..','images')
+        else:
+        	img_path=os.path.join('images')
+
+        saveAction = QtGui.QAction(QtGui.QIcon(os.path.join(img_path, 'ok.png')), 'Save', self)
+        saveAction.setShortcut('Ctrl+S')
+        self.toolbar = QtGui.QToolBar('Script Toolbar')
+        self.toolbar.setIconSize(QtCore.QSize(16, 16))
+        self.toolbar.addAction(saveAction)
+
         with open(filename, 'r') as content_file:
             self.content = content_file.read()
         
         font = QtGui.QFont()
-        font.setFamily('DejaVu Sans Mono')
+        font.setFamily('Monaco')
         font.setStyleHint(QtGui.QFont.Monospace)
         font.setFixedPitch(True)
-        font.setPointSize(int(10))
+        font.setPointSize(int(14))
 
         self.setFont(font)
 
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
+        self.ContainerGrid.setSpacing(0)
 
         self.textedit = QtGui.QTextEdit()
         self.textedit.insertPlainText(self.content)
         self.textedit.setLineWrapMode(0)
+        self.ContainerGrid.addWidget(self.toolbar)
         self.ContainerGrid.addWidget(self.textedit)
 
         self.setLayout(self.ContainerGrid)
@@ -76,6 +90,7 @@ class Editor(QtGui.QMainWindow):
 
         self.setCentralWidget(self.ShowFrame)
         self.setWindowTitle("TextEditor")
+        self.resize(640, 480)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
