@@ -1,0 +1,157 @@
+/////////////////////////////////////////////
+// pigs.eel - Bouncing Pigs
+// Copyright 2005, 2010, 2014 David Olofson
+/////////////////////////////////////////////
+
+import "math";
+import "SDL";
+import "SDL_image" as IMG;
+import "./include/text" as text;
+
+static rng = table [
+	.im	139968,
+	.ia	3877,
+	.ic	29573,
+	.last	42
+];
+
+function rnd(max)
+{
+	rng.last = (rng.last * rng.ia + rng.ic) % rng.im;
+	return (max * rng.last) / rng.im;
+}
+
+function roundstr(v, decimals)
+{
+	return (string)(floor(v * (10 ** decimals) + .5) / (10 ** decimals));
+}
+
+export function main<args>
+{
+	if specified args[1]
+		local npigs = (integer)args[1];
+	else
+		npigs = 10;
+	
+	local screen = SetVideoMode(640, 480, 0, HWSURFACE | DOUBLEBUF);
+	SetCaption("EELBox Bouncing Pigs", args[0]);
+	ShowCursor(0);
+
+	// Load font
+	local font = text.Open("./sprites/microfont_sh.png");
+
+	// Load pig sprite image
+	local pigframes = IMG.Load("./sprites/pigframes2.png");
+	SetAlpha(pigframes);
+	local pig = [];
+	for local i = 0, 12 - 1
+	{
+	pig[i] = Surface[0, 64, 48, 32];
+		local sr = Rect[(i % 3) * 64, (integer)(i / 3) * 48, 64, 48];
+		BlitSurface(pigframes, sr, pig[i], nil);
+		SetAlpha(pig[i], SRCALPHA | RLEACCEL);
+		pig[i] = DisplayFormatAlpha(pig[i]);
+	}
+	pigframes = nil;
+
+	// Initialize pigs
+	local pigs = [];
+	for local i = 0, npigs - 1
+		pigs[i] = table[.x	rnd(640 - 64),
+				.y	rnd(300),
+				.dx	rnd(400) - 200,
+				.dy	0,
+				.frame	0,
+				.dframe	rnd(100) - 50];
+
+	local dr = Rect[];
+	local lt, local fps_start, local fps_total_start = GetTicks();
+	local fps_count, local fps_total_count = 0;
+	local fps = 0;
+	while true
+	mainloop:
+	{
+		// Calculate delta time
+		local nt = GetTicks();
+		local dt = (nt - lt) * .001;
+		lt = nt;
+
+		// Clear screen
+		FillRect(nil, nil, MapColor(screen, 40, 60, 100));
+
+		for local i = 0, npigs - 1
+		{
+			// Draw pig
+			dr.x = pigs[i].x;
+			dr.y = pigs[i].y;
+			BlitSurface(pig[(integer)pigs[i].frame], nil, nil, dr);
+
+			// Move pig
+			pigs[i].dy += 300 * dt;
+			pigs[i].x += pigs[i].dx * dt;
+			pigs[i].y += pigs[i].dy * dt;
+			pigs[i].frame += pigs[i].dframe * dt;
+
+			// anim wrap
+			if pigs[i].frame < 0
+				pigs[i].frame = 12 - (-pigs[i].frame % 12);
+			else
+				pigs[i].frame %= 12;
+
+			// x bounce
+			if pigs[i].x < 0
+			{
+				pigs[i].dx = -pigs[i].dx;
+				pigs[i].x = -pigs[i].x;
+			}
+			else if pigs[i].x > (640 - 64)
+			{
+				pigs[i].dx = -pigs[i].dx;
+				pigs[i].x -= pigs[i].x - (640 - 64);
+			}
+
+			// y bounce
+			if pigs[i].y > (480 - 48)
+			{
+				pigs[i].dy = -pigs[i].dy;
+				pigs[i].y -= pigs[i].y - (480 - 48);
+			}
+		}
+
+		// fps counter
+		if (fps_count > 50) or ((nt - fps_start) > 250)
+		{
+			fps = fps_count * 1000. / (nt - fps_start);
+			fps_count = 0;
+			fps_start = nt;
+		}
+		font:PutString(roundstr(fps, 1) + " fps", 1, 1);
+		fps_count, fps_total_count += 1;
+
+		// Make the update visible
+		Flip();
+		Delay(0);
+
+		// Check for exit request
+		while true
+		{
+			local ev = PollEvent();
+			if not ev
+				break;
+			switch ev.type
+			  case KEYUP
+				if ev.sym == KESCAPE
+					break mainloop;
+			  case MOUSEBUTTONUP, QUIT
+				break mainloop;
+		}
+	}
+
+	if fps_total_count > 100
+	{
+		fps = fps_total_count * 1000. / (GetTicks() - fps_total_start);
+		print("Average fps: " + roundstr(fps, 1) + "\n");
+	}
+
+	return 0;
+}

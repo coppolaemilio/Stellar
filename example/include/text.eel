@@ -1,0 +1,156 @@
+/////////////////////////////////////////////
+// text.eel - EELBox "SFont" implementation
+// Copyright 2005, 2009, 2014 David Olofson
+/////////////////////////////////////////////
+
+module text;
+
+import "SDL", "SDL_image", "math";
+
+export function Open(filename)
+{
+	// Create object
+	local no = table [
+		.glyphs		array [],
+		.spacing	vector [],
+		.xoffs		0,
+		.yoffs		0,
+		procedure PutString(self, s, _x, _y)[dst, maxx]
+		{
+			local x, local y = (_x, _y) + self.(xoffs, yoffs);
+			if not sizeof s
+				return;
+			if specified dst
+				local d = dst;
+			else
+				d = nil;
+			if specified maxx
+				local mx = maxx;
+			else
+				mx = 9999999;
+			local startx = x;
+			local r = Rect [x, y, 0, 0];
+			for local c = 0, sizeof s - 1
+			{
+				local ch = s[c];
+				local gs, local ss = self.(glyphs, spacing);
+				switch ch
+				  case '\n'
+				  {
+					x = startx;
+					y += self.height;
+				  }
+				  case ' '
+					x += self.spacew;
+				  case '\t'
+				  {
+					x -= startx;
+					x = floor((x + self.tabw) / self.tabw) *
+							self.tabw;
+					x += startx;
+				  }
+				  default
+					try
+					{
+						ch -= 33;
+						local g = gs[ch];
+						r.x = x;
+						r.y = y;
+						BlitSurface(g, nil, d, r);
+						x += self.spacing[ch];
+					}
+				if x > mx
+					break;
+			}
+		}
+		function Width(self, s)[count]
+		{
+			local w, local mw = 0;
+			if specified count
+				local nc = count |< sizeof s;
+			else
+				nc = sizeof s;
+			if not nc
+				return 0;
+			for local c = 0, nc - 1
+			{
+				local ch = s[c];
+				local ss = self.spacing;
+				switch ch
+				  case '\n'
+				  {
+				  	mw >|= w;
+					w = 0;
+				  }
+				  case ' '
+				  	w += self.spacew;
+				  case '\t'
+				  	w = floor((w + self.tabw) / self.tabw) *
+				  			self.tabw;
+				  default
+				  	try
+				  	{
+				  		ch -= 33;
+						w += self.spacing[ch];
+				  	}
+			}
+		  	mw >|= w;
+			return mw;
+		}
+		procedure Offset(self, x, y)
+		{
+			self.(xoffs, yoffs) = x, y;
+		}
+	];
+
+	// Load and process font
+	local sfont = Load(filename);
+	SetAlpha(sfont);
+	local x = 0;
+	local last_cut = 0;
+	local last_mend = 0;
+	local c = MapColor(sfont, 255, 0, 255);
+	no.height = sfont.h - 1;
+	while x < sfont.w
+	{
+		if GetPixel(sfont, x, 0) == c
+		{
+			local mstart = x;
+			while x < (sfont.w - 1) and (GetPixel(sfont, x, 0) == c)
+				x += 1;
+			local cut = (mstart + x) / 2;
+			if last_cut
+			{
+				local r = Rect [last_cut, 1, cut - last_cut, no.height];
+				local s = Surface [0, r.w, r.h, 32];
+				SetAlpha(s);
+				BlitSurface(sfont, r, s);
+				SetAlpha(s, SRCALPHA | RLEACCEL);
+				no.glyphs.+ DisplayFormatAlpha(s);
+				no.spacing.+ mstart - last_mend + 1;
+			}
+			last_cut = cut;
+			last_mend = x;
+		}
+		x += 1;
+	}
+
+	// Determine width of the space glyph
+	no.spacew = 0;
+	try
+		no.spacew = no.glyphs['i' - 33].w * 1.5;
+	if not no.spacew
+		no.spacew = no.glyphs['I' - 33].w * 1.5;
+	if not no.spacew
+		no.spacew = no.glyphs['.' - 33].w * 1.5;
+	if not no.spacew
+		no.spacew = no.glyphs['!' - 33].w * 1.5;
+
+	// Since we're dealing mostly with proportional
+	// fonts, there's no obvious way to figure out
+	// what a sensible tab width is. I chose to make
+	// it 6 x height.
+	no.tabw = no.height * 6;
+
+	return no;
+}

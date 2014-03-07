@@ -1,196 +1,117 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-# Copyright (C) 2012, 2014 Emilio Coppola
-#
-# This file is part of Stellar.
-#
-# Stellar is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Stellar is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
-
-import os, sys, json, subprocess
-import xml.etree.ElementTree as ET
-import sip
-sip.setapi('QVariant', 2)
-from PyQt4 import QtCore, QtGui
-
+import sys, os, subprocess
+from PyQt4 import QtGui, QtCore
 sys.path.append("tools")
-import fonteditor
-import scripteditor
-import constantspanel
-import stj
+import treeview
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.projectdir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
+        self.eeldir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
+        if sys.platform=="win32":
+            self.eeldir+='.exe'
 
-        self.fname = ""
-        self.dirname = ""
+        self.deleteFileAction = QtGui.QAction('Delete', self)
+        self.editFileAction = QtGui.QAction('Edit', self)
 
-        self.qmdiarea = QtGui.QMdiArea()
-        self.qmdiarea.setViewMode(self.qmdiarea.TabbedView)
-        self.qmdiarea.setTabsClosable(True)
-        self.qmdiarea.setTabsMovable(True)
-        self.treeWidget = QtGui.QTreeWidget()
-        self.treeWidget.setHeaderLabel("Project")
+        self.treeView = treeview.TreeView(self)
 
-        self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
-        self.splitter.addWidget(self.treeWidget)
-        self.splitter.addWidget(self.qmdiarea)
-        self.setCentralWidget(self.splitter)
+        self.output = QtGui.QTextEdit()
+        self.output.setReadOnly(True)
+        self.font = QtGui.QFont()
+        self.font.setFamily('Monaco')
+        self.font.setStyleHint(QtGui.QFont.Monospace)
+        self.font.setFixedPitch(True)
+        self.output.setFont(self.font)
 
-        self.createActions()
-        self.createMenus()
+        self.deleteFileAction.triggered.connect(self.treeView.delete_file)
+        self.editFileAction.triggered.connect(self.treeView.edit_file)
 
-        self.item = None
+        self.mdi = QtGui.QMdiArea()
+        self.mdi.setViewMode(self.mdi.TabbedView)
+        self.mdi.setTabsClosable(True)
+        self.mdi.setTabsMovable(True)
+        backf = QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png')))
+        self.mdi.setBackground(backf)
 
-        style = self.treeWidget.style()
+        toolbar = self.addToolBar('Toolbar')
+        toolbar.setMovable(False)
+        
+        stellarAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','stellar_1.png')), 'Stellar', self)
+        stellarAction.triggered.connect(self.open_folder)
+        toolbar.addAction(stellarAction)
 
-        self.folderIcon = QtGui.QIcon()
-        self.bookmarkIcon = QtGui.QIcon()
-        self.contentsIcon = QtGui.QIcon()
-        self.folderIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_DirClosedIcon),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.folderIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_DirOpenIcon),
-                QtGui.QIcon.Normal, QtGui.QIcon.On)
-        self.bookmarkIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_FileIcon))
-        self.contentsIcon.addPixmap(style.standardPixmap(QtGui.QStyle.SP_FileDialogContentsView))
+        openAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','open.png')), 'Open', self)
+        openAction.triggered.connect(self.open_folder)
+        runAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','run.png')), 'Run', self)
+        runAction.triggered.connect(self.run_project)
+        runAction.setShortcut('Ctrl+B')
+        toolbar.addAction(runAction)
+        exitAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','close.png')), 'Exit', self)
+        exitAction.triggered.connect(QtGui.qApp.quit)
+        consoleAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','output.png')), 'Show output', self)
+        consoleAction.triggered.connect(self.toggle_console)
+        spacer = QtGui.QWidget() 
+        spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
+        
+        toolbar.addWidget(spacer) 
+        toolbar.addAction(consoleAction)
 
-        self.connect (self.treeWidget, QtCore.SIGNAL ("itemDoubleClicked(QTreeWidgetItem*, int)"), self.editChild)
+        self.statusBar().showMessage('Ready', 2000)
 
-        self.statusBar().showMessage("Ready")
+        self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+        self.vsplitter.addWidget(self.mdi)
+        self.vsplitter.addWidget(self.output)
+        self.output.hide()
+        self.c_displayed=False
+        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        splitter.addWidget(self.treeView)
+        splitter.addWidget(self.vsplitter)
 
-        self.setWindowTitle("Stellar")
+        self.setCentralWidget(splitter)
+        self.setWindowTitle("Stellar - "+self.projectdir)
         self.resize(640, 480)
 
-    def open(self):
-        self.fname = QtGui.QFileDialog.getOpenFileName(self,
-                "Open Project File", QtCore.QDir.currentPath(),
-                "Project Files (*.JSON *.gmx)")
-        #self.fname = os.path.join("Example","Example.JSON")
+        self.show()
 
-        if not self.fname:
-            return
-        self.treeWidget.clear()
+    def toggle_console(self):
+        self.c_displayed = not self.c_displayed
+        self.output.setVisible(self.c_displayed)
 
-        if ".gmx" in self.fname:
-            self.importgmxproject(self.fname)
-        else:
-            decoded_data = json.loads(open(self.fname,'r').read())
-            self.format_main_response(decoded_data)
+    def open_folder(self):
+        target = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
+        if target:
+            self.root = self.treeView.fileSystemModel.setRootPath(target)
+            self.treeView.setRootIndex(self.root)
 
-        self.statusBar().showMessage("File loaded", 2000)
+    def create_file(self):
+        with open('newfile.txt', 'w') as f:
+            f.write("cacaseca")
 
-    def format_main_response(self, json_string):
-        #Start reading the index file
-        for key, value in json_string.iteritems():
-            if key=='Classes' or key=='Functions' or key =='Fonts':
-                self.addChild(key, self.folderIcon, False)
-                
-                for val in value:
-                    self.addChild(val, self.bookmarkIcon, True)
+    def run_project(self):
+        self.statusBar().showMessage('Running project...', 2000)
+        eel = self.eeldir
+        f = 'main'
+        os.chdir(self.projectdir)
+        args = [eel, f]
+        if sys.platform=="win32":
+            eelbox = subprocess.Popen([eel, f], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            out = eelbox.stdout.read()
+            self.output.setText(out)
+            self.output.moveCursor(QtGui.QTextCursor.End)
+            self.statusBar().showMessage('Done!', 2000)
 
-                self.item = self.item.parent() #This line closes the key child
-
-        #Adding shortcuts to settings
-        self.addChild("Constants", self.contentsIcon, True)
-        self.addChild("Game Information", self.contentsIcon, True)
-        self.addChild("Global Game Settings", self.contentsIcon, True)
-
-    def importgmxproject(self, file):
-        root = ET.parse(file).getroot()
-        for child in root:
-            for dr in ["scripts", "objects", "rooms"]:
-                if child.tag==dr:
-                    self.addChild(child.tag, self.folderIcon, False)
-                    self.scan_sub_xml(child,child.tag)
-                    self.item = self.item.parent() #This line closes the key child
-        self.addChild("Constants", self.contentsIcon, True)
-        self.addChild("Game Information", self.contentsIcon, True)
-        self.addChild("Global Game Settings", self.contentsIcon, True)
-
-    def scan_sub_xml(self, key, name):
-        child = key
-        for key in key.findall(name[:-1]):
-            self.addChild(key.text.replace(name+"\\", ""), self.bookmarkIcon, True)
-        for key in child.findall(name):
-            val = key.get('name')
-            self.addChild(val, self.folderIcon, False)
-            self.scan_sub_xml(key,name)
-            self.item = self.item.parent() #This line closes the key child
-
-    def addChild(self, text, icon, closed):
-        if self.item:
-            childItem = QtGui.QTreeWidgetItem(self.item)
-        else:
-            childItem = QtGui.QTreeWidgetItem(self.treeWidget)
-        childItem.setData(0, QtCore.Qt.UserRole, text)
-        self.item = childItem
-        #self.item.setFlags(self.item.flags() | QtCore.Qt.ItemIsEditable)
-        self.item.setIcon(0, icon)
-        self.item.setText(0, text)
-        self.treeWidget.setItemExpanded(self.item, False)
-        if closed:
-            self.item = self.item.parent()
-
-
-    def editChild(self):
-        f=self.treeWidget.currentItem().text(0)
-        if f=="Constants":
-            constantsdialog = constantspanel.ConstantsPanel(self, self)
-            constantsdialog.show()
-            return
-        parent=self.treeWidget.currentItem().parent().text(0)
-        target=str(self.treeWidget.currentItem().text(0))
-        if parent=="Fonts":
-            fontdialog = fonteditor.FontEditor(self, self, target)
-            fontdialog.show()
-            return
-        if ".gml" in target:
-            pathtofile = os.path.join(os.path.dirname(str(self.fname)), "scripts", target)
-            self.window = scripteditor.ScriptEditor(self, self, target, pathtofile)
-            self.window.setWindowTitle(target)
-            self.qmdiarea.addSubWindow(self.window)
-            self.window.setVisible(True)
-            return
-
-
-        #fileName = os.path.join("example", str(self.treeWidget.currentItem().parent().text(0)) , target + ftype)
-        #print fileName
-
-    def saveAs(self):
-        pass
-
-    def createActions(self):
-        self.openAct = QtGui.QAction("&Open...", self, shortcut="Ctrl+O",
-                triggered=self.open)
-
-        self.saveAsAct = QtGui.QAction("&Save As...", self, shortcut="Ctrl+S",
-                triggered=self.saveAs)
-
-        self.exitAct = QtGui.QAction("E&xit", self, shortcut="Ctrl+Q",
-                triggered=self.close)
-
-    def createMenus(self):
-        self.fileMenu = self.menuBar().addMenu("&File")
-        self.fileMenu.addAction(self.openAct)
-        self.fileMenu.addAction(self.saveAsAct)
-        self.fileMenu.addAction(self.exitAct)
-
-if __name__ == "__main__":
+def main():
     app = QtGui.QApplication(sys.argv)
-    mainWin = MainWindow()
-    mainWin.show()
-    mainWin.open()
-    mainWin.raise_() #Making the window get focused on OSX
+    app.setWindowIcon(QtGui.QIcon(os.path.join('images','stellar.png')))
+    app.setStyle(QtGui.QStyleFactory.create("plastique"))
+    f = open('default.css')
+    style = f.read()
+    f.close()
+    app.setStyleSheet(style)
+    mw = MainWindow()
+    mw.raise_() #Making the window get focused on OSX
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()    

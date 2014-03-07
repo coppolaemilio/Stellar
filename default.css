@@ -1,0 +1,125 @@
+*{
+    color: white;
+    background: rgb(40,40,40);
+}
+QMainWindow{
+    padding: 10px;
+    background: red;
+}
+QToolBar, QStatusBar{
+    color: white;
+    background: rgb(40,40,40);
+}
+QTreeView{
+    color: white;
+    background: rgb(49,50,44);
+}
+QToolBar{
+    border:0px;
+}
+QTreeView, QMdiArea{
+    border:1px solid rgb(30,30,30);
+    border-radius:3px;
+}
+QToolTip{
+    background:rgb(49,50,44);
+    border: 0;
+}
+QMenu{
+    border: 1px solid rgb(25,25,25);
+    padding: 6px;
+}
+QScrollArea{
+    border: 0;
+    background: rgb(39,40,34);
+}
+
+QTreeView::branch:has-siblings:!adjoins-item,
+QTreeView::branch:has-siblings:adjoins-item,
+QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+    border: 0;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+border-image: none;
+    image: url(images/branch-closed.png);
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings  {
+    border-image: none;
+    image: url(images/branch-open.png);
+}
+
+
+QScrollBar:vertical, QScrollBar::handle:horizontal{               
+    border: 0;
+    width:15px;
+    margin: 0px 0px 0px 0px;
+    background: rgb(39,40,34);
+}
+QScrollBar:horizontal{               
+    border: 0;
+    height:15px;
+    margin: 0px 0px 0px 0px;
+    background: rgb(39,40,34);
+}
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal{
+    background: rgb(69,70,64);
+    min-height: 0px;
+    border-radius:3px;
+}
+
+
+
+QTextEdit{
+    border: 0;
+    border-top: 1px solid rgb(25,25,25);
+    background: rgb(39,40,34);
+}
+
+QTabWidget::pane { /* The tab widget frame */
+ border: 1px solid rgb(25,25,25);
+}
+
+/* Style the tab using the tab sub-control. Note that
+ it reads QTabBar _not_ QTabWidget */
+QTabBar::tab {
+ background: rgb(49,50,44);
+ border:1px solid rgb(25,25,25);
+ border-top-left-radius: 8px;
+ border-top-right-radius: 8px;
+ min-width: 8ex;
+ max-width: 100px;
+ padding: 2px;
+}
+
+QTabBar::tab:selected {
+ background: rgb(40,40,40);
+ border-color: rgb(25,25,25);
+ border-bottom-color: rgb(40,40,40); /* same as pane color */
+}
+
+QTabBar::tab:!selected {
+ margin-top: 2px; /* make non-selected tabs look smaller */
+}
+
+/* make use of negative margins for overlapping tabs */
+QTabBar::tab:selected {
+ /* expand/overlap to the left and right by 4px */
+ margin-left: -4px;
+ margin-right: -4px;
+}
+
+QTabBar::tab:first:selected {
+ margin-left: 0; /* the first selected tab has nothing to overlap with on the left */
+}
+
+QTabBar::tab:last:selected {
+ margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
+}
+
+QTabBar::tab:only-one {
+ margin: 0; /* if there is only one tab, we don't want overlapping margins */
+}
