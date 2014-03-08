@@ -53,10 +53,12 @@ class TreeView(QtGui.QTreeView):
     def edit_file(self):
         target=str(self.abstractitem.currentIndex(self.main.treeView).data().toString())
         filePath = self.fileSystemModel.filePath(self.indexItem)
-        if ".exe" in filePath:
+        sufix = filePath[-4:]
+
+        if sufix == ".exe":
             reply = QtGui.QMessageBox.question(self, "Not assigned", 
                          "Stellar does not have a progam to edit this kind of file, would you like to choose one?", QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)            
-        if (".png" or ".jpg" or ".bmp") in filePath:
+        if sufix in [".png", ".jpg", ".bmp"]:
             self.main.window = imageviewer.ImageEditor(self.main, target, filePath)
             self.main.window.setWindowTitle(target)
             self.main.mdi.addSubWindow(self.main.window)
