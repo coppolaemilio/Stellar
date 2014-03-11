@@ -22,6 +22,7 @@ import sys, os, subprocess
 from PyQt4 import QtGui, QtCore
 sys.path.append("tools")
 import treeview
+import toolbar
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
@@ -54,28 +55,7 @@ class MainWindow(QtGui.QMainWindow):
         backf = QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png')))
         self.mdi.setBackground(backf)
 
-        toolbar = self.addToolBar('Toolbar')
-        toolbar.setMovable(False)
-        
-        stellarAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','stellar_1.png')), 'Stellar', self)
-        stellarAction.triggered.connect(self.open_folder)
-        toolbar.addAction(stellarAction)
-
-        openAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','open.png')), 'Open', self)
-        openAction.triggered.connect(self.open_folder)
-        runAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','run.png')), 'Run', self)
-        runAction.triggered.connect(self.run_project)
-        runAction.setShortcut('Ctrl+B')
-        toolbar.addAction(runAction)
-        exitAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','close.png')), 'Exit', self)
-        exitAction.triggered.connect(QtGui.qApp.quit)
-        consoleAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','output.png')), 'Show output', self)
-        consoleAction.triggered.connect(self.toggle_console)
-        spacer = QtGui.QWidget() 
-        spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
-        
-        toolbar.addWidget(spacer) 
-        toolbar.addAction(consoleAction)
+        self.toolBar = self.addToolBar(toolbar.ToolBar(self))
 
         self.statusBar().showMessage('Ready', 2000)
 
@@ -93,33 +73,6 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(640, 480)
 
         self.show()
-
-    def toggle_console(self):
-        self.c_displayed = not self.c_displayed
-        self.output.setVisible(self.c_displayed)
-
-    def open_folder(self):
-        target = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
-        if target:
-            self.root = self.treeView.fileSystemModel.setRootPath(target)
-            self.treeView.setRootIndex(self.root)
-
-    def create_file(self):
-        with open('newfile.txt', 'w') as f:
-            f.write("cacaseca")
-
-    def run_project(self):
-        self.statusBar().showMessage('Running project...', 2000)
-        eel = self.eeldir
-        f = 'main'
-        os.chdir(self.projectdir)
-        args = [eel, f]
-        if sys.platform=="win32":
-            eelbox = subprocess.Popen([eel, f], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            out = eelbox.stdout.read()
-            self.output.setText(out)
-            self.output.moveCursor(QtGui.QTextCursor.End)
-            self.statusBar().showMessage('Done!', 2000)
 
 def main():
     app = QtGui.QApplication(sys.argv)

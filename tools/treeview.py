@@ -19,7 +19,7 @@
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt4 import QtCore, QtGui
-import os, sys
+import os, sys, shutil
 import scripteditor
 import imageviewer
 
@@ -95,7 +95,25 @@ class TreeView(QtGui.QTreeView):
         reply = QtGui.QMessageBox.question(self, 'Confirm', 
                          delete_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:
-            os.remove(str(f))
+            try:
+                os.remove(str(f))
+            except:
+                self.delete_folder(f)
+                
+    def delete_folder(self, f):
+        try:
+            os.rmdir(str(f))
+        except:
+            shutil.rmtree(str(f))
+
+    def add_file(self):
+        with open(os.path.join(self.main.projectdir, "NewFile"), 'w') as f:
+            f.write("")
+
+    def add_directory(self):
+        directory = os.path.join(self.main.projectdir, "NewDirectory")
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
     def rename_file(self):
         index = self.abstractitem.currentIndex(self.main.treeView)
