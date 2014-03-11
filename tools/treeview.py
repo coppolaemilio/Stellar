@@ -49,10 +49,16 @@ class TreeView(QtGui.QTreeView):
         renameAction = QtGui.QAction('Rename', self)
         renameAction.triggered.connect(self.rename_file)
 
+        self.deleteFileAction = QtGui.QAction('Delete', self)
+        self.editFileAction = QtGui.QAction('Edit', self)
+
+        self.deleteFileAction.triggered.connect(self.delete_file)
+        self.editFileAction.triggered.connect(self.edit_file)
+
         self.popMenu = QtGui.QMenu()
-        self.popMenu.addAction(self.main.editFileAction)
+        self.popMenu.addAction(self.editFileAction)
         self.popMenu.addAction(renameAction)
-        self.popMenu.addAction(self.main.deleteFileAction)
+        self.popMenu.addAction(self.deleteFileAction)
         self.popMenu.addSeparator()
 
     @QtCore.pyqtSlot(QtCore.QModelIndex)

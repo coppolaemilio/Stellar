@@ -32,9 +32,6 @@ class MainWindow(QtGui.QMainWindow):
         if sys.platform=="win32":
             self.eeldir+='.exe'
 
-        self.deleteFileAction = QtGui.QAction('Delete', self)
-        self.editFileAction = QtGui.QAction('Edit', self)
-
         self.treeView = treeview.TreeView(self)
 
         self.output = QtGui.QTextEdit()
@@ -44,9 +41,6 @@ class MainWindow(QtGui.QMainWindow):
         self.font.setStyleHint(QtGui.QFont.Monospace)
         self.font.setFixedPitch(True)
         self.output.setFont(self.font)
-
-        self.deleteFileAction.triggered.connect(self.treeView.delete_file)
-        self.editFileAction.triggered.connect(self.treeView.edit_file)
 
         self.mdi = QtGui.QMdiArea()
         self.mdi.setViewMode(self.mdi.TabbedView)
