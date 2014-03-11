@@ -195,7 +195,7 @@ class Editor(QtGui.QMainWindow):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    f = open('../default.css')
+    f = open('../themes/default.css')
     style = f.read()
     f.close()
     app.setStyleSheet(style)
