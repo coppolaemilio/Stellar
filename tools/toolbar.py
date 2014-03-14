@@ -26,36 +26,27 @@ class ToolBar(QtGui.QToolBar):
         super(ToolBar, self).__init__(main)
         self.main = main
 
-        stellarAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','stellar_1.png')), 'Stellar', self)
-        stellarAction.triggered.connect(self.open_folder)
-        openAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','open.png')), 'Open', self)
-        openAction.triggered.connect(self.open_folder)
-        runAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','run.png')), 'Run', self)
-        runAction.triggered.connect(self.run_project)
-        runAction.setShortcut('Ctrl+B')
-        addFileAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','addfile.png')), 'Add file', self)
-        addFileAction.triggered.connect(self.main.treeView.add_file)
-        addFolderAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','addfolder.png')), 'Add Folder', self)
-        addFolderAction.triggered.connect(self.main.treeView.add_directory)
+        # func, img, title
+        funcs = [[self.open_folder, 'stellar_1.png', 'Stellar'], 
+                [self.run_project, 'run.png', 'Run'],
+                #[self.open_folder, 'open.png', 'Open'],
+                [self.main.treeView.add_file, 'addfile.png', 'Add file'],
+                [self.main.treeView.add_directory, 'addfolder.png', 'Add folder'],
+                [QtGui.qApp.quit, 'close.png', 'Exit'],
+                [self.open_folder, 'documentation.png', 'Documentation'],
+                [self.toggle_console, 'output.png', 'Show output']]
 
-        exitAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','close.png')), 'Exit', self)
-        exitAction.triggered.connect(QtGui.qApp.quit)
-        consoleAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','output.png')), 'Show output', self)
-        consoleAction.triggered.connect(self.toggle_console)
-        spacer = QtGui.QWidget() 
-        spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
-        docsAction = QtGui.QAction(QtGui.QIcon(os.path.join('images','documentation.png')), 'Documentation', self)
-        docsAction.triggered.connect(self.open_folder)
+        for i,x in enumerate(funcs):
+            action = QtGui.QAction(QtGui.QIcon(os.path.join('images', x[1])), x[2], self)
+            action.triggered.connect(x[0])
+            self.addAction(action)
+            if i == 4:
+                spacer = QtGui.QWidget() 
+                spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
+                self.addWidget(spacer)
 
-        #toolbar = self.addToolBar('Toolbar')
-        self.setMovable(False)
-        self.addAction(stellarAction)
-        self.addAction(runAction)
-        self.addAction(addFileAction)
-        self.addAction(addFolderAction)
-        self.addWidget(spacer) 
-        self.addAction(docsAction)
-        self.addAction(consoleAction)
+        self.setMovable(False) 
+
 
     def toggle_console(self):
         self.main.c_displayed = not self.main.c_displayed
