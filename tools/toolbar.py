@@ -28,8 +28,8 @@ class ToolBar(QtGui.QToolBar):
 
         # func, img, title
         funcs = [[self.open_folder, 'stellar_1.png', 'Stellar'], 
+                [self.open_folder, 'open.png', 'Open'],
                 [self.run_project, 'run.png', 'Run'],
-                #[self.open_folder, 'open.png', 'Open'],
                 [self.main.treeView.add_file, 'addfile.png', 'Add file'],
                 [self.main.treeView.add_directory, 'addfolder.png', 'Add folder'],
                 [QtGui.qApp.quit, 'close.png', 'Exit'],
@@ -40,7 +40,7 @@ class ToolBar(QtGui.QToolBar):
             action = QtGui.QAction(QtGui.QIcon(os.path.join('images', x[1])), x[2], self)
             action.triggered.connect(x[0])
             self.addAction(action)
-            if i == 4:
+            if i == 5:
                 spacer = QtGui.QWidget() 
                 spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
                 self.addWidget(spacer)
