@@ -130,6 +130,7 @@ class ScriptEditor(QtGui.QDialog):
         super(ScriptEditor, self).__init__(main)
         self.main = main
         self.filename = filename
+        self.title = filename
 
         if os.path.exists(os.path.join('..','images')):
         	img_path=os.path.join('..','images')
@@ -139,9 +140,14 @@ class ScriptEditor(QtGui.QDialog):
         saveAction = QtGui.QAction(QtGui.QIcon(os.path.join(img_path, 'save.png')), 'Save', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.triggered.connect(self.save_file)
+
+        importAction = QtGui.QAction(QtGui.QIcon(os.path.join(img_path, 'open.png')), 'Import', self)
+        importAction.triggered.connect(self.import_file)
+
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
         self.toolbar.addAction(saveAction)
+        self.toolbar.addAction(importAction)
 
         with open(filename, 'r') as content_file:
             self.content = content_file.read()
@@ -150,13 +156,14 @@ class ScriptEditor(QtGui.QDialog):
         self.font.setFamily('ClearSans')
         self.font.setStyleHint(QtGui.QFont.Monospace)
         self.font.setFixedPitch(True)
-        self.font.setPointSize(int(14))
+        self.font.setPointSize(int(13))
 
         self.ContainerGrid = QtGui.QGridLayout(self)
         self.ContainerGrid.setMargin (0)
         self.ContainerGrid.setSpacing(0)
 
         self.textedit = QtGui.QTextEdit()
+        self.textedit.setTabStopWidth(40)
         self.textedit.insertPlainText(self.content)
         self.textedit.moveCursor(QtGui.QTextCursor.Start)
         self.textedit.setLineWrapMode(0)
@@ -174,6 +181,12 @@ class ScriptEditor(QtGui.QDialog):
             f.write(self.textedit.toPlainText())
         self.main.statusBar().showMessage(os.path.basename(str(self.filename))+' saved!', 2000)
 
+    def import_file(self):
+        target = str(QtGui.QFileDialog.getOpenFileName(self, "Select File"))
+        with open(target, 'r') as f:
+            self.textedit.setText(f.read())
+        self.main.statusBar().showMessage(str(target)+' Imported!', 2000)
+
 class Editor(QtGui.QMainWindow):
     def __init__(self):
         super(Editor, self).__init__()
@@ -190,7 +203,7 @@ class Editor(QtGui.QMainWindow):
         self.ShowFrame.setLayout(self.showlayout)
 
         self.setCentralWidget(self.ShowFrame)
-        self.setWindowTitle("Stellar - TextEditor")
+        self.setWindowTitle("TextEditor - " + self.textedit.title )
         self.resize(640, 480)
 
 if __name__ == "__main__":

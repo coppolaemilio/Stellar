@@ -91,7 +91,7 @@ class TreeView(QtGui.QTreeView):
             self.main.window.setVisible(True)
         else:
             self.main.window = scripteditor.ScriptEditor(self.main, target, filePath)
-            self.main.window.setWindowTitle(target)
+            self.main.window.setWindowTitle(os.path.basename(str(self.main.window.title)))
             self.main.mdi.addSubWindow(self.main.window)
             self.main.window.setVisible(True)
 

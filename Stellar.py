@@ -63,7 +63,7 @@ class MainWindow(QtGui.QMainWindow):
         splitter.addWidget(self.vsplitter)
 
         self.setCentralWidget(splitter)
-        self.setWindowTitle("Stellar - "+self.projectdir)
+        self.setWindowTitle("Stellar - " + self.projectdir)
         self.resize(640, 480)
 
         self.show()
