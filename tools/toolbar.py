@@ -20,6 +20,8 @@
 
 from PyQt4 import QtCore, QtGui
 import os, sys, subprocess
+import docreader
+
 
 class ToolBar(QtGui.QToolBar):
     def __init__(self, main):
@@ -33,7 +35,7 @@ class ToolBar(QtGui.QToolBar):
                 [self.main.treeView.add_file, 'addfile.png', 'Add file'],
                 [self.main.treeView.add_directory, 'addfolder.png', 'Add folder'],
                 [QtGui.qApp.quit, 'close.png', 'Exit'],
-                [self.open_folder, 'documentation.png', 'Documentation'],
+                [self.open_documentation, 'documentation.png', 'Documentation'],
                 [self.toggle_console, 'output.png', 'Show output']]
 
         for i,x in enumerate(funcs):
@@ -57,6 +59,16 @@ class ToolBar(QtGui.QToolBar):
         if target:
             self.root = self.treeView.fileSystemModel.setRootPath(target)
             self.treeView.setRootIndex(self.root)
+
+    def open_documentation(self):
+        #self.main.window = imageviewer.ImageEditor(self.main, target, filePath)
+        #self.main.window.setWindowTitle(target)
+        #self.main.mdi.addSubWindow(self.main.window)
+        #self.main.window.setVisible(True)
+        self.w = docreader.DocReader(self.main)
+        self.w.setWindowTitle("Documentation")
+        self.w.setGeometry(QtCore.QRect(100, 100, 400, 200))
+        self.w.show()
 
     def run_project(self):
         self.main.statusBar().showMessage('Running project...', 2000)
