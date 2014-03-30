@@ -22,7 +22,7 @@ Download and install the dependencies listed above. Be sure to install the Pytho
 Run Stellar via the following command (Windows/Ubuntu): `$ python Stellar.py`
 
 ## Contributing
-If you don't know how GitHub contributing works see our [tutorial guide](http://stellarpygame.blogspot.com/p/we-need-your-help.html)
+If you don't know how GitHub contributing works see our [tutorial guide](http://stellar.evelend.com/howto)
 
 Our contributors here:
 * [graphs](https://github.com/Coppolaemilio/Stellar/graphs/contributors)
