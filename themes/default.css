@@ -1,10 +1,12 @@
 *{
     color: white;
     background: rgb(40,40,40);
+    selection-background-color: rgb(73,72,62);
+    selection-color: white;
 }
 QMainWindow{
     padding: 10px;
-    background: red;
+    background: black;
 }
 QToolBar, QStatusBar{
     color: white;
@@ -77,7 +79,7 @@ QTextEdit{
     border: 0;
     border-top: 1px solid rgb(25,25,25);
     background: rgb(39,40,34);
-}
+    }
 
 QTabWidget::pane { /* The tab widget frame */
  border: 1px solid rgb(25,25,25);

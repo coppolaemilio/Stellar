@@ -124,7 +124,6 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             startIndex = self.commentStartExpression.indexIn(text,
                     startIndex + commentLength);
 
-
 class ScriptEditor(QtGui.QDialog):
     def __init__(self, main, name, filename):
         super(ScriptEditor, self).__init__(main)
@@ -144,10 +143,14 @@ class ScriptEditor(QtGui.QDialog):
         importAction = QtGui.QAction(QtGui.QIcon(os.path.join(img_path, 'open.png')), 'Import', self)
         importAction.triggered.connect(self.import_file)
 
+        tabAction = QtGui.QAction(QtGui.QIcon(os.path.join(img_path, 'open.png')), 'Tab', self)
+        tabAction.triggered.connect(self.handleTest)
+
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
         self.toolbar.addAction(saveAction)
         self.toolbar.addAction(importAction)
+        self.toolbar.addAction(tabAction)
 
         with open(filename, 'r') as content_file:
             self.content = content_file.read()
@@ -175,6 +178,28 @@ class ScriptEditor(QtGui.QDialog):
         self.setLayout(self.ContainerGrid)
 
         self.highlighter = Highlighter(self.textedit.document())
+
+    def handleTest(self):
+        tab = "\t"
+        cursor = self.textedit.textCursor()
+
+        start = cursor.selectionStart()
+        end = cursor.selectionEnd()
+
+        cursor.setPosition(end)
+        cursor.movePosition(cursor.EndOfLine)
+        end = cursor.position()
+
+        cursor.setPosition(start)
+        cursor.movePosition(cursor.StartOfLine)
+        start = cursor.position()
+        print cursor.position(), end
+
+        while cursor.position() < end:
+            cursor.movePosition(cursor.StartOfLine)
+            cursor.insertText(tab)
+            end += tab.count(end)
+            cursor.movePosition(cursor.EndOfLine)
 
     def save_file(self):
         with open(self.filename, 'w') as f:

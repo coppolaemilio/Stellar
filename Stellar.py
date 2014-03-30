@@ -63,14 +63,14 @@ class MainWindow(QtGui.QMainWindow):
         splitter.addWidget(self.vsplitter)
 
         self.setCentralWidget(splitter)
-        self.setWindowTitle("Stellar - " + self.projectdir)
+        self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))
         self.resize(640, 480)
 
         self.show()
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(os.path.join('images','stellar.png')))
+    app.setWindowIcon(QtGui.QIcon(os.path.join('images','icon.png')))
     app.setStyle(QtGui.QStyleFactory.create("plastique"))
     f = open(os.path.join('themes','default.css'))
     style = f.read()

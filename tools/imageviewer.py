@@ -63,7 +63,7 @@ class ImageEditor(QtGui.QDialog):
 
         self.imageLabel = QtGui.QLabel()
         self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
-        self.imageLabel.setStyleSheet('background-image: url(images/transparent.png);')
+        self.imageLabel.setStyleSheet('background-image: url(../images/transparent.png);')
         self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Ignored,
                 QtGui.QSizePolicy.Ignored)
         self.imageLabel.setScaledContents(True)
