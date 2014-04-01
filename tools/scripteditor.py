@@ -146,11 +146,15 @@ class ScriptEditor(QtGui.QDialog):
         tabAction = QtGui.QAction(QtGui.QIcon(os.path.join(img_path, 'open.png')), 'Tab', self)
         tabAction.triggered.connect(self.handleTest)
 
+        fontAction = QtGui.QAction(QtGui.QIcon(os.path.join(img_path, 'font.png')), 'Font', self)
+        fontAction.triggered.connect(self.fontChange)
+
         self.toolbar = QtGui.QToolBar('Script Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(16, 16))
         self.toolbar.addAction(saveAction)
         self.toolbar.addAction(importAction)
         self.toolbar.addAction(tabAction)
+        self.toolbar.addAction(fontAction)
 
         with open(filename, 'r') as content_file:
             self.content = content_file.read()
@@ -211,6 +215,11 @@ class ScriptEditor(QtGui.QDialog):
         with open(target, 'r') as f:
             self.textedit.setText(f.read())
         self.main.statusBar().showMessage(str(target)+' Imported!', 2000)
+
+    def fontChange(self):
+        font, ok = QtGui.QFontDialog.getFont(self.font)
+        if ok:
+            self.textedit.setFont(font)
 
 class Editor(QtGui.QMainWindow):
     def __init__(self):
