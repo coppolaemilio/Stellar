@@ -68,6 +68,11 @@ class TreeView(QtGui.QTreeView):
         fileName = self.fileSystemModel.fileName(self.indexItem)
 
     def doMenu(self, point):
+        target=self.fileSystemModel.filePath(self.indexItem)
+        if os.path.isdir(target):
+            self.deleteFileAction.setText("Delete Folder")
+        else:
+            self.deleteFileAction.setText("Delete File")
         self.popMenu.exec_( self.mapToGlobal(point) )
 
     def edit(self, index, trigger, event):
@@ -96,9 +101,13 @@ class TreeView(QtGui.QTreeView):
             self.main.window.setVisible(True)
 
     def delete_file(self):
-        f= filePath = self.fileSystemModel.filePath(self.indexItem)
-        delete_msg = "You are about to delete "+f+" Continue?"
-        reply = QtGui.QMessageBox.question(self, 'Confirm', 
+        f = filePath = self.fileSystemModel.filePath(self.indexItem)
+        if os.path.isdir(f):
+            delete_msg = "Delete folder "+f+"?"
+        else:
+            delete_msg = "Delete file "+f+" Continue?"
+        
+        reply = QtGui.QMessageBox.warning(self, 'Confirm', 
                          delete_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:
             try:
