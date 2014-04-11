@@ -125,3 +125,7 @@ QTabBar::tab:last:selected {
 QTabBar::tab:only-one {
  margin: 0; /* if there is only one tab, we don't want overlapping margins */
 }
+
+QSplitter{
+    width: 5px;
+}
