@@ -30,7 +30,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         
         self.color_0 = QtGui.QColor(249, 38,  144)
         self.color_1 = QtGui.QColor(102, 217, 239)
-        self.color_2 = QtGui.QColor(117, 113, 94 )
+        self.color_2 = QtGui.QColor(117, 113, 94 )#comments
         self.color_3 = QtGui.QColor(230, 219, 102)
         self.color_4 = QtGui.QColor(166,226,46)
         self.color_5 = QtGui.QColor(174,129,255)
@@ -174,10 +174,33 @@ class ScriptEditor(QtGui.QDialog):
         self.textedit.insertPlainText(self.content)
         self.textedit.moveCursor(QtGui.QTextCursor.Start)
         self.textedit.setLineWrapMode(0)
-
         self.textedit.setFont(self.font)
+
+        self.linenumbers=QtGui.QTextEdit()
+        numbers= 999
+        for number in range(numbers):
+            self.linenumbers.insertPlainText(str(number+1)+'\n')
+        self.linenumbers.setFont(self.font)
+        self.linenumbers.verticalScrollBar().setValue( 0) #FIXME
+        self.textedit.verticalScrollBar().valueChanged.connect(
+            self.linenumbers.verticalScrollBar().setValue)
+        self.linenumbers.verticalScrollBar().valueChanged.connect(
+            self.textedit.verticalScrollBar().value)
+        self.linenumbers.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.linenumbers.setReadOnly (True)
+        self.linenumbers.moveCursor(QtGui.QTextCursor.Start)
+        self.linenumbers.setStyleSheet("color:rgb(117, 113, 94)")
+        self.linenumbers.setTextColor(QtGui.QColor(117, 113, 94 ))
+
+        self.widget = QtGui.QWidget()
+        self.layout=QtGui.QHBoxLayout(self.widget)
+        self.layout.addWidget(self.linenumbers)
+        self.layout.addWidget(self.textedit)
+        self.layout.setContentsMargins(0,0,0,0)
+        self.linenumbers.setMaximumWidth(38)
+
         self.ContainerGrid.addWidget(self.toolbar)
-        self.ContainerGrid.addWidget(self.textedit)
+        self.ContainerGrid.addWidget(self.widget)
 
         self.setLayout(self.ContainerGrid)
 
