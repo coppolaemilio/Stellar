@@ -27,10 +27,10 @@ import toolbar
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.projectdir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
-        self.eeldir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
-        if sys.platform=="win32":
-            self.eeldir+='.exe'
+        self.projectdir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
+        self.eeldir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
+        if sys.platform == "win32":
+            self.eeldir += '.exe'
 
         self.treeView = treeview.TreeView(self)
 
