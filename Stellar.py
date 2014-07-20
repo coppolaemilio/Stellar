@@ -23,14 +23,22 @@ from PyQt4 import QtGui, QtCore
 sys.path.append("tools")
 import treeview
 import toolbar
+import ConfigParser
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.projectdir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
-        self.eeldir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
-        if sys.platform == "win32":
-            self.eeldir += '.exe'
+        config = ConfigParser.ConfigParser()
+        config.read('settings.ini')
+        try:
+            self.projectdir=os.path.join(config.get('project', 'last_project'))
+        except:
+            self.projectdir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
+        self.eeldir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
+        if sys.platform=="win32":
+            self.eeldir+='.exe'
+
+        self.mode = config.get('settings', 'mode')
 
         self.treeView = treeview.TreeView(self)
 
@@ -56,7 +64,8 @@ class MainWindow(QtGui.QMainWindow):
         self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
         self.vsplitter.addWidget(self.mdi)
         self.vsplitter.addWidget(self.output)
-        self.output.hide()
+        if config.get('settings', 'compile_form')=="0":
+            self.output.hide()
         self.c_displayed=False
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
         splitter.addWidget(self.treeView)
@@ -64,7 +73,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setCentralWidget(splitter)
         self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))
-        self.resize(640, 480)
+
+        size = config.get('settings', 'start_size')
+        self.resize(int(size.split("x")[0]), int(size.split("x")[1]))
 
         self.show()
 
