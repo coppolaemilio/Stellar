@@ -77,8 +77,14 @@ class ToolBar(QtGui.QToolBar):
         os.chdir(self.main.projectdir)
         args = [eel, f]
         if sys.platform=="win32":
-            eelbox = subprocess.Popen([eel, f], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            out = eelbox.stdout.read()
+            if self.main.mode == "eel":
+                eelbox = subprocess.Popen([eel, f], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                out = eelbox.stdout.read()
+            elif self.main.mode == "python":
+                python = subprocess.Popen(["python", f+".py"], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                out = python.stdout.read()
+
+
             self.main.output.setText(out)
             self.main.output.moveCursor(QtGui.QTextCursor.End)
             self.main.statusBar().showMessage('Done!', 2000)
