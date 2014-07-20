@@ -23,11 +23,100 @@ import os, sys
 from PyQt4.QtGui import QFont
 
 if sys.version_info.major == 2:
-    str = unicode    
-class Highlighter(QtGui.QSyntaxHighlighter):
+    str = unicode   
+
+class PythonHighlighter(QtGui.QSyntaxHighlighter):
     def __init__(self, parent=None):
-        super(Highlighter, self).__init__(parent)
-        
+        super(PythonHighlighter, self).__init__(parent)
+        self.color_0 = QtGui.QColor(249, 38,  144)
+        self.color_1 = QtGui.QColor(102, 217, 239)
+        self.color_2 = QtGui.QColor(117, 113, 94 )#comments
+        self.color_3 = QtGui.QColor(230, 219, 102)
+        self.color_4 = QtGui.QColor(166,226,46)
+        self.color_5 = QtGui.QColor(174,129,255)
+        self.color_6 = QtGui.QColor(253,151,32)
+
+        keywordFormat = QtGui.QTextCharFormat()
+        keywordFormat.setForeground(self.color_0)
+        keywordPatterns = keywords = [
+            "\\band\\b",       "\\bdel\\b",       "\\bfor\\b",       "\\bis\\b",        "\\braise\\b",
+            "\\bassert\\b",    "\\belif\\b",      "\\bfrom\\b",      "\\blambda\\b",    "\\breturn\\b",
+            "\\bbreak\\b",     "\\belse\\b",      "\\bglobal\\b",    "\\bnot\\b",       "\\btry\\b",
+            "\\bclass\\b",     "\\bexcept\\b",    "\\bif\\b",        "\\bor\\b",        "\\bwhile\\b",
+            "\\bcontinue\\b",  "\\bexec\\b",      "\\bimport\\b",    "\\bpass\\b",      "\\byield\\b",
+            "\\bdef\\b",       "\\bfinally\\b",   "\\bin\\b",        "\\bprint",        '='
+        ]
+
+        self.highlightingRules = [(QtCore.QRegExp(pattern), keywordFormat)
+                for pattern in keywordPatterns]
+
+        classFormat = QtGui.QTextCharFormat()
+        classFormat.setForeground(self.color_4)
+        self.highlightingRules.append((QtCore.QRegExp("\\bQ[A-Za-z]+\\b"),
+                classFormat))
+
+        numberFormat = QtGui.QTextCharFormat()
+        numberFormat.setForeground(self.color_5)
+        numberPatterns = ['\\b[+-]?[0-9]+[lL]?\\b', '\\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\\b',
+        '\\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b', '\\btrue\\b', '\\bfalse\\b']
+        self.highlightingRules += [(QtCore.QRegExp(pattern), numberFormat)
+                for pattern in numberPatterns]
+
+        singleLineCommentFormat = QtGui.QTextCharFormat()
+        singleLineCommentFormat.setForeground(self.color_2)
+        self.highlightingRules.append((QtCore.QRegExp("#[^\n]*"),
+                singleLineCommentFormat))
+
+        quotationFormat = QtGui.QTextCharFormat()
+        quotationFormat.setForeground(self.color_3)
+        self.highlightingRules.append((QtCore.QRegExp("\".*\""),
+                quotationFormat))
+
+        self.highlightingRules.append((QtCore.QRegExp("\'.*\'"),
+                quotationFormat))
+
+        functionFormat = QtGui.QTextCharFormat()
+        functionFormat.setForeground(self.color_1)
+        self.highlightingRules.append((QtCore.QRegExp("\\b[A-Za-z0-9_]+(?=\\()"),
+                functionFormat))
+
+        self.commentStartExpression = QtCore.QRegExp('/\\*')
+        self.commentEndExpression = QtCore.QRegExp("\\*/")
+
+    def highlightBlock(self, text):
+        for pattern, format in self.highlightingRules:
+            expression = QtCore.QRegExp(pattern)
+            index = expression.indexIn(text)
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat(index, length, format)
+                index = expression.indexIn(text, index + length)
+
+        self.setCurrentBlockState(0)
+
+        startIndex = 0
+        if self.previousBlockState() != 1:
+            startIndex = self.commentStartExpression.indexIn(text)
+
+        while startIndex >= 0:
+            endIndex = self.commentEndExpression.indexIn(text, startIndex)
+
+            if endIndex == -1:
+                self.setCurrentBlockState(1)
+                commentLength = len(text) - startIndex
+            else:
+                commentLength = endIndex - startIndex + self.commentEndExpression.matchedLength()
+
+            self.setFormat(startIndex, commentLength,
+                    self.multiLineCommentFormat)
+            startIndex = self.commentStartExpression.indexIn(text,
+                    startIndex + commentLength);
+
+
+
+class EELHighlighter(QtGui.QSyntaxHighlighter):
+    def __init__(self, parent=None):
+        super(EELHighlighter, self).__init__(parent)
         self.color_0 = QtGui.QColor(249, 38,  144)
         self.color_1 = QtGui.QColor(102, 217, 239)
         self.color_2 = QtGui.QColor(117, 113, 94 )#comments
@@ -49,6 +138,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 
         keywordFormat = QtGui.QTextCharFormat()
         keywordFormat.setForeground(self.color_1)
+        words = ["procedure", "table"]
         keywordPatterns = ["\\bchar\\b", "\\bclass\\b", "\\bconst\\b",
                 "\\bdouble\\b", "\\benum\\b", "\\bexplicit\\b", "\\bfriend\\b",
                 "\\binline\\b", "\\bint\\b", "\\blong\\b", "\\bnamespace\\b",
@@ -58,6 +148,10 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                 "\\btemplate\\b", "\\btypedef\\b", "\\btypename\\b",
                 "\\bunion\\b", "\\bunsigned\\b", "\\bvirtual\\b", "\\bvoid\\b",
                 "\\bvolatile\\b"]
+        for word in words:
+            keywordPatterns.append("\\b"+word+"\\b")
+
+        
 
         self.highlightingRules += [(QtCore.QRegExp(pattern), keywordFormat)
                 for pattern in keywordPatterns]
@@ -85,6 +179,9 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         quotationFormat = QtGui.QTextCharFormat()
         quotationFormat.setForeground(self.color_3)
         self.highlightingRules.append((QtCore.QRegExp("\".*\""),
+                quotationFormat))
+
+        self.highlightingRules.append((QtCore.QRegExp("<.*>"),
                 quotationFormat))
 
         functionFormat = QtGui.QTextCharFormat()
@@ -204,7 +301,10 @@ class ScriptEditor(QtGui.QDialog):
 
         self.setLayout(self.ContainerGrid)
 
-        self.highlighter = Highlighter(self.textedit.document())
+        if ".eel" in self.filename:
+            self.highlighter = EELHighlighter(self.textedit.document())
+        elif ".py" in self.filename:
+            self.highlighter = PythonHighlighter(self.textedit.document())
 
     def handleTest(self):
         tab = "\t"
