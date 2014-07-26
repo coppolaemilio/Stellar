@@ -28,68 +28,69 @@ import ConfigParser
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        config = ConfigParser.ConfigParser()
-        config.read('settings.ini')
-        try:
-            self.projectdir=os.path.join(config.get('project', 'last_project'))
-        except:
-            self.projectdir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
-        self.eeldir=os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
-        if sys.platform=="win32":
-            self.eeldir+='.exe'
-
-        self.mode = config.get('settings', 'mode')
+        self.read_settings()
 
         self.treeView = treeview.TreeView(self)
-
-        self.output = QtGui.QTextEdit()
-        self.output.setReadOnly(True)
         self.font = QtGui.QFont()
         self.font.setFamily('Monaco')
         self.font.setStyleHint(QtGui.QFont.Monospace)
         self.font.setFixedPitch(True)
+        self.output = QtGui.QTextEdit()
+        self.output.setReadOnly(True)
         self.output.setFont(self.font)
 
         self.mdi = QtGui.QMdiArea()
-        self.mdi.setViewMode(self.mdi.TabbedView)
+
+        if self.tabbed_view:
+            self.mdi.setViewMode(self.mdi.TabbedView)
         self.mdi.setTabsClosable(True)
         self.mdi.setTabsMovable(True)
-        backf = QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png')))
-        self.mdi.setBackground(backf)
+        self.mdi.setBackground(QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png'))))
 
         self.toolBar = self.addToolBar(toolbar.ToolBar(self))
-
-        self.statusBar().showMessage('Ready', 2000)
 
         self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
         self.vsplitter.addWidget(self.mdi)
         self.vsplitter.addWidget(self.output)
-        if config.get('settings', 'compile_form')=="0":
-            self.output.hide()
-        self.c_displayed=False
+        
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
         splitter.addWidget(self.treeView)
         splitter.addWidget(self.vsplitter)
 
         self.setCentralWidget(splitter)
         self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))
-
-        size = config.get('settings', 'start_size')
-        self.resize(int(size.split("x")[0]), int(size.split("x")[1]))
-
+        self.resize(int(self.size.split("x")[0]), int(self.size.split("x")[1]))
+        self.statusBar().showMessage('Ready', 2000)
         self.show()
+
+    def read_settings(self):
+        config = ConfigParser.ConfigParser()
+        config.read('settings.ini')
+        try:
+            self.projectdir = os.path.join(config.get('project', 'last_project'))
+        except:
+            self.projectdir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
+        self.eeldir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
+        if sys.platform == "win32":
+            self.eeldir += '.exe'
+
+        self.mode = config.get('settings', 'mode')
+        self.size = config.get('settings', 'start_size')
+        self.output_display = bool(int(config.get('settings', 'compile_form')))
+        self.theme_dir = config.get('settings', 'theme_folder')
+        self.theme_name = config.get('settings', 'theme_name')
+        self.qt_style = config.get('settings', 'qt_style')
+        self.tabbed_view = int(config.get('settings', 'tabbed_view'))
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(os.path.join('images','icon.png')))
-    app.setStyle(QtGui.QStyleFactory.create("plastique"))
-    f = open(os.path.join('themes','default.css'))
-    style = f.read()
-    f.close()
-    app.setStyleSheet(style)
-    mw = MainWindow()
-    mw.raise_() #Making the window get focused on OSX
+    Stellar = MainWindow()
+    Stellar.setStyle(QtGui.QStyleFactory.create(Stellar.qt_style))
+    Stellar.setWindowIcon(QtGui.QIcon(os.path.join('images','icon.png')))
+    with open(os.path.join(Stellar.theme_dir, Stellar.theme_name + '.css')) as file:
+        Stellar.setStyleSheet(file.read())
+    Stellar.raise_() #Making the window get focused on OSX
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    main()    
+    main()

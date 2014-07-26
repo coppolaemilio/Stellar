@@ -54,8 +54,8 @@ class ToolBar(QtGui.QToolBar):
 
 
     def toggle_console(self):
-        self.main.c_displayed = not self.main.c_displayed
-        self.main.output.setVisible(self.main.c_displayed)
+        self.main.output_display = not self.main.output_display
+        self.main.output.setVisible(self.main.output_display)
 
     def open_folder(self):
         target = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
