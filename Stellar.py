@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.treeView = treeview.TreeView(self)
         self.font = QtGui.QFont()
-        self.font.setFamily('Monaco')
+        self.font.setFamily(self.font_name)
         self.font.setStyleHint(QtGui.QFont.Monospace)
         self.font.setFixedPitch(True)
         self.output = QtGui.QTextEdit()
@@ -81,6 +81,7 @@ class MainWindow(QtGui.QMainWindow):
         self.theme_name = config.get('settings', 'theme_name')
         self.qt_style = config.get('settings', 'qt_style')
         self.tabbed_view = int(config.get('settings', 'tabbed_view'))
+        self.font_name = config.get('settings', 'font')
 
 def main():
     app = QtGui.QApplication(sys.argv)
