@@ -22,6 +22,7 @@ import sys, os, subprocess
 from PyQt4 import QtGui, QtCore
 sys.path.append("tools")
 import treeview
+import listview
 import toolbar
 import ConfigParser
 
@@ -29,8 +30,15 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.read_settings()
-
-        self.treeView = treeview.TreeView(self)
+        
+        if self.mode=="eel-game":
+            self.folder_sprite = "images/open.png"
+            self.file_sprite = "images/new.png"
+            self.extension_sprite = "images/extensions.png"
+            self.settings_sprite = "images/settings.png"
+            self.filesView = listview.ListView(self)
+        else:
+            self.filesView = treeview.TreeView(self)
         self.font = QtGui.QFont()
         self.font.setFamily(self.font_name)
         self.font.setStyleHint(QtGui.QFont.Monospace)
@@ -54,7 +62,7 @@ class MainWindow(QtGui.QMainWindow):
         self.vsplitter.addWidget(self.output)
         
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        splitter.addWidget(self.treeView)
+        splitter.addWidget(self.filesView)
         splitter.addWidget(self.vsplitter)
 
         self.setCentralWidget(splitter)

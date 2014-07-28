@@ -1,0 +1,35 @@
+{
+	"import":{
+		"math": null,
+		"SDL": null,
+		"SDL_image": "IMG",
+		"include/Stellar" : null
+	},
+	"window":{
+		"width":640,
+		"height":480,
+		"caption":"Stellar - Example"
+	},
+	"sprites":{
+		"spr_wall":"images/spr_wall.png",
+		"spr_player": "images/spr_player.png"
+	},
+	"objects":{
+		"obj_wall":{
+			"create_event":"self.x=0;\nself.y=0;\nself.sprite_index=upvalue spr_wall;",
+			"step_event":"self.x+=0.1;\nif self.x>640{\nself.x = -10 ;\nself.y += 32;\n}",
+			"draw_event":"draw_sprite(self.sprite_index, 0 ,self.x,self.y);"
+		},
+		"obj_player":{
+			"create_event":"self.x=32;\nself.y=32;\nself.sprite_index=upvalue spr_player;",
+			"step_event": "",
+			"draw_event": "draw_sprite(self.sprite_index, 0 ,self.x,self.y);"
+		}
+	},
+	"rooms":{
+		"start_room":{
+			"obj_wall":[32,32],
+			"obj_wall":[32,64]
+		}
+	}
+}

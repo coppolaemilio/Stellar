@@ -1,0 +1,16 @@
+import "SDL";
+import "SDL_image" as IMG;
+
+export function add_sprite(file_name){
+	return IMG.Load(file_name);
+}
+
+
+//Sprite draw
+export function draw_sprite(sprite, image_index, x, y){
+	local rect = Rect[];
+	rect.x=x;
+	rect.y=y;
+	BlitSurface(sprite, nil, nil, rect);
+	return 0;
+}

@@ -29,11 +29,11 @@ class ToolBar(QtGui.QToolBar):
         self.main = main
 
         # func, img, title, hotkey
-        funcs = [[self.open_folder, 'stellar_1.png', 'Stellar', False], 
-                [self.open_folder, 'open.png', 'Open', False],
+        funcs = [[self.open, 'stellar_1.png', 'Stellar', False], 
+                [self.open, 'open.png', 'Open', False],
                 [self.run_project, 'run.png', 'Run', 'Ctrl+B'],
-                [self.main.treeView.add_file, 'addfile.png', 'Add file', False],
-                [self.main.treeView.add_directory, 'addfolder.png', 'Add folder', False],
+                [self.main.filesView.add_file, 'addfile.png', 'Add file', False],
+                [self.main.filesView.add_directory, 'addfolder.png', 'Add folder', False],
                 [QtGui.qApp.quit, 'close.png', 'Exit', 'Ctrl+Q'],
                 [self.open_documentation, 'documentation.png', 'Documentation', 'F1'],
                 [self.toggle_console, 'output.png', 'Show output', False]]
@@ -57,12 +57,19 @@ class ToolBar(QtGui.QToolBar):
         self.main.output_display = not self.main.output_display
         self.main.output.setVisible(self.main.output_display)
 
-    def open_folder(self):
-        target = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
-        if target:
-            self.root = self.main.treeView.fileSystemModel.setRootPath(target)
-            self.main.treeView.setRootIndex(self.root)
-            self.main.projectdir = target
+    def open(self):
+        if self.main.mode == "eel-game":
+            target = str(QtGui.QFileDialog.getOpenFileName(self, "Open project", "/projects/", "*project.json"))
+            if target:
+                self.root = self.main.filesView.fileSystemModel.setRootPath(target)
+                self.main.filesView.setRootIndex(self.root)
+                self.main.projectdir = target
+        else:
+            target = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
+            if target:
+                self.root = self.main.filesView.fileSystemModel.setRootPath(target)
+                self.main.filesView.setRootIndex(self.root)
+                self.main.projectdir = target
 
     def open_documentation(self):
         self.w = docreader.DocReader(self.main)
@@ -74,10 +81,16 @@ class ToolBar(QtGui.QToolBar):
         self.main.statusBar().showMessage('Running project...', 2000)
         eel = self.main.eeldir
         f = 'main'
-        os.chdir(self.main.projectdir)
+        if self.main.mode == "eel-game":
+            os.chdir(os.path.dirname(self.main.projectdir))
+        else:
+            os.chdir(self.main.projectdir)
         args = [eel, f]
         if sys.platform=="win32":
             if self.main.mode == "eel":
+                eelbox = subprocess.Popen([eel, f], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                out = eelbox.stdout.read()
+            elif self.main.mode == "eel-game":
                 eelbox = subprocess.Popen([eel, f], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 out = eelbox.stdout.read()
             elif self.main.mode == "python":
