@@ -21,6 +21,8 @@
 from PyQt4 import QtCore, QtGui
 import os, sys
 from PyQt4.QtGui import QFont
+import json
+
 
 if sys.version_info.major == 2:
     str = unicode   
@@ -221,12 +223,21 @@ class EELHighlighter(QtGui.QSyntaxHighlighter):
             startIndex = self.commentStartExpression.indexIn(text,
                     startIndex + commentLength);
 
+def parseObject(text):
+    string = ""
+    for event in text:
+        string += "///"+event+" - START\n"
+        for line in text[event]:
+            string += line
+        string += "\n///"+event+" - END\n\n"
+    return string
+
 class ScriptEditor(QtGui.QDialog):
-    def __init__(self, main, name, filename):
+    def __init__(self, main, name, text):
         super(ScriptEditor, self).__init__(main)
         self.main = main
-        self.filename = filename
-        self.title = filename
+        self.text = parseObject(text) 
+        self.title = name
 
         if os.path.exists(os.path.join('..','images')):
         	img_path=os.path.join('..','images')
@@ -252,9 +263,6 @@ class ScriptEditor(QtGui.QDialog):
         self.toolbar.addAction(importAction)
         self.toolbar.addAction(tabAction)
         self.toolbar.addAction(fontAction)
-
-        with open(filename, 'r') as content_file:
-            self.content = content_file.read()
         
         self.font = QtGui.QFont()
         self.font.setFamily('ClearSans')
@@ -268,7 +276,7 @@ class ScriptEditor(QtGui.QDialog):
 
         self.textedit = QtGui.QTextEdit()
         self.textedit.setTabStopWidth(40)
-        self.textedit.insertPlainText(self.content)
+        self.textedit.insertPlainText(self.text)
         self.textedit.moveCursor(QtGui.QTextCursor.Start)
         self.textedit.setLineWrapMode(0)
         self.textedit.setFont(self.font)
@@ -301,10 +309,7 @@ class ScriptEditor(QtGui.QDialog):
 
         self.setLayout(self.ContainerGrid)
 
-        if ".eel" in self.filename:
-            self.highlighter = EELHighlighter(self.textedit.document())
-        elif ".py" in self.filename:
-            self.highlighter = PythonHighlighter(self.textedit.document())
+        self.highlighter = EELHighlighter(self.textedit.document())
 
     def handleTest(self):
         tab = "\t"
@@ -329,9 +334,22 @@ class ScriptEditor(QtGui.QDialog):
             cursor.movePosition(cursor.EndOfLine)
 
     def save_file(self):
-        with open(self.filename, 'w') as f:
-            f.write(self.textedit.toPlainText())
-        self.main.statusBar().showMessage(os.path.basename(str(self.filename))+' saved!', 2000)
+        step_event = self.text.split("///step_event - START\n")[1].split("///step_event - END")[0]
+        create_event = self.text.split("///create_event - START\n")[1].split("///create_event - END")[0]
+        draw_event = self.text.split("///draw_event - START\n")[1].split("///draw_event - END")[0]
+
+        info_create = {"create_event":create_event}
+        #info["step_event"] = step_event
+        #info["draw_event"] = draw_event
+
+        json_data=open(self.main.projectdir)
+        self.data = json.load(json_data)
+        self.data["objects"][self.title]["create_event"]=info_create
+        #self.data["objects"][self.title]["step_event"]=info["step_event"]
+        #self.data["objects"][self.title]["draw_event"]=info["draw_event"]
+
+        with open('dataa.txt', 'w') as outfile:
+          json.dump(self.data, outfile)
 
     def import_file(self):
         target = str(QtGui.QFileDialog.getOpenFileName(self, "Select File"))

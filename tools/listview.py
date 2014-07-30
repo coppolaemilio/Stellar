@@ -22,6 +22,7 @@ from PyQt4 import QtCore, QtGui
 import os, sys, shutil
 import json
 import imageviewer
+import scripteditor
 
 class ListView(QtGui.QTreeWidget):
     def __init__(self, main):
@@ -47,11 +48,17 @@ class ListView(QtGui.QTreeWidget):
 
     def DoubleClicked(self, index):
         resource_name = str(index.text(0))
+        target = resource_name
         if self.item_index[resource_name] == "sprites":
-            target = resource_name
             filePath = 'projects/images/'+resource_name
-            self.main.window = imageviewer.ImageEditor(self.main, target, filePath)
+            self.main.window = imageviewer.ImageEditor(self.main, resource_name, filePath)
             self.main.window.setWindowTitle(target)
+            self.main.mdi.addSubWindow(self.main.window)
+            self.main.window.setVisible(True)
+        if self.item_index[resource_name] == "objects":
+            text = self.data["objects"][resource_name]
+            self.main.window = scripteditor.ScriptEditor(self.main, resource_name, text)
+            self.main.window.setWindowTitle(os.path.basename(str(self.main.window.title)))
             self.main.mdi.addSubWindow(self.main.window)
             self.main.window.setVisible(True)
         #print index.text(0) + self.item_index[str(index.text(0))]

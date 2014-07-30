@@ -3,7 +3,7 @@ import os, sys, subprocess
 
 json_data=open('example.project.json')
 data = json.load(json_data)
-debug = False
+debug = True
 o = []
 
 def Imports():
@@ -19,7 +19,7 @@ def Imports():
 def Sprites():
     sprites = ["//Sprites -------------------------------"]
     for s in data["sprites"]:
-        sprites.append('local ' + s + ' = add_sprite("' + data["sprites"][s] + '");')
+        sprites.append('static ' + s + ' = add_sprite("' + data["sprites"][s] + '");')
 
     return sprites
 
