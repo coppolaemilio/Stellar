@@ -30,6 +30,9 @@ class ImageEditor(QtGui.QDialog):
         super(ImageEditor, self).__init__(main)
         self.main = main
         self.filename = filename
+        self.name = name
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         if os.path.exists(os.path.join('..','images')):
         	img_path=os.path.join('..','images')
@@ -127,6 +130,9 @@ class ImageEditor(QtGui.QDialog):
             f.write(self.textedit.toPlainText())
         self.main.statusBar().showMessage(os.path.basename(str(self.filename))+' saved!', 2000)
 
+    def closeEvent(self, event):
+            del self.main.window_index[self.name]
+
 class Editor(QtGui.QMainWindow):
     def __init__(self):
         super(Editor, self).__init__()
@@ -143,7 +149,7 @@ class Editor(QtGui.QMainWindow):
         self.ShowFrame.setLayout(self.showlayout)
 
         self.setCentralWidget(self.ShowFrame)
-        self.setWindowTitle("Stellar - TImageEditor")
+        self.setWindowTitle("Stellar - ImageEditor")
         self.resize(640, 480)
 
 if __name__ == "__main__":

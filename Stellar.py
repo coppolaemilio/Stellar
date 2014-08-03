@@ -24,13 +24,15 @@ sys.path.append("tools")
 import treeview
 import listview
 import toolbar
+import projectinfo
 import ConfigParser
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.read_settings()
-        
+        self.icon = QtGui.QIcon(os.path.join('images','icon.png'))
+
         if self.mode=="eel-game":
             self.folder_sprite = "images/open.png"
             self.file_sprite = "images/new.png"
@@ -46,6 +48,7 @@ class MainWindow(QtGui.QMainWindow):
         self.output = QtGui.QTextEdit()
         self.output.setReadOnly(True)
         self.output.setFont(self.font)
+
 
         self.mdi = QtGui.QMdiArea()
 
@@ -65,11 +68,26 @@ class MainWindow(QtGui.QMainWindow):
         splitter.addWidget(self.filesView)
         splitter.addWidget(self.vsplitter)
 
+
         self.setCentralWidget(splitter)
         self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))
         self.resize(int(self.size.split("x")[0]), int(self.size.split("x")[1]))
         self.statusBar().showMessage('Ready', 2000)
+
+        self.ShowProjectOverview()
+
         self.show()
+
+    def ShowProjectOverview(self):
+        #Load startup info
+        resource_name = "Project Overview"
+        window = projectinfo.ProjectInfo(self)
+        self.window_index[resource_name] = window
+        self.mdi.addSubWindow(window)
+        window.setWindowTitle(resource_name)
+        window.setVisible(True)
+        window.setWindowState(QtCore.Qt.WindowMaximized)
+        return window
 
     def read_settings(self):
         config = ConfigParser.ConfigParser()
@@ -90,12 +108,13 @@ class MainWindow(QtGui.QMainWindow):
         self.qt_style = config.get('settings', 'qt_style')
         self.tabbed_view = int(config.get('settings', 'tabbed_view'))
         self.font_name = config.get('settings', 'font')
+        self.treeview_icon_size = int(config.get('treeview', 'icon_size'))
 
 def main():
     app = QtGui.QApplication(sys.argv)
     Stellar = MainWindow()
     Stellar.setStyle(QtGui.QStyleFactory.create(Stellar.qt_style))
-    Stellar.setWindowIcon(QtGui.QIcon(os.path.join('images','icon.png')))
+    Stellar.setWindowIcon(Stellar.icon)
     with open(os.path.join(Stellar.theme_dir, Stellar.theme_name + '.css')) as file:
         Stellar.setStyleSheet(file.read())
     Stellar.raise_() #Making the window get focused on OSX

@@ -19,6 +19,7 @@
 # along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QFont
 import os, sys, shutil
 import json
 import imageviewer
@@ -28,13 +29,30 @@ class ListView(QtGui.QTreeWidget):
     def __init__(self, main):
         super(ListView, self).__init__(main)
         self.main = main
-        self.setHeaderLabel("Resources")
+        self.header().close()
         json_data=open(self.main.projectdir)
         self.data = json.load(json_data)
 
+        self.setIconSize(QtCore.QSize(self.main.treeview_icon_size,
+                                      self.main.treeview_icon_size))
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.itemDoubleClicked.connect(self.DoubleClicked)
-        self.item_number = 0
         self.item_index = {}
+        self.main.window_index = {}
+
+        
+        item = QtGui.QTreeWidgetItem(self)
+        item.setIcon(0, self.main.icon)
+        project_name = "Example"
+        item.setText(0, project_name)
+        self.item_index[str(project_name)]="project_overview"
+        self.font = QtGui.QFont()
+        #self.font.setFamily('ClearSans')
+        self.font.setStyleHint(QtGui.QFont.Monospace)
+        self.font.setFixedPitch(True)
+        self.font.setPointSize(int(20))
+        item.setFont(0, self.font)
+
 
         self.ReadSection("sprites", "Sprites")
         self.ReadSection("objects", "Objects")
@@ -45,51 +63,54 @@ class ListView(QtGui.QTreeWidget):
 
         json_data.close()
 
-
     def DoubleClicked(self, index):
         resource_name = str(index.text(0))
-        target = resource_name
+
         if self.item_index[resource_name] == "sprites":
             filePath = 'projects/images/'+resource_name
-            self.main.window = imageviewer.ImageEditor(self.main, resource_name, filePath)
-            self.main.window.setWindowTitle(target)
-            self.main.mdi.addSubWindow(self.main.window)
-            self.main.window.setVisible(True)
-        if self.item_index[resource_name] == "objects":
+            window = imageviewer.ImageEditor(self.main, resource_name, filePath)
+        elif self.item_index[resource_name] == "objects":
             text = self.data["objects"][resource_name]
-            self.main.window = scripteditor.ScriptEditor(self.main, resource_name, text)
-            self.main.window.setWindowTitle(os.path.basename(str(self.main.window.title)))
-            self.main.mdi.addSubWindow(self.main.window)
-            self.main.window.setVisible(True)
-        #print index.text(0) + self.item_index[str(index.text(0))]
+            window = scripteditor.ScriptEditor(self.main, resource_name, text)
+        elif self.item_index[resource_name] == "project_overview":
+            window = self.main.ShowProjectOverview()
+            return
+
+        try:  #checking if the window is already open
+            self.main.window_index[resource_name]
+        except:
+            self.OpenTab(window, resource_name)
+
+    def OpenTab(self, window, resource_name):
+        self.main.window_index[resource_name] = window
+        self.main.mdi.addSubWindow(window)
+        window.setWindowTitle(resource_name)
+        window.setVisible(True)
 
     def AddItem(self, name, icon):
-        self.part = QtGui.QTreeWidgetItem(self)
-        self.part.setIcon(0, QtGui.QIcon(icon))
-        self.part.setText(0, name)
+        item = QtGui.QTreeWidgetItem(self)
+        item.setIcon(0, QtGui.QIcon(icon))
+        item.setText(0, name)
 
     def ReadSection(self, section, name):
-        self.part = QtGui.QTreeWidgetItem(self)
-        self.part.setExpanded(True)
-        self.part.setIcon(0, QtGui.QIcon(self.main.folder_sprite))
-        self.part.setText(0, name)
+        item = QtGui.QTreeWidgetItem(self)
+        item.setExpanded(True)
+        item.setIcon(0, QtGui.QIcon(self.main.folder_sprite))
+        item.setText(0, name)
         for i in self.data[section]:
-            item = QtGui.QTreeWidgetItem()
-            item.setText(0, str(i))
+            subitem = QtGui.QTreeWidgetItem()
+            subitem.setText(0, str(i))
             icon_path = os.path.dirname(self.main.projectdir) + '/' +  str(self.data[section][i])
             if os.path.isfile(icon_path):
-                item.setIcon(0, QtGui.QIcon(icon_path))
+                subitem.setIcon(0, QtGui.QIcon(icon_path))
             else:
-                item.setIcon(0, QtGui.QIcon(self.main.file_sprite))
+                subitem.setIcon(0, QtGui.QIcon(self.main.file_sprite))
             #print os.path.dirname(self.main.projectdir) + '/' +  str(self.data[section][i])
-            self.part.addChild(item)
+            item.addChild(subitem)
             self.item_index[str(i)]=section
 
     def doMenu(self, point):
         print "TO DO"
-
-    #def edit(self, index, trigger, event):
-    #    print "TO DO"
 
     def edit_file(self):
         print "TO DO"

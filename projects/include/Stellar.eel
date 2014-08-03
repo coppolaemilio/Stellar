@@ -14,3 +14,20 @@ export function draw_sprite(sprite, image_index, x, y){
 	BlitSurface(sprite, nil, nil, rect);
 	return 0;
 }
+
+//export function instance_create(x, y, object){
+//	insert(objects, 0, object);
+//	return 0;
+//}
+
+//Drawing Basic Forms
+export function draw_rectangle(x1, y1, x2, y2, outline){
+	local rect = Rect[x1,y1,x2,y2];
+	FillRect(nil, rect, MapColor(nil, 255, 60, 100));
+	return 0;
+}
+
+export function draw_line(x1, y1, x2, y2){
+	line(screen, x1, y1); 
+	return 0;
+}

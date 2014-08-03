@@ -23,6 +23,7 @@ QTreeView, QMdiArea{
     border:1px solid rgb(30,30,30);
     border-radius:3px;
 }
+QTreeWidgetItem:focus { border: 0px }
 QToolTip{
     background:rgb(49,50,44);
     border: 0;
@@ -88,6 +89,7 @@ QTabWidget::pane { /* The tab widget frame */
 /* Style the tab using the tab sub-control. Note that
  it reads QTabBar _not_ QTabWidget */
 QTabBar::tab {
+font-size: 16px;
  background: rgb(49,50,44);
  border:1px solid rgb(25,25,25);
  border-top-left-radius: 8px;

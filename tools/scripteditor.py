@@ -239,6 +239,8 @@ class ScriptEditor(QtGui.QDialog):
         self.text = parseObject(text) 
         self.title = name
 
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
         if os.path.exists(os.path.join('..','images')):
         	img_path=os.path.join('..','images')
         else:
@@ -361,6 +363,9 @@ class ScriptEditor(QtGui.QDialog):
         font, ok = QtGui.QFontDialog.getFont(self.font)
         if ok:
             self.textedit.setFont(font)
+
+    def closeEvent(self, event):
+            del self.main.window_index[self.title]
 
 class Editor(QtGui.QMainWindow):
     def __init__(self):

@@ -12,38 +12,42 @@ export function main<args>{
 	static spr_wall = add_sprite("images/spr_wall.png");
 	static spr_player = add_sprite("images/spr_player.png");
 	//Objects -------------------------------
-	local objects = [];
+	static objects = [];
 	local obj_wall = table[
-			procedure draw_event(self){
-				draw_sprite(self.sprite_index, 0 ,self.x,self.y);
-			}
-			procedure create_event(self){
-				self.x=0;
+		procedure draw_event(self){
+			draw_sprite(self.sprite_index, 0 , self.x, self.y);
+		}
+		procedure create_event(self){
+			self.x=0;
 			self.y=0;
-			self.sprite_index= spr_wall;
+			self.sprite_index = spr_wall;
+		}
+		procedure step_event(self){
+			self.x+=0.1;
+			if self.x>640{
+				self.x = -10 ;
+				self.y += 32;
 			}
-			procedure step_event(self){
-				self.x+=0.1;
-				if self.x>640{
-					self.x = -10 ;
-					self.y += 32;
-				}
-			}
-		] ;
-	insert(objects, 0, obj_wall);
+		}
+	] ;
+	
 	local obj_player = table[
-			procedure draw_event(self){
-				draw_sprite(self.sprite_index, 0 ,self.x,self.y);
-			}
-			procedure create_event(self){
-				self.x=32;
+		procedure draw_event(self){
+			draw_sprite(self.sprite_index, 0 ,self.x,self.y);
+			draw_rectangle(64,64,100,100,0);
+		}
+		procedure create_event(self){
+			self.x=32;
 			self.y=32;
-			self.sprite_index= spr_player;
-			}
-			procedure step_event(self){
+			self.sprite_index = spr_player;
+		}
+		procedure step_event(self){
+			
+		}
+	] ;
 
-			}
-		] ;
+	//instance_create(0,0,obj_wall)
+	insert(objects, 0, obj_wall);
 	insert(objects, 1, obj_player);
 	    
     for local i = 0, sizeof objects - 1 {
