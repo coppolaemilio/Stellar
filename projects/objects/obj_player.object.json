@@ -1,0 +1,11 @@
+{
+	"properties":{
+		"sprite_index":"spr_player",
+		"visible":true,
+	},
+	"events":{
+			"create":"self.x=32;\nself.y=32;\nself.sprite_index = spr_player;",
+			"step": "",
+			"draw": "draw_sprite(self.sprite_index, 0 ,self.x,self.y);"
+	}
+}

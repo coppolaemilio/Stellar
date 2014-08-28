@@ -76,8 +76,24 @@ class ImageEditor(QtGui.QDialog):
         self.scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
         self.scrollArea.setWidget(self.imageLabel)
 
+        self.widgetloco = QtGui.QWidget()
+        self.nameEdit = QtGui.QLineEdit()
+        spacer = QtGui.QWidget() 
+        spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
+
+        self.LeftColGrid = QtGui.QGridLayout()
+        self.LeftColGrid.addWidget(QtGui.QLabel('Name: '), 0,0)
+        self.LeftColGrid.addWidget(self.nameEdit,0,1)
+        self.LeftColGrid.addWidget(spacer)
+        self.widgetloco.setLayout(self.LeftColGrid)
+        self.widgetloco.setStyleSheet("max-width:150px;")
+
+        self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        self.splitter.addWidget(self.widgetloco)
+        self.splitter.addWidget(self.scrollArea)
+
         self.ContainerGrid.addWidget(self.toolbar)
-        self.ContainerGrid.addWidget(self.scrollArea)
+        self.ContainerGrid.addWidget(self.splitter)
 
         self.setLayout(self.ContainerGrid)
 

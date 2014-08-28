@@ -1,0 +1,11 @@
+{
+	"properties":{
+		"sprite_index":"spr_wall",
+		"visible":true,
+	},
+	"events":{
+			"create":"self.x=0;\nself.y=0;\nself.sprite_index = spr_wall;",
+			"step":"self.x+=0.1;\nif self.x>640{\nself.x = -10 ;\nself.y += 32;\n}",
+			"draw":"draw_sprite(self.sprite_index, 0 ,self.x,self.y);"
+	}
+}

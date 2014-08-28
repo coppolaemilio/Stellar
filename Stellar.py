@@ -21,7 +21,6 @@
 import sys, os, subprocess
 from PyQt4 import QtGui, QtCore
 sys.path.append("tools")
-import treeview
 import listview
 import toolbar
 import projectinfo

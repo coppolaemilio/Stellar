@@ -233,10 +233,13 @@ def parseObject(text):
     return string
 
 class ScriptEditor(QtGui.QDialog):
-    def __init__(self, main, name, text):
+    def __init__(self, main, name, file_path):
         super(ScriptEditor, self).__init__(main)
         self.main = main
-        self.text = parseObject(text) 
+        self.filename = file_path
+        with open(self.filename) as f:
+            self.text = f.read()
+        #self.text = parseObject(text) 
         self.title = name
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)

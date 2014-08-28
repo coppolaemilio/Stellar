@@ -55,6 +55,8 @@ class ListView(QtGui.QTreeWidget):
 
 
         self.ReadSection("sprites", "Sprites")
+        self.ReadSection("sounds", "Sounds")
+        self.ReadSection("scripts", "Scripts")
         self.ReadSection("objects", "Objects")
         self.ReadSection("rooms", "Rooms")
         self.AddItem("Extensions", self.main.extension_sprite)
@@ -65,13 +67,17 @@ class ListView(QtGui.QTreeWidget):
 
     def DoubleClicked(self, index):
         resource_name = str(index.text(0))
+        project_folder = "projects"
 
         if self.item_index[resource_name] == "sprites":
-            filePath = 'projects/images/'+resource_name
+            filePath = project_folder+'/sprites/'+resource_name
             window = imageviewer.ImageEditor(self.main, resource_name, filePath)
         elif self.item_index[resource_name] == "objects":
             text = self.data["objects"][resource_name]
             window = scripteditor.ScriptEditor(self.main, resource_name, text)
+        elif self.item_index[resource_name] == "scripts":
+            filePath = project_folder+'/scripts/'+ self.data["scripts"][resource_name]
+            window = scripteditor.ScriptEditor(self.main, resource_name, filePath)
         elif self.item_index[resource_name] == "project_overview":
             window = self.main.ShowProjectOverview()
             return
@@ -100,7 +106,7 @@ class ListView(QtGui.QTreeWidget):
         for i in self.data[section]:
             subitem = QtGui.QTreeWidgetItem()
             subitem.setText(0, str(i))
-            icon_path = os.path.dirname(self.main.projectdir) + '/' +  str(self.data[section][i])
+            icon_path = os.path.dirname(self.main.projectdir) + '/sprites/' +  str(self.data[section][i])
             if os.path.isfile(icon_path):
                 subitem.setIcon(0, QtGui.QIcon(icon_path))
             else:
