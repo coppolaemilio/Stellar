@@ -1,11 +1,10 @@
 {
 	"properties":{
 		"sprite_index":"spr_player",
-		"visible":true,
+		"visible":true
 	},
 	"events":{
-			"create":"self.x=32;\nself.y=32;\nself.sprite_index = spr_player;",
-			"step": "",
-			"draw": "draw_sprite(self.sprite_index, 0 ,self.x,self.y);"
+			"create":"self.speed = 2",
+			"step": "if keyboard_check(vk_right):\n    self.x += self.speed\nif keyboard_check(vk_left):\n    self.x -= self.speed\nif keyboard_check(vk_up):\n    self.y -= self.speed\nif keyboard_check(vk_down):\n    self.y += self.speed\nif keyboard_check(pygame.K_r):\n    change_room(room_2)\n\nif keyboard_check(vk_w):\n    test_script()\nelse:\n    self.speed = 2"
 	}
 }

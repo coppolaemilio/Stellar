@@ -1,7 +1,7 @@
 *{
     color: white;
-    background: rgb(40,40,40);
-    selection-background-color: rgb(73,72,62);
+    background: rgb(16,16,16);
+    selection-background-color: rgb(20,20,20);
     selection-color: white;
 }
 QMainWindow{
@@ -10,11 +10,11 @@ QMainWindow{
 }
 QToolBar, QStatusBar{
     color: white;
-    background: rgb(40,40,40);
+    background: rgb(16,16,16);
 }
 QTreeView{
     color: white;
-    background: rgb(49,50,44);
+    background: rgb(12,12,12);
 }
 QToolBar{
     border:0px;
@@ -88,6 +88,7 @@ QTabWidget::pane { /* The tab widget frame */
 
 /* Style the tab using the tab sub-control. Note that
  it reads QTabBar _not_ QTabWidget */
+ /*
 QTabBar::tab {
 font-size: 16px;
  background: rgb(49,50,44);
@@ -102,32 +103,45 @@ font-size: 16px;
 QTabBar::tab:selected {
  background: rgb(40,40,40);
  border-color: rgb(25,25,25);
- border-bottom-color: rgb(40,40,40); /* same as pane color */
+ border-bottom-color: rgb(40,40,40);
 }
 
 QTabBar::tab:!selected {
- margin-top: 2px; /* make non-selected tabs look smaller */
+ margin-top: 2px;
 }
 
-/* make use of negative margins for overlapping tabs */
 QTabBar::tab:selected {
- /* expand/overlap to the left and right by 4px */
  margin-left: -4px;
  margin-right: -4px;
 }
 
 QTabBar::tab:first:selected {
- margin-left: 0; /* the first selected tab has nothing to overlap with on the left */
+ margin-left: 0;
 }
 
 QTabBar::tab:last:selected {
- margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
+ margin-right: 0;
 }
 
 QTabBar::tab:only-one {
- margin: 0; /* if there is only one tab, we don't want overlapping margins */
+ margin: 0;
 }
 
-QSplitter{
-    width: 5px;
-}
+
+*/
+
+ QSplitter::handle {
+     image: url(images/splitter.png);
+ }
+
+ QSplitter::handle:horizontal {
+     width: 4px;
+ }
+
+ QSplitter::handle:vertical {
+     height: 4px;
+ }
+
+ QSplitter::handle:pressed {
+     image: url(images/splitter_pressed.png);
+ }

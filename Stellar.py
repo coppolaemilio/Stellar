@@ -1,45 +1,26 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012, 2014 Emilio Coppola
-#
-# This file is part of Stellar.
-#
-# Stellar is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Stellar is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Stellar.  If not, see <http://www.gnu.org/licenses/>.
-
 import sys, os, subprocess
 from PyQt4 import QtGui, QtCore
 sys.path.append("tools")
-import listview
+import resourcelist
+import inspector
 import toolbar
 import projectinfo
 import ConfigParser
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super(MainWindow, self).__init__()#parent=None, flags=QtCore.Qt.FramelessWindowHint)
         self.read_settings()
         self.icon = QtGui.QIcon(os.path.join('images','icon.png'))
-
-        if self.mode=="eel-game":
+        if self.mode=="python":
             self.folder_sprite = "images/open.png"
             self.file_sprite = "images/new.png"
             self.extension_sprite = "images/extensions.png"
             self.settings_sprite = "images/settings.png"
-            self.filesView = listview.ListView(self)
-        else:
-            self.filesView = treeview.TreeView(self)
+            self.resourcelist = resourcelist.ResourceList(self)
         self.font = QtGui.QFont()
         self.font.setFamily(self.font_name)
         self.font.setStyleHint(QtGui.QFont.Monospace)
@@ -47,6 +28,10 @@ class MainWindow(QtGui.QMainWindow):
         self.output = QtGui.QTextEdit()
         self.output.setReadOnly(True)
         self.output.setFont(self.font)
+
+
+        #Inspector
+        self.inspector = inspector.Inspector(self)
 
 
         self.mdi = QtGui.QMdiArea()
@@ -59,16 +44,18 @@ class MainWindow(QtGui.QMainWindow):
 
         self.toolBar = self.addToolBar(toolbar.ToolBar(self))
 
-        self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
-        self.vsplitter.addWidget(self.mdi)
-        self.vsplitter.addWidget(self.output)
+        #self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+        #self.vsplitter.addWidget(self.mdi)
+        #self.vsplitter.addWidget(self.output)
+
+        self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
         
-        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        splitter.addWidget(self.filesView)
-        splitter.addWidget(self.vsplitter)
+        self.splitter.addWidget(self.resourcelist)
+        #self.splitter.addWidget(self.inspector)
+        self.splitter.addWidget(self.mdi)
+        
 
-
-        self.setCentralWidget(splitter)
+        self.setCentralWidget(self.splitter)
         self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))
         self.resize(int(self.size.split("x")[0]), int(self.size.split("x")[1]))
         self.statusBar().showMessage('Ready', 2000)
@@ -95,9 +82,6 @@ class MainWindow(QtGui.QMainWindow):
             self.projectdir = os.path.join(config.get('project', 'last_project'))
         except:
             self.projectdir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'example')
-        self.eeldir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'eel','eel')
-        if sys.platform == "win32":
-            self.eeldir += '.exe'
 
         self.mode = config.get('settings', 'mode')
         self.size = config.get('settings', 'start_size')

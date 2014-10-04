@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+
+	<link rel="stylesheet" href="lib/CodeMirror/codemirror.css">
+	<link rel="stylesheet" href="lib/CodeMirror/addon/fold/foldgutter.css">
+	<link rel="stylesheet" href="lib/CodeMirror/addon/dialog/dialog.css">
+	<link rel="stylesheet" href="lib/CodeMirror/theme/monokai.css">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="lib/CodeMirror/codemirror.js"></script>
+	<script src="lib/CodeMirror/addon/search/searchcursor.js"></script>
+	<script src="lib/CodeMirror/addon/search/search.js"></script>
+	<script src="lib/CodeMirror/addon/dialog/dialog.js"></script>
+	<script src="lib/CodeMirror/addon/edit/matchbrackets.js"></script>
+	<script src="lib/CodeMirror/addon/edit/closebrackets.js"></script>
+	<script src="lib/CodeMirror/addon/comment/comment.js"></script>
+	<script src="lib/CodeMirror/addon/wrap/hardwrap.js"></script>
+	<script src="lib/CodeMirror/addon/fold/foldcode.js"></script>
+	<script src="lib/CodeMirror/addon/fold/brace-fold.js"></script>
+	<script src="lib/CodeMirror/mode/markdown/markdown.js"></script>
+	<script src="lib/CodeMirror/keymap/sublime.js"></script>
+	<script src="lib/jquery.min.js"></script>
+</style>
+<body>
+	<div id="TextField" style="display:none;">{
+	"properties":{
+		"sprite_index":"spr_player",
+		"visible":true
+	},
+	"events":{
+			"create":"self.speed = 2",
+			"step": "if keyboard_check(vk_right):\n    self.x += self.speed\nif keyboard_check(vk_left):\n    self.x -= self.speed\nif keyboard_check(vk_up):\n    self.y -= self.speed\nif keyboard_check(vk_down):\n    self.y += self.speed\nif keyboard_check(pygame.K_r):\n    change_room(room_2)\n\nif keyboard_check(vk_w):\n    self.speed = 4\nelse:\n    self.speed = 2"
+	}
+}</div>
+
+	<div id="about" class="nano">
+		<article></article>
+
+		<script>
+			var text = document.getElementById('TextField').innerHTML;;
+			var map = CodeMirror.keyMap.sublime, mapK = CodeMirror.keyMap["sublime-Ctrl-K"];
+			var editor = CodeMirror(document.body.getElementsByTagName("article")[0], {
+				value: text,
+				lineNumbers: true,
+				lineWrapping: true,
+				mode: "markdown",
+				keyMap: "sublime",
+				autoCloseBrackets: true,
+				matchBrackets: true,
+				showCursorWhenSelecting: true,
+				theme: "monokai"
+			});
+		</script>
+</body>
