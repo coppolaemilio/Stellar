@@ -25,10 +25,13 @@ class CodeEditor(QtGui.QDialog):
 
         #Reading the target file
         if self.current_file!="":
-            with open(self.current_file) as f:
-                target = f.read()
+            try:
+                with open(self.current_file) as f:
+                    target = f.read()
+            except:
+                target = ""
         else:
-            target = self.current_file
+            target = "ERROR OPENING THE FILE"
         
         new_file = template.replace("TEXTPLACEHOLDER", target)
 

@@ -20,6 +20,7 @@ class ResourceList(QtGui.QTreeWidget):
                                       self.main.treeview_icon_size))
         self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.itemDoubleClicked.connect(self.DoubleClicked)
+        self.itemClicked.connect(self.Clicked)
         self.item_index = {}
         self.main.window_index = {}
 
@@ -105,6 +106,10 @@ class ResourceList(QtGui.QTreeWidget):
         else:
             return
 
+    def Clicked(self, index):
+        resource_name = str(index.text(0))
+        self.main.inspector.nameEdit.setText(resource_name)
+
     def DoubleClicked(self, index):
         resource_name = str(index.text(0))
         project_folder = "projects"
@@ -120,6 +125,9 @@ class ResourceList(QtGui.QTreeWidget):
             window = codeeditor.CodeEditor(self.main, filePath)
         elif self.item_index[resource_name] == "scripts":
             filePath = project_folder+'/scripts/'+ data["scripts"][resource_name]
+            window = codeeditor.CodeEditor(self.main, filePath)
+        elif self.item_index[resource_name] == "rooms":
+            filePath = project_folder+'/rooms/'+ data["rooms"][resource_name]
             window = codeeditor.CodeEditor(self.main, filePath)
         elif self.item_index[resource_name] == "project_overview":
             window = self.main.ShowProjectOverview()

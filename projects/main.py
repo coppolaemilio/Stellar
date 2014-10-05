@@ -16,7 +16,11 @@ spr_player = create_sprite("spr_player.png")
 #Objects ------------------------------
 class obj_wall(Object):
     visible = True
-    sprite_index = spr_player
+    sprite_index = spr_wall
+
+class obj_test(Object):
+    visible = True
+    sprite_index = spr_wall
 
 class obj_player(Object):
     visible = True

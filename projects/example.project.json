@@ -4,7 +4,8 @@
     }, 
     "objects": {
         "obj_player": "obj_player.object.json", 
-        "obj_wall": "obj_wall.object.json"
+        "obj_wall": "obj_wall.object.json",
+        "obj_test": "obj_test.object.json"
     }, 
     "project": {
         "author": "Emilio Coppola", 

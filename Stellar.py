@@ -51,8 +51,9 @@ class MainWindow(QtGui.QMainWindow):
         self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
         
         self.splitter.addWidget(self.resourcelist)
-        #self.splitter.addWidget(self.inspector)
+        
         self.splitter.addWidget(self.mdi)
+        self.splitter.addWidget(self.inspector)
         
 
         self.setCentralWidget(self.splitter)
@@ -60,7 +61,7 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(int(self.size.split("x")[0]), int(self.size.split("x")[1]))
         self.statusBar().showMessage('Ready', 2000)
 
-        self.ShowProjectOverview()
+        #self.ShowProjectOverview()
 
         self.show()
 

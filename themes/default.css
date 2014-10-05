@@ -1,6 +1,6 @@
 *{
     color: white;
-    background: rgb(16,16,16);
+    background: rgb(30,30,30);
     selection-background-color: rgb(20,20,20);
     selection-color: white;
 }
@@ -10,16 +10,17 @@ QMainWindow{
 }
 QToolBar, QStatusBar{
     color: white;
-    background: rgb(16,16,16);
+    background: rgb(30,30,30);
 }
 QTreeView{
     color: white;
-    background: rgb(12,12,12);
+    background: rgb(30,30,30);
+    border:0;
 }
 QToolBar{
     border:0px;
 }
-QTreeView, QMdiArea{
+QMdiArea{
     border:1px solid rgb(30,30,30);
     border-radius:3px;
 }
@@ -101,9 +102,9 @@ font-size: 16px;
 }
 
 QTabBar::tab:selected {
- background: rgb(40,40,40);
+ background: rgb(30,30,30);
  border-color: rgb(25,25,25);
- border-bottom-color: rgb(40,40,40);
+ border-bottom-color: rgb(30,30,30);
 }
 
 QTabBar::tab:!selected {

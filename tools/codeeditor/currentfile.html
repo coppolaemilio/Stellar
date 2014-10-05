@@ -25,12 +25,13 @@
 <body>
 	<div id="TextField" style="display:none;">{
 	"properties":{
-		"sprite_index":"spr_player",
-		"visible":true
+		"width":640,
+		"height":480,
+		"background_color": "(100, 100, 150)"
 	},
 	"events":{
-			"create":"self.speed = 2",
-			"step": "if keyboard_check(vk_right):\n    self.x += self.speed\nif keyboard_check(vk_left):\n    self.x -= self.speed\nif keyboard_check(vk_up):\n    self.y -= self.speed\nif keyboard_check(vk_down):\n    self.y += self.speed\nif keyboard_check(pygame.K_r):\n    change_room(room_2)\n\nif keyboard_check(vk_w):\n    self.speed = 4\nelse:\n    self.speed = 2"
+			"create": "for x in xrange(0,10):\n    instance_create(obj_wall, x*32,0)\ninstance_create(obj_player, 32,32)",
+			"draw" : "screen.fill(self.background_color)"
 	}
 }</div>
 
