@@ -9,8 +9,6 @@ indent = "    "
 def Imports():
     imports = []
     for i in data["imports"]:
-        print i
-        print data["imports"][i]
         imports.append( i + ' ' + data["imports"][i])
     imports.append("from odin import *")
     return imports
@@ -25,7 +23,6 @@ def Scripts():
             current_data = indent + str(content)
             current_data = current_data.replace("\n", "\n"+ indent)
 
-            print current_data
             scripts.append(current_data)
 
         scripts.append("")
