@@ -91,24 +91,17 @@ def Rooms():
     return rooms
 
 def GameLoop():
-    return "\n#Game Start ---------------------------\nstart_game(room_1)"
+    return ["\n#Game Start ---------------------------\nstart_game(room_1)"]
 
 json_data.close()
 
 with open('main.py', 'w') as file:
     text = "#This file was generated with Stellar\n"
 
-    for line in Imports():
-        text += line + "\n"
-    for script in Scripts():
-        text += script + "\n"
-    for spr in Sprites():
-        text += spr + "\n"
-    for obj in Objects():
-        text += obj + "\n"
-    for room in Rooms():
-        text += room + "\n"
-    text += GameLoop()
+    parts = [Imports(), Scripts(), Sprites(), Objects(), Rooms(), GameLoop()]
+    for part in parts:
+        for line in part:
+            text+= line + "\n"
 
     file.write(text)
 
