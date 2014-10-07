@@ -1,5 +1,5 @@
 <h1>Stellar</h1>
-![stellar](https://dl.dropbox.com/u/31195548/Stellar/stellarpreview.png)
+![stellar](https://dl.dropboxusercontent.com/u/31195548/stellar.png)
 
 ## About
 An open-source IDE for <b>game</b> development.<br/> 
