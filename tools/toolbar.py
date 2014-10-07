@@ -75,5 +75,10 @@ class ToolBar(QtGui.QToolBar):
             self.main.output.setText(out)
             self.main.output.moveCursor(QtGui.QTextCursor.End)
             self.main.statusBar().showMessage('Done!', 2000)
+        else:
+            if self.main.mode == "python":
+                python = os.system("python build.py")
+            self.main.statusBar().showMessage('Done!', 2000)
+
 
         os.chdir(os.pardir)

@@ -25,13 +25,10 @@
 <body>
 	<div id="TextField" style="display:none;">{
 	"properties":{
-		"width":640,
-		"height":480,
-		"background_color": "(100, 100, 150)"
+		"sprite_index":"spr_wall",
+		"visible": true
 	},
 	"events":{
-			"create": "for x in xrange(0,10):\n    instance_create(obj_wall, x*32,0)\ninstance_create(obj_player, 32,32)",
-			"draw" : "screen.fill(self.background_color)"
 	}
 }</div>
 

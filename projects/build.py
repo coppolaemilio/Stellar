@@ -116,6 +116,10 @@ with open('main.py', 'w') as file:
     file.write(text)
 
 if debug == True:
-    game = subprocess.Popen(["python", "main.py"], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    out = game.stdout.read()
-    print out
+    if sys.platform=="win32":
+        game = subprocess.Popen(["python", "main.py"], shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        out = game.stdout.read()
+        print out
+    else:
+        os.system("python main.py")
+    
