@@ -14,11 +14,11 @@ class ToolBar(QtGui.QToolBar):
         funcs = [
             [self.open, 'stellar_1.png', 'Stellar', False], 
             [self.open, 'open.png', 'Open', False],
-            [self.run_project, 'run.png', 'Run', 'Ctrl+B'],
             [self.main.resourcelist.add_file, 'addfile.png', 'Add file', False],
             [self.main.resourcelist.add_directory, 'addfolder.png', 'Add folder', False],
-            [self.open_documentation, 'documentation.png', 'Documentation', 'F1'],
+            #[self.open_documentation, 'documentation.png', 'Documentation', 'F1'],
             [self.toggle_console, 'output.png', 'Show output', False],
+            [self.run_project, 'run.png', 'Run', 'Ctrl+B'],
             [QtGui.qApp.quit, 'close.png', 'Exit', 'Ctrl+Q']
         ]
 
@@ -28,11 +28,11 @@ class ToolBar(QtGui.QToolBar):
             if x[3]!=False:
                 action.setShortcut(x[3])
             self.addAction(action)
-            if i == 6:
+            if i == 5:
                 spacer = QtGui.QWidget() 
                 spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
                 self.addWidget(spacer)
-                self.separator = self.addSeparator()
+                #self.separator = self.addSeparator()
 
         self.setMovable(False) 
 

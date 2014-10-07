@@ -108,7 +108,14 @@ class ResourceList(QtGui.QTreeWidget):
 
     def Clicked(self, index):
         resource_name = str(index.text(0))
+        project_folder = "projects"
+        self.main.inspector.information.setText("")
         self.main.inspector.nameEdit.setText(resource_name)
+        if self.item_index[resource_name] == "sprites":
+            self.main.inspector.scrollArea.show()
+            self.main.inspector.open_image(project_folder+'/sprites/'+resource_name)
+        else:
+            self.main.inspector.scrollArea.hide()
 
     def DoubleClicked(self, index):
         resource_name = str(index.text(0))

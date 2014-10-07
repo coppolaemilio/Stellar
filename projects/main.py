@@ -48,7 +48,7 @@ class obj_player(Object):
 #Rooms --------------------------------
 class room_1(Room):
     width = 640
-    background_color = (100, 100, 150)
+    background_color = (150, 100, 150)
     height = 480
     def create_event(self):
         for x in xrange(0,10):

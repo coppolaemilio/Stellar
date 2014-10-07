@@ -8,20 +8,18 @@ QMainWindow{
     padding: 10px;
     background: black;
 }
-QToolBar, QStatusBar{
+QToolBar, QStatusBar, QTreeView{
     color: white;
     background: rgb(30,30,30);
 }
 QTreeView{
-    color: white;
-    background: rgb(30,30,30);
     border:0;
 }
 QToolBar{
     border:0px;
 }
 QMdiArea{
-    border:1px solid rgb(30,30,30);
+    /*border:1px solid rgb(30,30,30);*/
     border-radius:3px;
 }
 QTreeWidgetItem:focus { border: 0px }
