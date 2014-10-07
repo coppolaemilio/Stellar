@@ -31,5 +31,9 @@
         "caption": "Stellar - Example", 
         "height": 480, 
         "width": 640
+    },
+    "settings": {
+        "fullscreen" : false,
+        "display_cursor" : true
     }
 }

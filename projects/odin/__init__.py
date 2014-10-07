@@ -15,7 +15,9 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
 set_icon(pygame.image.load(os.path.join(ODIN_DIR, "icon.png")))
 set_caption("Caption")
-screen = pygame.display.set_mode((640, 480))
+
+screen_size = (640, 480)
+screen = pygame.display.set_mode(screen_size)
 FPS = 60
 fps_clock = pygame.time.Clock()
 room_height = 0
@@ -107,6 +109,21 @@ def change_room(room):
     for instance in objects_group:
         instance.event_create()
 
+##################
+# Game Settings  #
+##################
+cr_none = False
+def window_set_cursor(state):
+    if state:
+        pygame.mouse.set_visible(True)
+    else:
+        pygame.mouse.set_visible(False)
+
+def window_set_fullscreen(state):
+    if state:
+        screen = pygame.display.set_mode(screen_size, pygame.FULLSCREEN)
+    else:
+        screen = pygame.display.set_mode(screen_size)
 
 ##################
 # Game Loop      #
