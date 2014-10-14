@@ -9,7 +9,7 @@ class ToolBar(QtGui.QToolBar):
     def __init__(self, main):
         super(ToolBar, self).__init__(main)
         self.main = main
-
+        
         # func, img, title, hotkey
         funcs = [
             [self.open, 'stellar_1.png', 'Stellar', False], 
@@ -34,7 +34,7 @@ class ToolBar(QtGui.QToolBar):
                 self.addWidget(spacer)
                 #self.separator = self.addSeparator()
 
-        self.setMovable(False) 
+        self.setMovable(True) 
 
 
     def toggle_console(self):

@@ -43,7 +43,6 @@ class MainWindow(QtGui.QMainWindow):
         self.mdi.setBackground(QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png'))))
 
         self.toolBar = self.addToolBar(toolbar.ToolBar(self))
-
         #self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
         #self.vsplitter.addWidget(self.mdi)
         #self.vsplitter.addWidget(self.output)
@@ -53,8 +52,10 @@ class MainWindow(QtGui.QMainWindow):
         self.splitter.addWidget(self.resourcelist)
         
         self.splitter.addWidget(self.mdi)
-        self.splitter.addWidget(self.inspector)
         
+        self.inspectorToolbar = QtGui.QToolBar()
+        self.addToolBar(QtCore.Qt.RightToolBarArea, self.inspectorToolbar)
+        self.inspectorToolbar.addWidget(self.inspector)
 
         self.setCentralWidget(self.splitter)
         self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))

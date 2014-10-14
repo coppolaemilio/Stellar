@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtCore, QtGui
-import os, sys
+import os, sys, shutil
 
-class Inspector(QtGui.QDialog):
+class Inspector(QtGui.QWidget):
     def __init__(self, main, image = None):
         super(Inspector, self).__init__(main)
         self.main = main
@@ -57,8 +57,17 @@ class Inspector(QtGui.QDialog):
     def importImage(self):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 '', "*.png")
-        self.open_image(fname)
-        pass
+        if fname:
+            self.open_image(fname)
+            shutil.copyfile(fname, os.path.join(
+                            os.path.dirname(self.main.projectdir),
+                            "sprites",
+                            str(self.nameEdit.text())+".png" ))
+            item = self.main.resourcelist.currentItem()
+            item.setIcon(0, QtGui.QIcon(os.path.join(
+                            os.path.dirname(self.main.projectdir),
+                            "sprites",
+                            str(self.nameEdit.text())+".png" )))
 
     def open_image(self, filename):
         fileName = filename

@@ -18,6 +18,9 @@ QTreeView{
 QToolBar{
     border:0px;
 }
+QToolBar::handle {
+    background: rgb(25,25,25);
+}
 QMdiArea{
     /*border:1px solid rgb(30,30,30);*/
     border-radius:3px;
