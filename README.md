@@ -11,7 +11,8 @@ This of course assumes that the sprites, images, and sounds you use can be distr
 
 ## Dependencies
 * [Python 2.x +](http://www.python.org/getit/)
-* [PyQt 4](http://www.riverbankcomputing.com/software/pyqt/download) 
+* [PyQt 4](http://www.riverbankcomputing.com/software/pyqt/download)
+* [Pygame](http://www.pygame.org/download.shtml) 
 
 On Ubuntu based:<br>
 `$ sudo apt-get install python2.7 python-qt4 pygame`
