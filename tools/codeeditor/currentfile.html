@@ -18,19 +18,14 @@
 	<script src="lib/CodeMirror/addon/wrap/hardwrap.js"></script>
 	<script src="lib/CodeMirror/addon/fold/foldcode.js"></script>
 	<script src="lib/CodeMirror/addon/fold/brace-fold.js"></script>
-	<script src="lib/CodeMirror/mode/markdown/markdown.js"></script>
+	<script src="lib/CodeMirror/mode/python/python.js"></script>
 	<script src="lib/CodeMirror/keymap/sublime.js"></script>
 	<script src="lib/jquery.min.js"></script>
 </style>
 <body>
-	<div id="TextField" style="display:none;">{
-	"properties":{
-		"sprite_index":"spr_wall",
-		"visible": true
-	},
-	"events":{
-	}
-}</div>
+	<div id="TextField" style="display:none;"># This is an example script
+print "hello world"
+print "it works!"</div>
 
 	<div id="about" class="nano">
 		<article></article>
@@ -42,7 +37,7 @@
 				value: text,
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: "markdown",
+				mode: "python",
 				keyMap: "sublime",
 				autoCloseBrackets: true,
 				matchBrackets: true,
