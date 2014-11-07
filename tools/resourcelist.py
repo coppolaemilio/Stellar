@@ -109,6 +109,10 @@ class ResourceList(QtGui.QTreeWidget):
 
     def Clicked(self, index):
         resource_name = str(index.text(0))
+        try: #checking if it has a parent
+            index.parent().text(0)
+        except:
+            return 0
         project_folder = os.path.dirname(self.main.projectdir)
         self.main.inspector.information.setText("")
         self.main.inspector.nameEdit.setText(resource_name)
