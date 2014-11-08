@@ -113,14 +113,12 @@ class ResourceList(QtGui.QTreeWidget):
             index.parent().text(0)
         except:
             return 0
-        project_folder = os.path.dirname(self.main.projectdir)
+        
         self.main.inspector.information.setText("")
         self.main.inspector.nameEdit.setText(resource_name)
-        if self.item_index[resource_name] == "sprites":
+        if str(index.parent().text(0)).lower() == "sprites":
             self.main.inspector.scrollArea.show()
-            self.main.inspector.open_image(os.path.join(project_folder,
-                                                        'sprites',
-                                                        resource_name))
+            self.main.inspector.open_image(resource_name)
         else:
             self.main.inspector.scrollArea.hide()
 
@@ -130,7 +128,7 @@ class ResourceList(QtGui.QTreeWidget):
         with open(self.main.projectdir) as f:
             data = json.load(f)
 
-        if self.item_index[resource_name] == "sprites":
+        if str(index.parent().text(0)).lower() == "sprites":
             filePath = project_folder+'/sprites/'+resource_name
             window = imageviewer.ImageEditor(self.main, resource_name, filePath)
         elif self.item_index[resource_name] == "objects":

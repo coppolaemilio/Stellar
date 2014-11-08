@@ -59,25 +59,28 @@ class Inspector(QtGui.QWidget):
     def on_name_changed(self):
         new_name = str(self.nameEdit.text())
         current_item = str(self.main.resourcelist.currentItem().text(0))
-        parent = str(self.main.resourcelist.currentItem().parent().text(0))
+        parent = str(self.main.resourcelist.currentItem().parent().text(0)).lower()
 
+        #reading the project file
         with open(self.main.projectdir) as f:
             data = json.load(f)
         
+        #locating the key
         for section in data:
-            if section == parent.lower():
+            if section == parent:
                 for value in data[section]:
                     if value == self.last_name:
-                        print value, data[section][value]
                         data[section][new_name] = data[section][value]
                         del data[section][value]
         
+        #saving changes
         with open(self.main.projectdir, 'w') as f:
             json.dump(data, f, sort_keys=True, indent=4)
 
         #Renaming resource
         self.main.resourcelist.currentItem().setText(0, str(self.nameEdit.text()))
 
+        #keeping the last name in memory
         self.last_name = new_name
 
 
@@ -96,13 +99,26 @@ class Inspector(QtGui.QWidget):
                             "sprites",
                             str(self.nameEdit.text())+".png" )))
 
-    def open_image(self, filename):
-        fileName = filename
+    def open_image(self, resource_name):
+        fileName = resource_name
+
+        #reading the project file
+        with open(self.main.projectdir) as f:
+            data = json.load(f)
+        
+        #locating the key
+        for sprite in data['sprites']:
+            if sprite == fileName:
+                fileName = data['sprites'][sprite]
+            #fileName = data['sprites'][sprite]
+
         if fileName:
-            image = QtGui.QImage(fileName)
+            project_folder = os.path.dirname(self.main.projectdir)
+            path = os.path.join(project_folder, 'sprites', fileName)
+            image = QtGui.QImage(path)
             if image.isNull():
                 QtGui.QMessageBox.information(self, "Image Viewer",
-                        "Cannot load %s." % fileName)
+                        "Cannot load %s." % path)
                 return
 
             self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(image))
