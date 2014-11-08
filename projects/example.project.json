@@ -4,8 +4,8 @@
     }, 
     "objects": {
         "obj_player": "obj_player.object.json", 
-        "obj_wall": "obj_wall.object.json",
-        "obj_test": "obj_test.object.json"
+        "obj_test": "obj_test.object.json", 
+        "obj_wall": "obj_wall.object.json"
     }, 
     "project": {
         "author": "Emilio Coppola", 
@@ -20,6 +20,10 @@
     "scripts": {
         "test_script": "test_script.py"
     }, 
+    "settings": {
+        "display_cursor": true, 
+        "fullscreen": false
+    }, 
     "sounds": {
         "snd_jump": "snd_jump.ogg"
     }, 
@@ -31,9 +35,5 @@
         "caption": "Stellar - Example", 
         "height": 480, 
         "width": 640
-    },
-    "settings": {
-        "fullscreen" : false,
-        "display_cursor" : true
     }
 }

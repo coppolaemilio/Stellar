@@ -1,6 +1,6 @@
 {
 	"properties":{
-		"sprite_index":"spr_wall",
+		"sprite_index":"spr_player",
 		"visible": true
 	},
 	"events":{
