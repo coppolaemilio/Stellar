@@ -13,7 +13,7 @@ import ConfigParser
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()#parent=None, flags=QtCore.Qt.FramelessWindowHint)
-        self.ReadSettings()
+        self.read_settings()
         self.icon = QtGui.QIcon(os.path.join('images','icon.png'))
         if self.mode=="python":
             self.folder_sprite = "images/open.png"
@@ -39,34 +39,34 @@ class MainWindow(QtGui.QMainWindow):
         self.font = set_font()
         self.output = set_output()
         
-        self.mdi_area = self.CreateMdiArea()
+        self.mdi_area = self.create_mdi_area()
         
         self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
         self.splitter.addWidget(self.resourcelist)
         self.splitter.addWidget(self.mdi_area)
         
         self.setCentralWidget(self.splitter)
-        self.CreateToolbar("top")
-        self.CreateToolbar("right")
+        self.create_toolbar("top")
+        self.create_toolbar("right")
         
         self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))
         self.resize(int(self.size.split("x")[0]), int(self.size.split("x")[1]))
         self.statusBar().showMessage('Ready', 2000)
 
-        #self.ShowProjectOverview()
+        #self.show_project_overview()
         self.show()
         
-    def CreateToolbar(self, type):
+    def create_toolbar(self, type):
         if type == "right":
-            inspect = inspector.Inspector(self)
+            self.inspector = inspector.Inspector(self)
             inspectorToolbar = QtGui.QToolBar()
-            inspectorToolbar.addWidget(inspect)
+            inspectorToolbar.addWidget(self.inspector)
             self.addToolBar(QtCore.Qt.RightToolBarArea, inspectorToolbar)
             
         elif type == "top":
             self.addToolBar(toolbar.ToolBar(self))
         
-    def CreateMdiArea(self):
+    def create_mdi_area(self):
         mdi = QtGui.QMdiArea()
 
         if self.tabbed_view:
@@ -76,7 +76,7 @@ class MainWindow(QtGui.QMainWindow):
         mdi.setBackground(QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png'))))
         return mdi
         
-    def ShowProjectOverview(self):
+    def show_project_overview(self):
         #Load startup info
         resource_name = "Project Overview"
         window = projectinfo.ProjectInfo(self)
@@ -87,7 +87,7 @@ class MainWindow(QtGui.QMainWindow):
         window.setWindowState(QtCore.Qt.WindowMaximized)
         return window
 
-    def ReadSettings(self):
+    def read_settings(self):
         config = ConfigParser.ConfigParser()
         config.read('settings.ini')
         try:
