@@ -11,23 +11,27 @@ class CodeEditor(QtGui.QDialog):
         self.realpath = os.path.dirname(os.path.realpath(__file__))
 
         self.current_file = current_file
-        if ".md" in self.current_file:
+
+        #Reading the target file
+        if "objects" in self.current_file:
+            extension = ".object.json"
             self.syntax_mode = "markdown"
-        elif ".py" in self.current_file:
+        elif "scripts" in self.current_file:
+            extension = ".py"
             self.syntax_mode = "python"
         else:
-            self.syntax_mode = "markdown"
+            print "Error over 9000"
 
         #Reading the template
         with open(os.path.join(self.realpath,'html','template.html')) as f:
             template = f.read()
             template = template.replace("MODE", self.syntax_mode)
 
-        #Reading the target file
         if self.current_file!="":
             try:
-                with open(self.current_file) as f:
+                with open(os.path.join(self.main.app_path, self.current_file + extension), 'r') as f:
                     target = f.read()
+                    
             except:
                 target = ""
         else:

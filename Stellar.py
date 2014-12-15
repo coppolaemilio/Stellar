@@ -53,6 +53,8 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(int(self.size.split("x")[0]), int(self.size.split("x")[1]))
         self.statusBar().showMessage('Ready', 2000)
 
+        self.app_path = os.getcwd()
+
         #self.show_project_overview()
         self.show()
         
