@@ -12,19 +12,38 @@ class ResourceList(QtGui.QTreeWidget):
     def __init__(self, main):
         super(ResourceList, self).__init__(main)
         self.main = main
-        self.header().close()
-        json_data = open(self.main.projectdir)
-        self.data = json.load(json_data)
-
-        self.setIconSize(QtCore.QSize(self.main.treeview_icon_size,
-                                      self.main.treeview_icon_size))
-        self.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.itemDoubleClicked.connect(self.DoubleClicked)
-        self.itemClicked.connect(self.Clicked)
         self.item_index = {}
         self.main.window_index = {}
-
         
+        self.header().close()
+        self.load_project_data()
+        self.folders = ("sprites", "sounds", "objects", "scripts", "rooms")
+        
+        icon_size = self.main.treeview_icon_size
+        self.setIconSize(QtCore.QSize(icon_size,icon_size))
+        
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.itemDoubleClicked.connect(self.double_clicked)
+        self.itemClicked.connect(self.clicked)
+        
+        self.show_project_name()
+        self.create_tree()
+
+    def load_project_data(self):
+        json_data = open(self.main.projectdir)
+        self.data = json.load(json_data)
+        json_data.close()
+
+    def create_tree(self):
+        self.read_section("sprites", "Sprites")
+        self.read_section("sounds", "Sounds")
+        self.read_section("scripts", "Scripts")
+        self.read_section("objects", "Objects")
+        self.read_section("rooms", "Rooms")
+        self.AddItem("Extensions", self.main.extension_sprite)
+        self.AddItem("Settings", self.main.settings_sprite)
+    
+    def show_project_name(self):
         item = QtGui.QTreeWidgetItem(self)
         item.setIcon(0, self.main.icon)
         project_name = "Example"
@@ -36,15 +55,6 @@ class ResourceList(QtGui.QTreeWidget):
         self.font.setFixedPitch(True)
         self.font.setPointSize(int(20))
         item.setFont(0, self.font)
-
-
-        self.ReadSection("sprites", "Sprites")
-        self.ReadSection("sounds", "Sounds")
-        self.ReadSection("scripts", "Scripts")
-        self.ReadSection("objects", "Objects")
-        self.ReadSection("rooms", "Rooms")
-        self.AddItem("Extensions", self.main.extension_sprite)
-        self.AddItem("Settings", self.main.settings_sprite)
     
     def contextMenuEvent(self, event):
         menu = QtGui.QMenu(self)
@@ -107,7 +117,7 @@ class ResourceList(QtGui.QTreeWidget):
         else:
             return
 
-    def Clicked(self, index):
+    def clicked(self, index):
         resource_name = str(index.text(0))
         try: #checking if it has a parent
             index.parent().text(0)
@@ -122,38 +132,23 @@ class ResourceList(QtGui.QTreeWidget):
         else:
             self.main.inspector.scrollArea.hide()
 
-    def DoubleClicked(self, index):
+    def double_clicked(self, index):
         resource_name = str(index.text(0))
         project_folder = os.path.dirname(self.main.projectdir)
-        with open(self.main.projectdir) as f:
-            data = json.load(f)
-
-        if str(index.parent().text(0)).lower() == "sprites":
-            filePath = project_folder+'/sprites/'+resource_name
-            window = imageviewer.ImageEditor(self.main, resource_name, filePath)
-        elif self.item_index[resource_name] == "objects":
-            text = data["objects"][resource_name]
-            filePath = project_folder+'/objects/'+ data["objects"][resource_name]
-            window = codeeditor.CodeEditor(self.main, filePath)
-        elif self.item_index[resource_name] == "scripts":
-            filePath = project_folder+'/scripts/'+ data["scripts"][resource_name]
-            window = codeeditor.CodeEditor(self.main, filePath)
-        elif self.item_index[resource_name] == "rooms":
-            filePath = project_folder+'/rooms/'+ data["rooms"][resource_name]
-            window = codeeditor.CodeEditor(self.main, filePath)
-        elif self.item_index[resource_name] == "project_overview":
-            window = self.main.ShowProjectOverview()
-            return
-
-        #try:  #checking if the window is already open
-        #    self.main.window_index[resource_name]
-        #except:
-        self.OpenTab(window, resource_name)
-
-    def OpenTab(self, window, resource_name):
-        self.main.window_index[resource_name] = window
-        self.main.mdi.addSubWindow(window)
-        window.setWindowTitle(resource_name)
+        
+        for folder in self.folders:
+            if self.item_index[resource_name] == folder:
+                path = os.path.join(project_folder, folder, resource_name)
+                self.open_tab(path, resource_name, folder)
+       
+    def open_tab(self, path, name, type):
+        if type == "sprites":
+            window = imageviewer.ImageEditor(self.main, name, path)
+        else:
+            window = codeeditor.CodeEditor(self.main, path)
+        self.main.window_index[name] = window
+        self.main.mdi_area.addSubWindow(window)
+        window.setWindowTitle(name)
         window.setVisible(True)
 
     def AddItem(self, name, icon):
@@ -164,7 +159,7 @@ class ResourceList(QtGui.QTreeWidget):
             item.setIcon(0, QtGui.QIcon(icon))
         item.setText(0, name)
 
-    def ReadSection(self, section, name):
+    def read_section(self, section, name):
         item = QtGui.QTreeWidgetItem(self)
         item.setExpanded(True)
         item.setIcon(0, QtGui.QIcon(self.main.folder_sprite))

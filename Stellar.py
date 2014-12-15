@@ -21,52 +21,62 @@ class MainWindow(QtGui.QMainWindow):
             self.extension_sprite = "images/extensions.png"
             self.settings_sprite = "images/settings.png"
             self.resourcelist = resourcelist.ResourceList(self)
-        self.font = QtGui.QFont()
-        self.font.setFamily(self.font_name)
-        self.font.setStyleHint(QtGui.QFont.Monospace)
-        self.font.setFixedPitch(True)
-        self.output = QtGui.QTextEdit()
-        self.output.setReadOnly(True)
-        self.output.setFont(self.font)
+            
+        def set_font():
+            font = QtGui.QFont()
+            font.setFamily(self.font_name)
+            font.setStyleHint(QtGui.QFont.Monospace)
+            font.setFixedPitch(True)
+            return font
+        
+        def set_output():
+            output = QtGui.QTextEdit()
+            output.setReadOnly(True)
+            output.setFont(self.font)
+            return output
 
-
-        #Inspector
-        self.inspector = inspector.Inspector(self)
-
-
-        self.mdi = QtGui.QMdiArea()
-
-        if self.tabbed_view:
-            self.mdi.setViewMode(self.mdi.TabbedView)
-        self.mdi.setTabsClosable(True)
-        self.mdi.setTabsMovable(True)
-        self.mdi.setBackground(QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png'))))
-
-        self.toolBar = self.addToolBar(toolbar.ToolBar(self))
-        #self.vsplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
-        #self.vsplitter.addWidget(self.mdi)
-        #self.vsplitter.addWidget(self.output)
-
+        
+        self.font = set_font()
+        self.output = set_output()
+        
+        self.mdi_area = self.create_mdi_area()
+        
         self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        
         self.splitter.addWidget(self.resourcelist)
+        self.splitter.addWidget(self.mdi_area)
         
-        self.splitter.addWidget(self.mdi)
-        
-        self.inspectorToolbar = QtGui.QToolBar()
-        self.addToolBar(QtCore.Qt.RightToolBarArea, self.inspectorToolbar)
-        self.inspectorToolbar.addWidget(self.inspector)
-
         self.setCentralWidget(self.splitter)
+        self.create_toolbar("top")
+        self.create_toolbar("right")
+        
         self.setWindowTitle("Stellar - " + os.path.basename(self.projectdir))
         self.resize(int(self.size.split("x")[0]), int(self.size.split("x")[1]))
         self.statusBar().showMessage('Ready', 2000)
 
-        #self.ShowProjectOverview()
-
+        #self.show_project_overview()
         self.show()
+        
+    def create_toolbar(self, type):
+        if type == "right":
+            self.inspector = inspector.Inspector(self)
+            inspectorToolbar = QtGui.QToolBar()
+            inspectorToolbar.addWidget(self.inspector)
+            self.addToolBar(QtCore.Qt.RightToolBarArea, inspectorToolbar)
+            
+        elif type == "top":
+            self.addToolBar(toolbar.ToolBar(self))
+        
+    def create_mdi_area(self):
+        mdi = QtGui.QMdiArea()
 
-    def ShowProjectOverview(self):
+        if self.tabbed_view:
+            mdi.setViewMode(mdi.TabbedView)
+        mdi.setTabsClosable(True)
+        mdi.setTabsMovable(True)
+        mdi.setBackground(QtGui.QBrush(QtGui.QPixmap(os.path.join('images','background.png'))))
+        return mdi
+        
+    def show_project_overview(self):
         #Load startup info
         resource_name = "Project Overview"
         window = projectinfo.ProjectInfo(self)
