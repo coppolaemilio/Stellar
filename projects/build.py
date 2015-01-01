@@ -16,7 +16,7 @@ def Imports():
 def Scripts():
     scripts = ["\n#Scripts ------------------------------"]
     for s in data["scripts"]:
-        scripts.append("def " + s + "(argument0=False, arugment1=False, argument2=False):")
+        scripts.append("def " + s + "(argument0=None, arugment1=None, argument2=None):")
 
         with open(os.path.join("scripts", data["scripts"][s])) as f:
             content = f.read()
@@ -48,13 +48,13 @@ def Objects():
             current_data = indent*2 + str(obj_data["events"][e])
             current_data = current_data.replace("\n", "\n"+ indent*2)
             if e == "create":
-                objects.append(indent + "def create_event(self):")
+                objects.append(indent + "def event_create(self):")
                 objects.append(current_data)
             if e == "step":
                 objects.append(indent + "def event_step(self):")
                 objects.append(current_data)
             if e == "draw":
-                objects.append(indent + "def draw_event(self):")
+                objects.append(indent + "def event_draw(self):")
                 objects.append(current_data)
 
         objects.append("")

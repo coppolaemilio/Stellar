@@ -31,6 +31,7 @@ class Object(object):
         super(Object, self).__init__()
         self.x = x
         self.y = y
+
     def event_create(self):
         pass
     def event_step(self):
@@ -56,7 +57,7 @@ class Room(object):
 sprites_group = []
 objects_group = []
 
-def create_sprite(sprite_name, alpha=0):
+def create_sprite(sprite_name, h, w, alpha=0):
     if alpha == 0:
         spr = pygame.image.load(os.path.join("sprites", sprite_name)).convert()
     else:
@@ -86,6 +87,9 @@ def instance_create(obj, x, y):
     objects_group.append(i)
     return i
 
+def instance_destroy(self):
+    objects_group.remove(self)
+
 key_check = []
 def keyboard_check(what_key):
     global key_check
@@ -109,6 +113,45 @@ def change_room(room):
     for instance in objects_group:
         instance.event_create()
 
+def room_restart():
+    del objects_group[:]
+    global current_room
+    current_room.background_color
+    current_room.create_event()
+    for instance in objects_group:
+        instance.event_create()
+    
+
+
+
+#####################
+# Collision engine  #
+#####################
+
+def doRectsOverlap(rect1, rect2):
+    for a, b in [(rect1, rect2), (rect2, rect1)]:
+        # Check if a's corners are inside b
+        if ((isPointInsideRect(a[0], a[1], b)) or
+            (isPointInsideRect(a[0], a[3], b)) or
+            (isPointInsideRect(a[2], a[1], b)) or
+            (isPointInsideRect(a[2], a[3], b))):
+            return True
+    return False
+
+def isPointInsideRect(x, y, rect):
+    if x > rect[0] and x < rect[2] and y > rect[1] and y < rect[3]:
+        return True
+    else:
+        return False
+
+def collision_rectangle(x1, y1, x2, y2, obj):
+    for other in objects_group:
+        if other.__class__ == obj:
+            if doRectsOverlap([x1,y1,x2,y2], [other.x,other.y,other.x+32,other.y+32]):
+                return True
+    return False
+
+
 ##################
 # Game Settings  #
 ##################
@@ -125,9 +168,26 @@ def window_set_fullscreen(state):
     else:
         screen = pygame.display.set_mode(screen_size)
 
+
+##################
+# Game Functions #
+##################
+def place_free(x, y):
+    for instance in objects_group:
+        if x > instance.x and x < instance.x+32 and y > instance.y and y < instance.y+32:
+            print "aca!"
+            return False
+
+    return True
+
+def game_end():
+    pygame.quit()
+    sys.exit()
+
 ##################
 # Game Loop      #
 ##################
+
 def start_game(start_room):
     global current_room
     current_room = start_room()
@@ -138,11 +198,9 @@ def start_game(start_room):
         current_room.event_draw()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                game_end()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                sys.exit()
+                game_end()
             global key_check
             key_check = pygame.key.get_pressed()
 

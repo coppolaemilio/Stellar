@@ -1,0 +1,8 @@
+if keyboard_check(vk_right):
+    self.x += self.speed
+if keyboard_check(vk_left):
+    self.x -= self.speed
+if keyboard_check(vk_up):
+    self.y -= self.speed
+if keyboard_check(vk_down):
+    self.y += self.speed
