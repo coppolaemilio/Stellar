@@ -1,6 +1,7 @@
 import pygame
 import os 
 import sys
+import math
 from keys import *
 
 def set_icon(icon):
@@ -57,7 +58,7 @@ class Room(object):
 sprites_group = []
 objects_group = []
 
-def create_sprite(sprite_name, h, w, alpha=0):
+def create_sprite(sprite_name, alpha=0):
     if alpha == 0:
         spr = pygame.image.load(os.path.join("sprites", sprite_name)).convert()
     else:
@@ -143,6 +144,12 @@ def isPointInsideRect(x, y, rect):
         return True
     else:
         return False
+
+def distance_to_object(a, b):
+    return math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
+
+def distance_to_point(a, x, y):
+    return math.sqrt((a.x-x)**2 + (a.y-y)**2)    
 
 def collision_rectangle(x1, y1, x2, y2, obj):
     for other in objects_group:
