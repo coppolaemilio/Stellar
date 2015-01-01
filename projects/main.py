@@ -23,7 +23,6 @@ class obj_wall(Object):
     visible = True
     sprite_index = spr_wall
 
-
 class obj_player(Object):
     visible = True
     sprite_index = spr_player
@@ -32,43 +31,37 @@ class obj_player(Object):
         self.speed = 2
 
     def event_step(self):
-        self.x_previous = self.x
-        self.y_previous = self.y
-
+        self.xprevious = self.x
+        self.yprevious = self.y
         obj = obj_coin
         for other in objects_group:
             if other.__class__ == obj:
                 if distance_to_object(self, other)<16:
                     instance_destroy(other)
 
-        
-        self.rect = [self.x, self.y, self.x+32, self.y+32]
-        
-
-
         if keyboard_check(vk_right):
-            #if place_empty(self.x+32+1, self.y+16):
+            if place_empty(self.x+1+32, self.y):
                 self.x += self.speed
         if keyboard_check(vk_left):
-            #if place_empty(self.x-1, self.y+16):
+            if place_empty(self.x-1, self.y):
                 self.x -= self.speed
         if keyboard_check(vk_up):
-            #if place_empty(self.x+16, self.y-1):
+            if place_empty(self.x, self.y-1):
                 self.y -= self.speed
         if keyboard_check(vk_down):
-            #if place_empty(self.x+16, self.y+32+1):
+            if place_empty(self.x, self.y+1+32):
                 self.y += self.speed
 
         if keyboard_check(pygame.K_r):
             room_restart()
-        
-        if keyboard_check(ord('w')):
-            game_end()
 
 
-        if collision_check(self, obj_wall):
-            self.x = self.x_previous
-            self.y = self.y_previous
+    def event_collision(self, obj = obj_wall):
+        for other in objects_group:
+            if other.__class__ == obj:
+                if self.mask.colliderect(other.mask):
+                    self.x = self.xprevious
+                    self.y = self.yprevious
 
 
 

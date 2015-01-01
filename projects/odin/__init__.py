@@ -32,14 +32,23 @@ class Object(object):
         super(Object, self).__init__()
         self.x = x
         self.y = y
+        self.mask = pygame.Rect(32, 32, 32, 32)
 
     def event_create(self):
         pass
+
+    def event_update(self):
+        self.mask.x = self.x
+        self.mask.y = self.y 
+
     def event_step(self):
         pass
+
     def event_draw(self):
         draw_sprite(self.sprite_index, 0, self.x, self.y)
-        #screen.blit(self.sprite_index, (self.x,self.y))
+
+    def event_collision(self, other=None):
+        pass
 
 class Room(object):
     def __init__(self):
@@ -151,19 +160,19 @@ def distance_to_object(a, b):
 def distance_to_point(a, x, y):
     return math.sqrt((a.x-x)**2 + (a.y-y)**2)    
 
+
 def place_empty(x, y):
-    for other in objects_group:
-        if x > other.x-1 and x<other.x+32 and y> other.y-1 and y<other.y+32:
-            return False
+    #Returns whether the instance placed at position (x,y) meets nobody
+    return True
+    objRect = pygame.Rect(x, y, 1, 1)
+    if objRect.collidepoint(x, y):
+        return False
     return True
 
-def collision_check(self, obj):
-    for other in objects_group:
-        if other.__class__ == obj:
-            if doRectsOverlap(self.rect, [other.x,other.y,other.x+32,other.y+32]):
-                print "yeah"
-                return True
-    return False
+    #for other in objects_group:
+    #    if x > other.x-1 and x<other.x+32 and y> other.y-1 and y<other.y+32:
+    #        return False
+    #return True
 
 
 ##################
@@ -186,13 +195,6 @@ def window_set_fullscreen(state):
 ##################
 # Game Functions #
 ##################
-def place_free(x, y):
-    for instance in objects_group:
-        if x > instance.x and x < instance.x+32 and y > instance.y and y < instance.y+32:
-            print "aca!"
-            return False
-
-    return True
 
 def game_end():
     pygame.quit()
@@ -220,6 +222,8 @@ def start_game(start_room):
 
         for instance in objects_group:
             instance.event_step()
+            instance.event_update()
+            instance.event_collision()
             instance.event_draw()
 
         pygame.display.flip()
