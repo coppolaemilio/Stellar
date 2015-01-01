@@ -140,7 +140,7 @@ def doRectsOverlap(rect1, rect2):
     return False
 
 def isPointInsideRect(x, y, rect):
-    if x > rect[0] and x < rect[2] and y > rect[1] and y < rect[3]:
+    if x > rect[0]-1 and x < rect[2]-1 and y > rect[1]-1 and y < rect[3]-1:
         return True
     else:
         return False
@@ -151,10 +151,17 @@ def distance_to_object(a, b):
 def distance_to_point(a, x, y):
     return math.sqrt((a.x-x)**2 + (a.y-y)**2)    
 
-def collision_rectangle(x1, y1, x2, y2, obj):
+def place_empty(x, y):
+    for other in objects_group:
+        if x > other.x-1 and x<other.x+32 and y> other.y-1 and y<other.y+32:
+            return False
+    return True
+
+def collision_check(self, obj):
     for other in objects_group:
         if other.__class__ == obj:
-            if doRectsOverlap([x1,y1,x2,y2], [other.x,other.y,other.x+32,other.y+32]):
+            if doRectsOverlap(self.rect, [other.x,other.y,other.x+32,other.y+32]):
+                print "yeah"
                 return True
     return False
 

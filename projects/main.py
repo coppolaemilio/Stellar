@@ -32,6 +32,8 @@ class obj_player(Object):
         self.speed = 2
 
     def event_step(self):
+        self.x_previous = self.x
+        self.y_previous = self.y
 
         obj = obj_coin
         for other in objects_group:
@@ -39,24 +41,34 @@ class obj_player(Object):
                 if distance_to_object(self, other)<16:
                     instance_destroy(other)
 
-        if distance_to_point(self, 0,0)<32:
-            print "hola"
-                
+        
+        self.rect = [self.x, self.y, self.x+32, self.y+32]
+        
+
 
         if keyboard_check(vk_right):
-            self.x += self.speed
+            #if place_empty(self.x+32+1, self.y+16):
+                self.x += self.speed
         if keyboard_check(vk_left):
-            self.x -= self.speed
+            #if place_empty(self.x-1, self.y+16):
+                self.x -= self.speed
         if keyboard_check(vk_up):
-            self.y -= self.speed
+            #if place_empty(self.x+16, self.y-1):
+                self.y -= self.speed
         if keyboard_check(vk_down):
-            self.y += self.speed
+            #if place_empty(self.x+16, self.y+32+1):
+                self.y += self.speed
 
         if keyboard_check(pygame.K_r):
             room_restart()
         
         if keyboard_check(ord('w')):
             game_end()
+
+
+        if collision_check(self, obj_wall):
+            self.x = self.x_previous
+            self.y = self.y_previous
 
 
 
@@ -68,9 +80,9 @@ class room_1(Room):
     def create_event(self):
         level = [
             "WWWWWWWWWWWWWWWWWWWW",
-            "W E                W",
-            "Wcccccc   WWWWWW   W",
-            "W   WWWW       W   W",
+            "W                  W",
+            "W  E      WWWWWW   W",
+            "W    WWW   ccccW   W",
             "W   W        WWWW  W",
             "W WWW  WWWW        W",
             "W   W     W W      W",
