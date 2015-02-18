@@ -20,7 +20,8 @@ On Ubuntu based:<br>
 On OSX you can install PyQt4 with homebrew:<br>
 `$ brew install qt`<br>
 `$ brew install sip`<br>
-`$ brew install pyqt`
+`$ brew install pyqt`<br>
+if this doesn't work you can follow this [tutorial](http://www.noktec.be/python/how-to-install-pyqt4-on-osx)
 
 On Windows based:<br>
 Download and install the dependencies listed above. Be sure to install the Python 2.x versions, not Python 3 versions.
