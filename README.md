@@ -1,3 +1,7 @@
+#THIS PROJECT IS NO LONGER SUPPORTED
+A lot of things happened since I started this project and I don't really use pygame any more. Also, new programs like Atom made this IDE obsolete. I think that a set of Atom plugins will make more sense than coding the whole thing all over again. After testing other engines/frameworks I do not recommend making games with python. Thank you everyone that contributed and supported the project, it was a great experience for me. 
+See you around!
+
 <h1>Stellar IDE</h1>
 ![stellar](https://dl.dropboxusercontent.com/u/31195548/stellar.png)
 
