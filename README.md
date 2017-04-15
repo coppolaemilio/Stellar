@@ -1,8 +1,8 @@
-#THIS PROJECT IS NO LONGER SUPPORTED
+# THIS PROJECT IS NO LONGER SUPPORTED
 A lot of things happened since I started this project and I don't really use pygame any more. Also, new programs like [Atom](https://atom.io/) or [Godot](https://godotengine.org/)  made this IDE obsolete. I think that a set of Atom plugins will make more sense than coding the whole thing all over again. But after testing other engines/frameworks I do not recommend making games with Python due to its poor performance. Thanks to everyone that contributed and supported the project, it was a great experience for me.
 See you around!
 
-<h1>Stellar IDE</h1>
+# Stellar IDE
 ![stellar](https://dl.dropboxusercontent.com/u/31195548/stellar.png)
 
 ## About
@@ -43,8 +43,6 @@ Our contributors here:
 * [graphs](https://github.com/Coppolaemilio/Stellar/graphs/contributors)
 
 <b>You can talk with us on freenode IRC [#stellarIDE](http://webchat.freenode.net/?channels=stellaride)</b>
-
-Any feedback is welcome!
 
 ---
 Code editor thanks to [CodeMirror](http://codemirror.net/)
